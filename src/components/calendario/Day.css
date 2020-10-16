@@ -1,0 +1,30 @@
+td.grid-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 10px;
+}
+
+.btn-circle {
+  width: 2rem;
+  height: 2rem;
+  padding: 0.5rem 0rem;
+  border-radius: 50%;
+  font-size: 1rem;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 0rem;
+}
+
+#calendar .event,
+#div_unfinished .event {
+  cursor: pointer;
+  flex: 0 0 auto;
+  font-size: 13px;
+  border-radius: 4px;
+  padding: 1px;
+  padding-left: 5px;
+  margin-bottom: 2px;
+  line-height: 14px;
+  border: 1px solid;
+  text-decoration: none;
+}

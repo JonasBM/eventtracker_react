@@ -1,0 +1,51 @@
+/* declare a 7 column grid on the table */
+#calendar {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+#calendar thead,
+#calendar tr,
+#calendar tbody {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  width: 100%;
+}
+
+caption {
+  grid-column: 1 / -1;
+}
+
+#calendar td {
+  min-height: 80px;
+  min-width: 0;
+  border: 1px solid black;
+}
+
+#calendar section {
+  scroll-behavior: smooth;
+}
+
+/* ============================
+Mobile Responsiveness
+============================*/
+
+/*768px*/
+@media (max-width: 990px) {
+  #calendar .weekdays,
+  #calendar .other-month {
+    display: none !important;
+  }
+
+  #calendar,
+  #calendar tr,
+  #calendar tbody {
+    grid-template-columns: 1fr;
+  }
+
+  #calendar tr {
+    grid-column: 1 / 2;
+  }
+}
