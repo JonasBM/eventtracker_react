@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Provider, useSelector } from "react-redux";
+import { Provider } from "react-redux";
 import store from "./store";
 // import { loadUser } from "./actions/auth";
 // import AlertTemplate from "react-alert-template-basic";

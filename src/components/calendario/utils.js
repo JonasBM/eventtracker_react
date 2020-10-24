@@ -16,7 +16,7 @@ export default function buildCalendar(date) {
   return calendar;
 }
 
-export const filterNoticeDate = (stringDate) => {
+export const filterNoticebyDate = (stringDate) => {
   return function (notice) {
     if (notice.date === stringDate) {
       return true;
@@ -30,7 +30,25 @@ export const filterNoticeDate = (stringDate) => {
   };
 };
 
-export const filterNoticeEventDate = (stringDate) => {
+export const filterSurveyByDate = (stringDate) => {
+  return function (survey) {
+    if (survey.date === stringDate) {
+      return true;
+    }
+    return false;
+  };
+};
+
+export const filterActivityByDate = (stringDate) => {
+  return function (activity) {
+    if (activity.date === stringDate) {
+      return true;
+    }
+    return false;
+  };
+};
+
+export const filterNoticeEventByDate = (stringDate) => {
   return function (notice) {
     for (let index = 0; index < notice.notice_events.length; index++) {
       if (notice.notice_events[index].deadline_date === stringDate) {

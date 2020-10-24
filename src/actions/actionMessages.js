@@ -13,11 +13,9 @@ export const returnErrors = (err) => {
   let msg;
   let status;
   if (err.response) {
-    console.log(err.response);
     msg = err.response.data;
     status = err.response.status;
   } else {
-    console.log(err);
     msg = { undefined_error: [err] };
     status = "undefined_error";
   }

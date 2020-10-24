@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import moment from "moment";
 import "moment/locale/pt-br";
 
@@ -15,7 +14,7 @@ import Day from "./Day";
 const Calendario = ({ momentdate }) => {
   const [calendar, setCalendar] = useState([]);
   useEffect(() => {
-    console.log("dsadas");
+    console.log("Calendario");
     moment.locale("pt-br");
     setCalendar(buildCalendar(momentdate));
   }, [momentdate]);

@@ -1,13 +1,19 @@
 import React, { Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { actionCRUDNotice } from "../../../actions/notice/actionNotice";
-import { Form } from "react-final-form";
+import { Form, Field } from "react-final-form";
 import arrayMutators from "final-form-arrays";
 import { FieldArray } from "react-final-form-arrays";
 import moment from "moment";
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
 import { getNoticeEventType } from "../utils";
-import { InputFormGroup, CheckboxFormGroup } from "../../common/Forms";
+import {
+  InputFormGroup,
+  CheckboxFormGroup,
+  Error,
+  required,
+} from "../../common/Forms";
+import CommonModalFooter from "./CommonModalFooter";
 
 const FormNoticeFine = ({ fields, name, index }) => {
   return (
@@ -27,6 +33,7 @@ const FormNoticeFine = ({ fields, name, index }) => {
         className="mx-1"
       />
       <button
+        type="button"
         className="btn btn-outline-danger border-0 btn-sm"
         onClick={() => fields.remove(index)}
       >
@@ -45,6 +52,7 @@ const FormNoticeEvent = ({ fields, name, index, push }) => {
           {getNoticeEventType(fields.value[index]).name}
         </span>
         <button
+          type="button"
           className="btn btn-outline-danger border-0"
           onClick={() => fields.remove(index)}
         >
@@ -62,6 +70,7 @@ const FormNoticeEvent = ({ fields, name, index, push }) => {
               maxLength="255"
               placeholder="identificação"
               className="mx-1"
+              validate={fields.value[index].notice_event_type !== 3 && required}
             />
             {fields.value[index].notice_event_type !== 3 && (
               <CheckboxFormGroup
@@ -82,6 +91,7 @@ const FormNoticeEvent = ({ fields, name, index, push }) => {
                 max="999"
                 placeholder="prazo"
                 className="mx-1"
+                validate={required}
               />
               <CheckboxFormGroup
                 name={name + ".deadline_working_days"}
@@ -127,32 +137,90 @@ const FormNoticeEvent = ({ fields, name, index, push }) => {
   );
 };
 
+export const arrayRequired = (values) => {
+  console.log(values);
+  if (values && values.length > 0) {
+    return "undefined";
+  } else {
+    return "Campo obrigatório";
+  }
+};
+
+const requiredArray = (value) =>
+  value && value.length > 0 ? undefined : "Required";
+
 const FormNotice = ({ notice }) => {
   const dispatch = useDispatch();
   const notice_event_types = useSelector(
     (state) => state.notice.notice_event_types.notice_event_types
   );
 
+  const onDelete = () => {
+    let newLine = "\r\n";
+    let confirm_alert = "Tem certeza que gostaria de deletar este Auto?";
+    confirm_alert += newLine;
+    confirm_alert += "Data: " + moment(notice.date).format("DD/MM/YYYY");
+
+    for (let index = 0; index < notice.notice_events.length; index++) {
+      confirm_alert += newLine;
+      confirm_alert += "Nº: " + notice.notice_events[index].identification;
+      confirm_alert +=
+        " (" +
+        notice_event_types.find(
+          (element) =>
+            element.id === notice.notice_events[index].notice_event_type
+        ).name +
+        ")";
+    }
+    if (window.confirm(confirm_alert)) {
+      console.log("DELETE");
+      dispatch(actionCRUDNotice.delete(notice));
+      bootstrap.Modal.getInstance(document.getElementById("ModalEvent")).hide();
+    }
+  };
+
+  const confirmSave = (values) => {
+    console.log(values);
+    return true;
+  };
+
   const onSubmit = (values) => {
-    dispatch(actionCRUDNotice.update(values));
+    let criarnovo = values.criarnovo;
+    delete values["criarnovo"];
+    console.log(values);
+
+    if (values.id !== undefined && confirmSave(values)) {
+      if (values.id !== 0 && !criarnovo) {
+        // dispatch(actionCRUDNotice.update(values));
+      } else {
+        // dispatch(actionCRUDNotice.create(values));
+      }
+    }
     bootstrap.Modal.getInstance(document.getElementById("ModalEvent")).hide();
   };
 
   return (
     <Form
       initialValues={notice}
-      mutators={{ ...arrayMutators }}
       onSubmit={onSubmit}
+      mutators={{
+        ...arrayMutators,
+      }}
       render={({
         handleSubmit,
         form: {
-          mutators: { push, pop },
+          mutators: { push },
         },
       }) => (
         <form onSubmit={handleSubmit} className="needs-validation" noValidate>
           <div className="modal-body container">
             <div className="container">
-              <InputFormGroup name="date" label="data:" type="date" />
+              <InputFormGroup
+                name="date"
+                label="data:"
+                type="date"
+                validate={required}
+              />
               <InputFormGroup
                 name="address"
                 label="endereço:"
@@ -174,11 +242,11 @@ const FormNotice = ({ notice }) => {
                     className="btn btn-outline-primary btn-sm mx-1"
                     onClick={() =>
                       push("notice_events", {
-                        notice_event_type: notice_event_type.id,
                         deadline: notice_event_type.default_deadline,
                         deadline_working_days:
                           notice_event_type.default_deadline_working_days,
                         end_concluded: notice_event_type.default_end_concluded,
+                        notice_event_type: notice_event_type.id,
                       })
                     }
                   >
@@ -187,40 +255,36 @@ const FormNotice = ({ notice }) => {
                 ))}
               </div>
               <div className="container">
-                <FieldArray name="notice_events">
-                  {({ fields }) =>
-                    fields.map((name, index) => (
-                      <FormNoticeEvent
-                        key={name}
-                        fields={fields}
-                        name={name}
-                        index={index}
-                        push={push}
-                      />
-                    ))
-                  }
+                <FieldArray name="notice_events" validate={requiredArray}>
+                  {({ fields, meta: { touched, pristine } }) => (
+                    <div>
+                      {fields.map((name, index) => (
+                        <FormNoticeEvent
+                          key={name}
+                          fields={fields}
+                          name={name}
+                          index={index}
+                          push={push}
+                        />
+                      ))}
+
+                      {fields.length === 0 && touched ? (
+                        <div className="invalid-feedback d-block">
+                          É necessario adicionar ao menos um Auto ou VA
+                        </div>
+                      ) : null}
+                    </div>
+                  )}
                 </FieldArray>
               </div>
             </div>
           </div>
-          <div className="modal-footer">
-            <button
-              type="button"
-              className="mr-auto btn btn-danger font-weight-bold"
-            >
-              Deletar
-            </button>
-            <button
-              type="button"
-              className="btn btn-secondary font-weight-bold"
-              data-dismiss="modal"
-            >
-              Fechar
-            </button>
-            <button type="submit" className="btn btn-primary font-weight-bold">
-              Salvar
-            </button>
-          </div>
+          <CommonModalFooter
+            isEdit={
+              notice !== undefined ? (notice.id !== 0 ? true : false) : false
+            }
+            onDelete={onDelete}
+          />
         </form>
       )}
     />

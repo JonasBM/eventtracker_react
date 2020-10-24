@@ -1,71 +1,81 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { actionCRUDActivity } from "../../../actions/activity/actionActivity";
+import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
+import { Form } from "react-final-form";
+import { InputFormGroup, required } from "../../common/Forms";
+import CommonModalFooter from "./CommonModalFooter";
+import moment from "moment";
 
 const FormActivity = ({ activity }) => {
-  const [state, setState] = useState({
-    date: "",
-    address: "",
-    description: "",
-  });
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (activity) {
-      setState(activity);
+  const onDelete = () => {
+    let newLine = "\r\n";
+    let confirm_alert = "Tem certeza que gostaria de deletar esta Atividade?";
+    confirm_alert += newLine;
+    confirm_alert += "Data: " + moment(activity.date).format("DD/MM/YYYY");
+    if (window.confirm(confirm_alert)) {
+      dispatch(actionCRUDActivity.delete(activity));
+      bootstrap.Modal.getInstance(document.getElementById("ModalEvent")).hide();
     }
-  }, [activity]);
+  };
 
-  const handleChange = (e) => {
-    setState({ [e.target.name]: e.target.value });
+  const confirmSave = () => {
+    return true;
+  };
+
+  const onSubmit = (values) => {
+    let criarnovo = values.criarnovo;
+    delete values["criarnovo"];
+    console.log(values);
+    if (values.id !== undefined && confirmSave) {
+      if (values.id !== 0 && !criarnovo) {
+        dispatch(actionCRUDActivity.update(values));
+      } else {
+        dispatch(actionCRUDActivity.create(values));
+      }
+    }
+    bootstrap.Modal.getInstance(document.getElementById("ModalEvent")).hide();
   };
 
   return (
-    <form method="post" className="needs-validation" noValidate>
-      <div className="modal-body container">
-        <div className="container">
-          <div className="container">
-            <div className="form-group">
-              <label htmlFor="id_activity-date">data:</label>{" "}
-              <input
+    <Form
+      initialValues={activity}
+      onSubmit={onSubmit}
+      render={({ handleSubmit }) => (
+        <form onSubmit={handleSubmit} className="needs-validation" noValidate>
+          <div className="modal-body container">
+            <div className="container">
+              <InputFormGroup
+                name="date"
+                label="data:"
                 type="date"
-                className="form-control form-control-sm"
-                id="id_activity-date"
-                onChange={handleChange}
-                value={state.date}
+                validate={required}
               />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="id_activity-description">descrição:</label>{" "}
-              <textarea
+              <InputFormGroup
+                name="description"
+                label="descrição:"
+                component="textarea"
                 cols="40"
                 rows="20"
-                className="form-control form-control-sm"
-                id="id_activity-description"
-                onChange={handleChange}
-                value={state.description}
-              ></textarea>
+                validate={required}
+              />
             </div>
           </div>
-        </div>
-      </div>
-      <div className="modal-footer">
-        <button
-          type="button"
-          className="mr-auto btn btn-danger font-weight-bold"
-        >
-          Deletar
-        </button>
-        <button
-          type="button"
-          className="btn btn-secondary font-weight-bold"
-          data-dismiss="modal"
-        >
-          Fechar
-        </button>
-        <button type="submit" className="btn btn-primary font-weight-bold">
-          Salvar
-        </button>
-      </div>
-    </form>
+          <CommonModalFooter
+            isEdit={
+              activity !== undefined
+                ? activity.id !== 0
+                  ? true
+                  : false
+                : false
+            }
+            onDelete={onDelete}
+          />
+        </form>
+      )}
+    />
   );
 };
 
