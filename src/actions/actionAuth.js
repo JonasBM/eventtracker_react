@@ -1,6 +1,5 @@
 import axios from "axios";
-import { returnErrors } from "./actionMessages";
-import { createMessage } from "./actionMessages";
+import { returnErrors, createMessage } from "./actionMessages";
 
 import {
   LOGIN_SUCCESS,
@@ -18,10 +17,14 @@ export const loadUser = () => (dispatch, getState) => {
   if (tokenHeader != null) {
     dispatch({ type: USER_LOADING });
     axios
-      .get(process.env.REACT_APP_API_URL + "api/auth/user/", tokenHeader)
+      .get(process.env.REACT_APP_API_URL + "api/user/", tokenHeader)
       .then((res) => {
         dispatch({
           type: USER_LOADED,
+          payload: res.data[0].id,
+        });
+        dispatch({
+          type: "READ_USER",
           payload: res.data,
         });
       })
@@ -38,18 +41,20 @@ export const loadUser = () => (dispatch, getState) => {
 
 // LOGIN USER
 export const login = (username, password) => (dispatch) => {
-  // Headers
-  const config = { headers: { "Content-Type": "application/json" } };
-  // Request Body
-  const body = JSON.stringify({ username, password });
+  const config = {
+    headers: {
+      Authorization: `Basic ${btoa(username + ":" + password)}`,
+    },
+  };
   axios
-    .post(process.env.REACT_APP_API_URL + "api/auth/login/", body, config)
+    .post(process.env.REACT_APP_API_URL + "api/auth/login/", null, config)
     .then((res) => {
       dispatch(createMessage("Bem vindo"));
       dispatch({
         type: LOGIN_SUCCESS,
         payload: res.data,
       });
+      dispatch(loadUser());
     })
     .catch((err) => {
       dispatch(returnErrors(err));
@@ -66,6 +71,28 @@ export const logout = () => (dispatch, getState) => {
     axios
       .post(
         process.env.REACT_APP_API_URL + "api/auth/logout/",
+        null,
+        tokenHeader
+      )
+      .then((res) => {
+        dispatch({
+          type: LOGOUT_SUCCESS,
+        });
+      })
+      .catch((err) => {
+        dispatch(returnErrors(err));
+      });
+  } else {
+    dispatch({ type: AUTH_ERROR });
+  }
+};
+
+export const logoutAll = () => (dispatch, getState) => {
+  let tokenHeader = tokenConfig(getState);
+  if (tokenHeader != null) {
+    axios
+      .post(
+        process.env.REACT_APP_API_URL + "api/auth/logoutall/",
         null,
         tokenHeader
       )

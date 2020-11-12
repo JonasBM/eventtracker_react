@@ -1,10 +1,14 @@
 //Geral
 export const GET_ERRORS = "GET_ERRORS";
 export const CREATE_MESSAGE = "CREATE_MESSAGE";
-export const CHANGE_TESTE = "CHANGE_TESTE";
+
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 export const LOGIN_FAIL = "LOGIN_FAIL";
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
 export const USER_LOADED = "USER_LOADED";
 export const USER_LOADING = "USER_LOADING";
 export const AUTH_ERROR = "AUTH_ERROR";
+
+export const DATE_NEW = "DATE_NEW";
+
+export const FILE_REPORT_PDF = "FILE_REPORT_PDF";

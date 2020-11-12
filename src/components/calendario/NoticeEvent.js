@@ -1,9 +1,10 @@
 import React from "react";
-import { getNoticeEventType } from "./utils";
+import { getNoticeEventType, getAllNoticeConcluded } from "./utils";
 import { CompleteButton, MapButton, EventButton } from "./common";
+import { useDispatch } from "react-redux";
+import { actionCRUDNotice } from "../../actions/notice/actionNotice";
 
-const noticeEventName = (notice_event, showVA = false) => {
-  console.log(notice_event);
+const NoticeEventSpan = ({ notice_event, showVA = false }) => {
   let notice_event_type = getNoticeEventType(notice_event);
   if (notice_event && notice_event_type) {
     if (notice_event_type.id !== 4 || showVA) {
@@ -15,26 +16,30 @@ const noticeEventName = (notice_event, showVA = false) => {
       );
     }
   }
-  return (
-    <span className="row no-gutters py-1 text-truncate d-inline-block font-weight-bold">
-      TESTEEEEE
-    </span>
-  );
+  return null;
 };
 
 const NoticeButton = ({ notice, day }) => {
   return (
-    <div className="row no-gutters event user-select-none text-truncate">
+    <div
+      className={
+        "row no-gutters event user-select-none text-truncate " +
+        notice.css_class_name +
+        (getAllNoticeConcluded(notice) ? " concluded" : "")
+      }
+    >
       <EventButton
         notice_id={notice.id}
         modalcall="notice"
         title={notice.address}
         day={day.format("YYYY-MM-DD")}
       >
-        {notice.notice_events.map((notice_event) => (
-          <div key={"noticeevent" + notice_event.id}>
-            {notice_event.identification}
-          </div>
+        {notice.notice_events.map((notice_event, index) => (
+          <NoticeEventSpan
+            key={notice_event.id}
+            notice_event={notice_event}
+            showVA={false}
+          />
         ))}
       </EventButton>
       <MapButton address={notice.address} />
@@ -43,12 +48,22 @@ const NoticeButton = ({ notice, day }) => {
 };
 
 const NoticeEventButton = ({ notice, day }) => {
+  const dispatch = useDispatch();
+  const completeTask = (notice_event) => {
+    notice_event.end_concluded = !notice_event.end_concluded;
+    dispatch(actionCRUDNotice.update(notice));
+  };
+
   return notice.notice_events.map(
     (notice_event) =>
       notice_event.deadline_date === day.format("YYYY-MM-DD") && (
         <div
-          key={"noticedeadline" + notice_event.id}
-          className="row no-gutters event user-select-none text-truncate"
+          key={notice_event.id}
+          className={
+            "row no-gutters event user-select-none text-truncate " +
+            notice_event.css_class_name +
+            (notice_event.end_concluded ? " concluded" : "")
+          }
         >
           <EventButton
             notice_id={notice.id}
@@ -56,9 +71,12 @@ const NoticeEventButton = ({ notice, day }) => {
             title={notice.address}
             day={day.format("YYYY-MM-DD")}
           >
-            {notice_event.identification}
+            <NoticeEventSpan notice_event={notice_event} showVA={true} />
           </EventButton>
-          <CompleteButton href="/notice/conclude/" />
+          <CompleteButton
+            concluded={notice_event.end_concluded}
+            onclick={() => completeTask(notice_event)}
+          />
           <MapButton address={notice.address} />
         </div>
       )

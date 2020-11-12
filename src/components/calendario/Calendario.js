@@ -1,29 +1,49 @@
 import React, { useEffect, useState } from "react";
 import moment from "moment";
 import "moment/locale/pt-br";
+import { useDispatch } from "react-redux";
+import { actionCRUDNotice } from "../../actions/notice/actionNotice";
+import { actionCRUDNoticeEventType } from "../../actions/notice/actionNoticeEventType";
+import { actionCRUDSurvey } from "../../actions/survey/actionSurvey";
+import { actionCRUDSurveyEventType } from "../../actions/survey/actionSurveyEventType";
+import { actionCRUDActivity } from "../../actions/activity/actionActivity";
 
 import "./Calendario.css";
 
 import buildCalendar from "./utils";
-
-import ModalEvent from "./ModalFormEvent/ModalEvent";
 
 import Caption from "./Caption";
 import Day from "./Day";
 
 const Calendario = ({ momentdate }) => {
   const [calendar, setCalendar] = useState([]);
+  const dispatch = useDispatch();
   useEffect(() => {
-    console.log("Calendario");
     moment.locale("pt-br");
+    dispatch(actionCRUDNoticeEventType.read());
+    dispatch(actionCRUDSurveyEventType.read());
+    const params = {
+      start_date: momentdate
+        .clone()
+        .startOf("month")
+        .startOf("week")
+        .format("YYYY-MM-DD"),
+      end_date: momentdate
+        .clone()
+        .endOf("month")
+        .endOf("week")
+        .format("YYYY-MM-DD"),
+    };
+    dispatch(actionCRUDNotice.read(params));
+    dispatch(actionCRUDSurvey.read(params));
+    dispatch(actionCRUDActivity.read(params));
     setCalendar(buildCalendar(momentdate));
-  }, [momentdate]);
+  }, [dispatch, momentdate]);
 
   return (
     <section>
-      <ModalEvent />
       <table id="calendar" className="table table-light table-bordered">
-        <Caption />
+        <Caption momentdate={momentdate} />
         <thead className="thead-dark">
           <tr className="text-center text-uppercase">
             {moment.weekdays().map((d, index) => (
@@ -37,7 +57,11 @@ const Calendario = ({ momentdate }) => {
           {calendar.map((week, weekindex) => (
             <tr key={"week" + weekindex}>
               {week.map((day) => (
-                <Day key={day.format("YYYY-MM-DD")} day={day}>
+                <Day
+                  key={day.format("YYYY-MM-DD")}
+                  day={day}
+                  momentdate={momentdate}
+                >
                   {day.format("D").toString()}
                 </Day>
               ))}

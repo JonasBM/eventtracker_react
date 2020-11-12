@@ -16,6 +16,34 @@ export default function buildCalendar(date) {
   return calendar;
 }
 
+export const filterOnlyInArrayByID = (arrayObject) => {
+  return function (current) {
+    for (let index = 0; index < arrayObject.length; index++) {
+      if (current.id === arrayObject[index].id) {
+        return false;
+      }
+    }
+    return true;
+  };
+};
+
+export const filterNoticebyUnConcluded = () => {
+  return function (notice) {
+    for (let index = 0; index < notice.notice_events.length; index++) {
+      if (!notice.notice_events[index].end_concluded) {
+        return true;
+      }
+    }
+    return false;
+  };
+};
+
+export const filterSurveybyUnConcluded = () => {
+  return function (survey) {
+    return !survey.concluded;
+  };
+};
+
 export const filterNoticebyDate = (stringDate) => {
   return function (notice) {
     if (notice.date === stringDate) {
@@ -115,5 +143,25 @@ export const getNoticeEventType = (notice_event) => {
         notice_event_type.id === notice_event.notice_event_type
     );
     return notice_event_type[0];
+  }
+};
+
+export const getAllNoticeConcluded = (notice) => {
+  for (let index = 0; index < notice.notice_events.length; index++) {
+    if (!notice.notice_events[index].end_concluded) {
+      return false;
+    }
+  }
+  return true;
+};
+
+export const getSurveyEventType = (survey) => {
+  if (survey) {
+    const survey_event_types = store.getState().survey.survey_event_types
+      .survey_event_types;
+    let survey_event_type = survey_event_types.filter(
+      (survey_event_type) => survey_event_type.id === survey.survey_event_type
+    );
+    return survey_event_type[0];
   }
 };

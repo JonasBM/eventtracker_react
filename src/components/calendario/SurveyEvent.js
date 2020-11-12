@@ -1,21 +1,48 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { CompleteButton, MapButton, EventButton } from "./common";
-import { useSelector } from "react-redux";
-import store from "../../store";
-import { openNoticeModal } from "./utils";
+import { useDispatch } from "react-redux";
+import { getSurveyEventType } from "./utils";
+import { actionCRUDSurvey } from "../../actions/survey/actionSurvey";
+
+const SurveyEventSpan = ({ survey }) => {
+  let survey_event_type = getSurveyEventType(survey);
+  if (survey && survey_event_type) {
+    return (
+      <span className="row no-gutters py-1 text-truncate d-inline-block font-weight-bold">
+        {"V. " + survey_event_type.short_name + ": "}
+        {survey.identification !== null && survey.identification}
+      </span>
+    );
+  }
+  return null;
+};
 
 const SurveyEventButton = ({ survey, day }) => {
+  const dispatch = useDispatch();
+  const completeTask = () => {
+    survey.concluded = !survey.concluded;
+    dispatch(actionCRUDSurvey.update(survey));
+  };
   return (
-    <div className="row no-gutters event user-select-none text-truncate">
+    <div
+      className={
+        "row no-gutters event user-select-none text-truncate " +
+        survey.css_class_name +
+        (survey.concluded ? " concluded" : "")
+      }
+    >
       <EventButton
         survey_id={survey.id}
         modalcall="survey"
         title={survey.address}
         day={day.format("YYYY-MM-DD")}
       >
-        {survey.identification}
+        <SurveyEventSpan survey={survey} />
       </EventButton>
-      <CompleteButton href="/survey/conclude/" />
+      <CompleteButton
+        concluded={survey.concluded}
+        onclick={() => completeTask()}
+      />
       <MapButton address={survey.address} />
     </div>
   );

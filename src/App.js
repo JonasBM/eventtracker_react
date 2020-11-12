@@ -23,7 +23,8 @@ import AlertTemplate from "./components/layouts/AlertTemplate";
 // import Calendario from "./components/calendario/Calendario";
 import Calendario from "./components/calendario/";
 import Perfil from "./components/perfil/Perfil";
-import Aconcluir from "./components/aconcluir/Aconcluir";
+import Aconcluir from "./components/aconcluir/";
+import Busca from "./components/busca/";
 
 import Login from "./components/accounts/Login";
 import Logout from "./components/accounts/Logout";
@@ -33,7 +34,7 @@ import "./App.css";
 export const App = () => {
   useEffect(() => {
     store.dispatch(loadUser());
-  });
+  }, []);
 
   // Alert Options
   const alertOptions = {
@@ -50,8 +51,11 @@ export const App = () => {
           <main role="main">
             <Switch>
               <PrivateRoute exact path="/" component={Calendario} />
+              <PrivateRoute exact path="/calendario" component={Calendario} />
               <PrivateRoute exact path="/perfil" component={Perfil} />
               <PrivateRoute exact path="/aconcluir" component={Aconcluir} />
+              <PrivateRoute exact path="/admin" component={Perfil} />
+              <PrivateRoute exact path="/busca" component={Busca} />
               <Route exact path="/login" component={Login} />
               <Route exact path="/logout" component={Logout} />
               <Route exact path="/loading" component={Loading} />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../../actions/actionAuth";
+import { login, logout } from "../../actions/actionAuth";
 import { useInput } from "../../hooks/input-hook";
 import { useHistory } from "react-router-dom";
 
@@ -23,11 +23,11 @@ const Login = () => {
 
   useEffect(() => {
     if (auth.isAuthenticated && !isLoging) {
-      // dispatch(logout()); //loose auth if logged in
+      dispatch(logout());
     } else if (auth.isAuthenticated && isLoging) {
       history.push("/");
     }
-  }, [auth, isLoging, history]);
+  }, [dispatch, auth, isLoging, history]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

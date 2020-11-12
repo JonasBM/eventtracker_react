@@ -30,7 +30,7 @@ const FormSurvey = ({ survey }) => {
     confirm_alert += newLine;
     confirm_alert += "Data: " + moment(survey.date).format("DD/MM/YYYY");
     if (window.confirm(confirm_alert)) {
-      dispatch(actionCRUDSurvey.delete(survey));
+      dispatch(actionCRUDSurvey.delete(survey.id));
       bootstrap.Modal.getInstance(document.getElementById("ModalEvent")).hide();
     }
   };
@@ -42,15 +42,21 @@ const FormSurvey = ({ survey }) => {
   const onSubmit = (values) => {
     let criarnovo = values.criarnovo;
     delete values["criarnovo"];
-    console.log(values);
-    if (values.id !== undefined && confirmSave) {
-      if (values.id !== 0 && !criarnovo) {
-        dispatch(actionCRUDSurvey.update(values));
-      } else {
+    let closeModal = false;
+    if (values.id !== undefined) {
+      if (values.id === 0 || criarnovo) {
         dispatch(actionCRUDSurvey.create(values));
+        closeModal = true;
+      } else {
+        if (confirmSave(values)) {
+          dispatch(actionCRUDSurvey.update(values));
+          closeModal = true;
+        }
       }
     }
-    bootstrap.Modal.getInstance(document.getElementById("ModalEvent")).hide();
+    if (closeModal) {
+      bootstrap.Modal.getInstance(document.getElementById("ModalEvent")).hide();
+    }
   };
 
   return (

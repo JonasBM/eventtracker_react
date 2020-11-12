@@ -1,16 +1,15 @@
 import React, { Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { actionCRUDNotice } from "../../../actions/notice/actionNotice";
-import { Form, Field } from "react-final-form";
+import { Form } from "react-final-form";
 import arrayMutators from "final-form-arrays";
 import { FieldArray } from "react-final-form-arrays";
 import moment from "moment";
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
-import { getNoticeEventType } from "../utils";
+import { getNoticeEventType, filterOnlyInArrayByID } from "../utils";
 import {
   InputFormGroup,
   CheckboxFormGroup,
-  Error,
   required,
 } from "../../common/Forms";
 import CommonModalFooter from "./CommonModalFooter";
@@ -137,15 +136,6 @@ const FormNoticeEvent = ({ fields, name, index, push }) => {
   );
 };
 
-export const arrayRequired = (values) => {
-  console.log(values);
-  if (values && values.length > 0) {
-    return "undefined";
-  } else {
-    return "Campo obrigatório";
-  }
-};
-
 const requiredArray = (value) =>
   value && value.length > 0 ? undefined : "Required";
 
@@ -173,30 +163,55 @@ const FormNotice = ({ notice }) => {
         ")";
     }
     if (window.confirm(confirm_alert)) {
-      console.log("DELETE");
-      dispatch(actionCRUDNotice.delete(notice));
+      dispatch(actionCRUDNotice.delete(notice.id));
       bootstrap.Modal.getInstance(document.getElementById("ModalEvent")).hide();
     }
   };
 
   const confirmSave = (values) => {
-    console.log(values);
-    return true;
+    let removedNoticeEvents = notice.notice_events.filter(
+      filterOnlyInArrayByID(values.notice_events)
+    );
+    if (removedNoticeEvents.length === 0) {
+      return true;
+    }
+    let newLine = "\r\n";
+    let confirm_alert = "Salvando este Auto você estará removendo:";
+    for (let index = 0; index < removedNoticeEvents.length; index++) {
+      confirm_alert += newLine;
+      confirm_alert += "Nº: " + removedNoticeEvents[index].identification;
+      confirm_alert +=
+        " (" +
+        notice_event_types.find(
+          (element) =>
+            element.id === removedNoticeEvents[index].notice_event_type
+        ).name +
+        ")";
+    }
+    confirm_alert += newLine;
+    confirm_alert += "Gostaria de continuar?";
+
+    return window.confirm(confirm_alert);
   };
 
   const onSubmit = (values) => {
     let criarnovo = values.criarnovo;
     delete values["criarnovo"];
-    console.log(values);
-
-    if (values.id !== undefined && confirmSave(values)) {
-      if (values.id !== 0 && !criarnovo) {
-        // dispatch(actionCRUDNotice.update(values));
+    let closeModal = false;
+    if (values.id !== undefined) {
+      if (values.id === 0 || criarnovo) {
+        dispatch(actionCRUDNotice.create(values));
+        closeModal = true;
       } else {
-        // dispatch(actionCRUDNotice.create(values));
+        if (confirmSave(values)) {
+          dispatch(actionCRUDNotice.update(values));
+          closeModal = true;
+        }
       }
     }
-    bootstrap.Modal.getInstance(document.getElementById("ModalEvent")).hide();
+    if (closeModal) {
+      bootstrap.Modal.getInstance(document.getElementById("ModalEvent")).hide();
+    }
   };
 
   return (
@@ -256,7 +271,7 @@ const FormNotice = ({ notice }) => {
               </div>
               <div className="container">
                 <FieldArray name="notice_events" validate={requiredArray}>
-                  {({ fields, meta: { touched, pristine } }) => (
+                  {({ fields, meta: { touched } }) => (
                     <div>
                       {fields.map((name, index) => (
                         <FormNoticeEvent

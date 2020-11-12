@@ -1,9 +1,8 @@
-import React, { Children, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
 import FormNotice from "./FormNotice";
 import FormSurvey from "./FormSurvey";
 import FormActivity from "./FormActivity";
-import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
+import store from "../../../store";
 
 const ModalEventTab = ({ active, name }) => {
   return (
@@ -37,10 +36,6 @@ const ModalEventPanel = ({ name, children }) => {
 };
 
 const ModalEvent = () => {
-  const notices = useSelector((state) => state.notice.notices.notices);
-  const surveys = useSelector((state) => state.survey.surveys.surveys);
-  const activitys = useSelector((state) => state.activity.activitys.activitys);
-
   const [notice, setNotice] = useState();
   const [survey, setSurvey] = useState();
   const [activity, setActivity] = useState();
@@ -52,98 +47,117 @@ const ModalEvent = () => {
     activitytab: true,
   });
 
+  const handleShowModal = (e) => {
+    const notices = store.getState().notice.notices.notices;
+    const surveys = store.getState().survey.surveys.surveys;
+    const activitys = store.getState().activity.activitys.activitys;
+    let notice;
+    if (e.relatedTarget.dataset.notice_id !== "0") {
+      notice = notices.find(
+        (notice) => notice.id.toString() === e.relatedTarget.dataset.notice_id
+      );
+    }
+    if (notice !== undefined) {
+      setNotice(notice);
+    } else {
+      setNotice({
+        id: 0,
+        notice_events: [],
+        date: e.relatedTarget.dataset.day,
+        address: "",
+        description: "",
+      });
+    }
+    let survey;
+    if (e.relatedTarget.dataset.survey_id !== "0") {
+      survey = surveys.find(
+        (survey) => survey.id.toString() === e.relatedTarget.dataset.survey_id
+      );
+    }
+    if (survey !== undefined) {
+      setSurvey(survey);
+    } else {
+      setSurvey({
+        id: 0,
+        date: e.relatedTarget.dataset.day,
+        identification: "",
+        address: "",
+        description: "",
+        concluded: false,
+        survey_event_type: "",
+      });
+    }
+    let activity;
+    if (e.relatedTarget.dataset.activity_id !== "0") {
+      activity = activitys.find(
+        (activity) =>
+          activity.id.toString() === e.relatedTarget.dataset.activity_id
+      );
+    }
+    if (activity !== undefined) {
+      setActivity(activity);
+    } else {
+      setActivity({
+        id: 0,
+        date: e.relatedTarget.dataset.day,
+        description: "",
+      });
+    }
+    if (e.relatedTarget.dataset.modalcall === "notice") {
+      setTabstate({
+        title: "Editar Auto",
+        noticetab: true,
+        surveytab: false,
+        activitytab: false,
+      });
+    }
+    if (e.relatedTarget.dataset.modalcall === "survey") {
+      setTabstate({
+        title: "Editar Vistoria",
+        noticetab: false,
+        surveytab: true,
+        activitytab: false,
+      });
+    }
+    if (e.relatedTarget.dataset.modalcall === "activity") {
+      setTabstate({
+        title: "Editar Atividade",
+        noticetab: false,
+        surveytab: false,
+        activitytab: true,
+      });
+    }
+    if (e.relatedTarget.dataset.modalcall === "none") {
+      setTabstate({
+        title: "Criar",
+        noticetab: true,
+        surveytab: true,
+        activitytab: true,
+      });
+    }
+  };
+
   useEffect(() => {
-    window.addEventListener("show.bs.modal", function (e) {
-      let notice;
-      if (e.relatedTarget.dataset.notice_id !== "0") {
-        notice = notices.find(
-          (notice) => notice.id.toString() === e.relatedTarget.dataset.notice_id
-        );
-      }
-      if (notice !== undefined) {
-        setNotice(notice);
-      } else {
-        setNotice({
-          id: 0,
-          notice_events: [],
-          date: e.relatedTarget.dataset.day,
-          address: "",
-          description: "",
-        });
-      }
-      let survey;
-      if (e.relatedTarget.dataset.survey_id !== "0") {
-        survey = surveys.find(
-          (survey) => survey.id.toString() === e.relatedTarget.dataset.survey_id
-        );
-      }
-      if (survey !== undefined) {
-        setSurvey(survey);
-      } else {
-        setSurvey({
-          id: 0,
-          date: e.relatedTarget.dataset.day,
-          identification: "",
-          address: "",
-          description: "",
-          concluded: false,
-          survey_event_type: "",
-        });
-      }
-      let activity;
-      if (e.relatedTarget.dataset.activity_id !== "0") {
-        activity = activitys.find(
-          (activity) =>
-            activity.id.toString() === e.relatedTarget.dataset.activity_id
-        );
-      }
-      if (activity !== undefined) {
-        setActivity(activity);
-      } else {
-        setActivity({
-          id: 0,
-          date: e.relatedTarget.dataset.day,
-          description: "",
-        });
-      }
-      if (e.relatedTarget.dataset.modalcall === "notice") {
-        document.getElementById("nav-auto-tab").click();
-        setTabstate({
-          title: "Editar Auto",
-          noticetab: true,
-          surveytab: false,
-          activitytab: false,
-        });
-      }
-      if (e.relatedTarget.dataset.modalcall === "survey") {
-        document.getElementById("nav-vistoria-tab").click();
-        setTabstate({
-          title: "Editar Vistoria",
-          noticetab: false,
-          surveytab: true,
-          activitytab: false,
-        });
-      }
-      if (e.relatedTarget.dataset.modalcall === "activity") {
-        document.getElementById("nav-atividade-tab").click();
-        setTabstate({
-          title: "Editar Atividade",
-          noticetab: false,
-          surveytab: false,
-          activitytab: true,
-        });
-      }
-      if (e.relatedTarget.dataset.modalcall === "none") {
-        document.getElementById("nav-auto-tab").click();
-        setTabstate({
-          title: "Criar",
-          noticetab: true,
-          surveytab: true,
-          activitytab: true,
-        });
-      }
-    });
-  }, [notices, surveys, activitys]);
+    if (tabstate.noticetab && !tabstate.surveytab && !tabstate.activitytab) {
+      document.getElementById("nav-auto-tab").click();
+    } else if (
+      !tabstate.noticetab &&
+      tabstate.surveytab &&
+      !tabstate.activitytab
+    ) {
+      document.getElementById("nav-vistoria-tab").click();
+    } else if (
+      !tabstate.noticetab &&
+      !tabstate.surveytab &&
+      tabstate.activitytab
+    ) {
+      document.getElementById("nav-atividade-tab").click();
+    } else {
+      document.getElementById("nav-auto-tab").click();
+    }
+    window.addEventListener("show.bs.modal", handleShowModal);
+    return () => window.removeEventListener("show.bs.modal", handleShowModal);
+  }, [tabstate]);
 
   return (
     <div

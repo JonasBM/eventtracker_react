@@ -1,6 +1,7 @@
 import axios from "axios";
 import { returnErrors } from "./actionMessages";
 import { tokenConfig } from "../actions/actionAuth";
+import { createMessage } from "./actionMessages";
 
 var nomes = [];
 
@@ -31,19 +32,26 @@ export class actionCRUD {
           type: this.types.CREATE,
           payload: res.data,
         });
+        dispatch(createMessage({ CRUDcreate: "Criado com sucesso" }));
       })
       .catch((err) => dispatch(returnErrors(err)));
   };
 
   // READ
-  read = () => (dispatch, getState) => {
+  read = (values) => (dispatch, getState) => {
+    let headerWithValues = Object.assign(
+      {},
+      { params: values },
+      tokenConfig(getState)
+    );
     axios
-      .get(this.url, tokenConfig(getState))
+      .get(this.url, headerWithValues)
       .then((res) => {
         dispatch({
           type: this.types.READ,
           payload: res.data,
         });
+        // console.log("Informações baixadas " + this.types.READ);
       })
       .catch((err) => {
         dispatch(returnErrors(err));
@@ -72,6 +80,7 @@ export class actionCRUD {
           type: this.types.UPDATE,
           payload: res.data,
         });
+        dispatch(createMessage({ CRUDupdate: "Atualizado com sucesso" }));
       })
       .catch((err) => dispatch(returnErrors(err)));
   };
@@ -85,6 +94,7 @@ export class actionCRUD {
           type: this.types.DELETE,
           payload: id,
         });
+        dispatch(createMessage({ CRUDdelete: "Deletado com sucesso" }));
       })
       .catch((err) => dispatch(returnErrors(err)));
   };

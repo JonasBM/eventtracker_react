@@ -1,10 +1,12 @@
 import React from "react";
 import { useSelector } from "react-redux";
-
+import { useHistory } from "react-router-dom";
 import { NavLink } from "react-router-dom";
+import { Form, Field } from "react-final-form";
 
 const Header = () => {
   const auth = useSelector((state) => state.auth);
+  const history = useHistory();
 
   let authButton;
   if (auth.isAuthenticated) {
@@ -28,6 +30,13 @@ const Header = () => {
       </NavLink>
     );
   }
+
+  const onSubmit = (values) => {
+    history.push(
+      "/busca/?search_address=" + encodeURIComponent(values.search_address)
+    );
+    values.search_address = "";
+  };
 
   return (
     <nav className="navbar navbar-dark bg-dark navbar-expand-lg p-2">
@@ -76,18 +85,39 @@ const Header = () => {
                 A Concluir
               </NavLink>
             </li>
+            <li className="nav-item">
+              <NavLink
+                activeClassName="active"
+                className="nav-link"
+                aria-current="page"
+                to="/admin"
+              >
+                Administração
+              </NavLink>
+            </li>
           </ul>
-          <form className="d-flex my-2 my-lg-0 mr-lg-5">
-            <input
-              className="form-control mr-2"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-            />
-            <button className="btn btn-outline-success" type="submit">
-              Search
-            </button>
-          </form>
+          <Form
+            initialValues={""}
+            onSubmit={onSubmit}
+            render={({ handleSubmit }) => (
+              <form
+                onSubmit={handleSubmit}
+                className="d-flex my-2 my-lg-0 mr-lg-5"
+              >
+                <Field
+                  component="input"
+                  type="search"
+                  className="form-control mr-2"
+                  name="search_address"
+                  placeholder="Search"
+                  aria-label="Search"
+                />
+                <button className="btn btn-outline-success" type="submit">
+                  Search
+                </button>
+              </form>
+            )}
+          />
           {authButton}
         </div>
       </div>

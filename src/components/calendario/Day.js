@@ -10,7 +10,7 @@ import {
   filterActivityByDate,
 } from "./utils";
 
-const Day = ({ day }) => {
+const Day = ({ day, momentdate }) => {
   const notices = useSelector((state) =>
     state.notice.notices.notices.filter(
       filterNoticebyDate(day.format("YYYY-MM-DD"))
@@ -28,11 +28,26 @@ const Day = ({ day }) => {
       filterActivityByDate(day.format("YYYY-MM-DD"))
     )
   );
+
+  if (!momentdate.isSame(day, "month")) {
+    return (
+      <td id={day.format("YYYY-MM-DD")} className="opacity-4">
+        <div className="text-right pb-1">
+          <button className="btn btn-circle btn-secondary disabled">
+            {day.format("DD").toString()}
+          </button>
+        </div>
+      </td>
+    );
+  }
+
   return (
-    <td className="">
+    <td id={day.format("YYYY-MM-DD")} className="">
       <div className="text-right pb-1">
         <button
-          className="btn btn-primary btn-circle"
+          className={
+            "btn btn-circle" + (activity ? " btn-primary" : " btn-secondary")
+          }
           data-toggle="modal"
           data-target="#ModalEvent"
           data-modalcall="none"

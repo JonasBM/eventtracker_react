@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
 import { actionCRUDActivity } from "../../../actions/activity/actionActivity";
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
@@ -16,7 +16,7 @@ const FormActivity = ({ activity }) => {
     confirm_alert += newLine;
     confirm_alert += "Data: " + moment(activity.date).format("DD/MM/YYYY");
     if (window.confirm(confirm_alert)) {
-      dispatch(actionCRUDActivity.delete(activity));
+      dispatch(actionCRUDActivity.delete(activity.id));
       bootstrap.Modal.getInstance(document.getElementById("ModalEvent")).hide();
     }
   };
@@ -28,15 +28,21 @@ const FormActivity = ({ activity }) => {
   const onSubmit = (values) => {
     let criarnovo = values.criarnovo;
     delete values["criarnovo"];
-    console.log(values);
-    if (values.id !== undefined && confirmSave) {
-      if (values.id !== 0 && !criarnovo) {
-        dispatch(actionCRUDActivity.update(values));
-      } else {
+    let closeModal = false;
+    if (values.id !== undefined) {
+      if (values.id === 0 || criarnovo) {
         dispatch(actionCRUDActivity.create(values));
+        closeModal = true;
+      } else {
+        if (confirmSave(values)) {
+          dispatch(actionCRUDActivity.update(values));
+          closeModal = true;
+        }
       }
     }
-    bootstrap.Modal.getInstance(document.getElementById("ModalEvent")).hide();
+    if (closeModal) {
+      bootstrap.Modal.getInstance(document.getElementById("ModalEvent")).hide();
+    }
   };
 
   return (

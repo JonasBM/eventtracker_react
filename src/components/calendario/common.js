@@ -1,11 +1,12 @@
 import React from "react";
 import moment from "moment";
 
-const IconButton = ({ href, icon }) => {
+const IconButton = ({ icon, href = null, onclick = null }) => {
   return (
     <div className="col col-auto p-0 d-flex flex-column justify-content-center">
       <a
         href={href}
+        onClick={onclick}
         target="_blank"
         rel="noreferrer noopener"
         className="btn btn-secondary d-flex justify-content-center align-content-between p-1 mr-1 float-right"
@@ -18,8 +19,13 @@ const IconButton = ({ href, icon }) => {
   );
 };
 
-export const CompleteButton = ({ href }) => {
-  return <IconButton href={href} icon="fa-check-square-o" />;
+export const CompleteButton = ({ concluded, onclick }) => {
+  return (
+    <IconButton
+      icon={concluded ? "fa-check-square-o" : "fa-square-o"}
+      onclick={onclick}
+    />
+  );
 };
 
 export const MapButton = ({ address }) => {
