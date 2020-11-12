@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Provider } from "react-redux";
 import store from "./store";
+import "./loadInterceptor";
 // import { loadUser } from "./actions/auth";
 // import AlertTemplate from "react-alert-template-basic";
 import { Provider as AlertProvider } from "react-alert";
@@ -51,6 +52,7 @@ export const App = () => {
           <main role="main">
             <Switch>
               <PrivateRoute exact path="/" component={Calendario} />
+              <PrivateRoute exact path="/tarefas" component={Calendario} />
               <PrivateRoute exact path="/calendario" component={Calendario} />
               <PrivateRoute exact path="/perfil" component={Perfil} />
               <PrivateRoute exact path="/aconcluir" component={Aconcluir} />

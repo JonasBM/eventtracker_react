@@ -80,6 +80,16 @@ const Header = () => {
                 activeClassName="active"
                 className="nav-link"
                 aria-current="page"
+                to="/calendario"
+              >
+                Tarefas do Dia
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink
+                activeClassName="active"
+                className="nav-link"
+                aria-current="page"
                 to="/aconcluir"
               >
                 A Concluir

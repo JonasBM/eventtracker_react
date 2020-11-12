@@ -2,7 +2,7 @@ import { actionCRUD } from "../actionCRUD";
 import axios from "axios";
 import { returnErrors, createMessage } from "../actionMessages";
 import { tokenConfig } from "../actionAuth";
-import { login, logoutAll } from "../actionAuth";
+import { logoutAll } from "../actionAuth";
 
 export const actionCRUDUser = new actionCRUD(
   "user",
