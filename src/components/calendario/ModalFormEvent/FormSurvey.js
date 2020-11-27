@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { actionCRUDSurvey } from "../../../actions/survey/actionSurvey";
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
@@ -7,16 +7,31 @@ import {
   InputFormGroup,
   CheckboxFormGroup,
   SelectFormGroup,
+  ToogleFieldSet,
   required,
 } from "../../common/Forms";
-import CommonModalFooter from "./CommonModalFooter";
+import CommonModalFooter from "../../common/CommonModalFooter";
 import moment from "moment";
+import AutocompleteImovel from "../../common/AutocompleteImovel";
 
 const FormSurvey = ({ survey }) => {
   const dispatch = useDispatch();
   const survey_event_types = useSelector(
     (state) => state.survey.survey_event_types.survey_event_types
   );
+  const users = useSelector((state) => state.user.users.users);
+  const authuser = useSelector((state) => state.auth.user);
+  const [isOwner, setIsOwner] = useState(false);
+
+  useEffect(() => {
+    if (authuser !== undefined && survey !== undefined) {
+      setIsOwner(authuser.id === survey.owner);
+    } else if (authuser === undefined) {
+      setIsOwner(false);
+    } else {
+      setIsOwner(true);
+    }
+  }, [authuser, survey]);
 
   const onDelete = () => {
     let newLine = "\r\n";
@@ -62,61 +77,117 @@ const FormSurvey = ({ survey }) => {
   return (
     <Form
       initialValues={survey}
+      mutators={{
+        setValue: ([field, value], state, { changeValue }) => {
+          changeValue(state, field, () => value);
+        },
+      }}
       onSubmit={onSubmit}
-      render={({ handleSubmit }) => (
-        <form onSubmit={handleSubmit} className="needs-validation" noValidate>
-          <div className="modal-body container">
-            <div className="container">
-              <InputFormGroup
-                name="date"
-                label="data:"
-                type="date"
-                validate={required}
-              />
-              <InputFormGroup
-                name="address"
-                label="endereço:"
-                maxLength="255"
-              />
-              <InputFormGroup
-                name="description"
-                label="descrição:"
-                component="textarea"
-                cols="40"
-                rows="3"
-              />
-              <InputFormGroup
-                name="identification"
-                label="identificação:"
-                maxLength="255"
-                validate={required}
-              />
-              <SelectFormGroup
-                name="survey_event_type"
-                label="tipo:"
-                validate={required}
-              >
-                <option value="">---------</option>
-                {survey_event_types.map((survey_event_type, index) => (
-                  <option
-                    key={survey_event_type.id}
-                    value={survey_event_type.id}
-                  >
-                    {survey_event_type.order} - {survey_event_type.name}
-                  </option>
-                ))}
-              </SelectFormGroup>
-              <CheckboxFormGroup name="concluded" label="concluído" />
+      render={({ handleSubmit, form }) => {
+        return (
+          <form onSubmit={handleSubmit} className="needs-validation" noValidate>
+            <div className="modal-body container">
+              <div className="container">
+                <div className="form-inline">
+                  <ToogleFieldSet isDisabled={true}>
+                    <SelectFormGroup
+                      name="owner"
+                      label="AFM:"
+                      validate={required}
+                      className="m-1"
+                      classNameDiv="mx-1"
+                    >
+                      <option value="">---------</option>
+                      {users.map((user, index) => (
+                        <option key={user.id} value={user.id}>
+                          {user.first_name} {user.last_name}
+                        </option>
+                      ))}
+                    </SelectFormGroup>
+                  </ToogleFieldSet>
+                  <ToogleFieldSet isDisabled={!isOwner}>
+                    <InputFormGroup
+                      name="date"
+                      label="Data:"
+                      type="date"
+                      className="m-1"
+                      classNameDiv="mx-1"
+                      validate={required}
+                    />
+                  </ToogleFieldSet>
+                </div>
+                <AutocompleteImovel
+                  name="imovel"
+                  name_string="imovel.name_string"
+                  label="Imóvel:"
+                  form={form}
+                  disabled={!isOwner}
+                />
+                <ToogleFieldSet isDisabled={!isOwner}>
+                  <InputFormGroup
+                    name="address"
+                    label="Endereço:"
+                    maxLength="255"
+                  />
+                  <InputFormGroup
+                    name="description"
+                    label="Descrição:"
+                    component="textarea"
+                    cols="40"
+                    rows="3"
+                  />
+                  <div className="d-flex flex-row">
+                    <div className="form-inline">
+                      <InputFormGroup
+                        name="identification"
+                        label="Identificação:"
+                        maxLength="255"
+                        className="m-1"
+                        classNameDiv="mx-1"
+                        validate={required}
+                      />
+                      <SelectFormGroup
+                        name="survey_event_type"
+                        label="Tipo:"
+                        className="m-1"
+                        classNameDiv="mx-1"
+                        validate={required}
+                      >
+                        <option value="">---------</option>
+                        {survey_event_types.map((survey_event_type, index) => (
+                          <option
+                            key={survey_event_type.id}
+                            value={survey_event_type.id}
+                          >
+                            {survey_event_type.order} - {survey_event_type.name}
+                          </option>
+                        ))}
+                      </SelectFormGroup>
+                      <CheckboxFormGroup
+                        name="concluded"
+                        label="Concluído"
+                        className="m-1"
+                        classNameDiv="mx-1"
+                      />
+                    </div>
+                  </div>
+                </ToogleFieldSet>
+              </div>
             </div>
-          </div>
-          <CommonModalFooter
-            isEdit={
-              survey !== undefined ? (survey.id !== 0 ? true : false) : false
-            }
-            onDelete={onDelete}
-          />
-        </form>
-      )}
+            <CommonModalFooter
+              isDisabled={!isOwner}
+              canDelete={
+                survey !== undefined ? (survey.id !== 0 ? true : false) : false
+              }
+              canCopy={
+                survey !== undefined ? (survey.id !== 0 ? true : false) : false
+              }
+              onDelete={onDelete}
+              form={form}
+            />
+          </form>
+        );
+      }}
     />
   );
 };

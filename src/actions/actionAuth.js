@@ -8,6 +8,7 @@ import {
   USER_LOADING,
   USER_LOADED,
   AUTH_ERROR,
+  USER_NEW,
 } from "./actionTypes";
 
 // CHECK TOKEN & LOAD USER
@@ -17,15 +18,15 @@ export const loadUser = () => (dispatch, getState) => {
   if (tokenHeader != null) {
     dispatch({ type: USER_LOADING });
     axios
-      .get(process.env.REACT_APP_API_URL + "api/user/", tokenHeader)
+      .get(process.env.REACT_APP_API_URL + "api/auth/login/", tokenHeader)
       .then((res) => {
         dispatch({
           type: USER_LOADED,
-          payload: res.data[0].id,
+          payload: res.data,
         });
         dispatch({
-          type: "READ_USER",
-          payload: res.data,
+          type: USER_NEW,
+          payload: res.data.user,
         });
       })
       .catch((err) => {

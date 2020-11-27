@@ -16,6 +16,15 @@ export default function (state = initialState, action) {
         ...state,
         survey_event_types: action.payload,
       };
+    case actionCRUDSurveyEventType.types.UPDATE:
+      return {
+        ...state,
+        survey_event_types: state.survey_event_types.map((survey_event_type) =>
+          survey_event_type.id === action.payload.id
+            ? action.payload
+            : survey_event_type
+        ),
+      };
     case actionCRUDSurveyEventType.types.DELETE:
       return {
         ...state,

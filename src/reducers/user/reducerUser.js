@@ -1,7 +1,9 @@
-import { actionCRUDUser } from "../../actions/user/actionUser.js";
+import { actionCRUDUser } from "../../actions/user/actionUser";
+import { USER_NEW } from "../../actions/actionTypes";
 
 const initialState = {
   users: [],
+  current: {},
 };
 
 export default function (state = initialState, action) {
@@ -27,6 +29,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         users: state.users.filter((user) => user.id !== action.payload),
+      };
+    case USER_NEW:
+      return {
+        ...state,
+        current: action.payload,
       };
     default:
       return state;

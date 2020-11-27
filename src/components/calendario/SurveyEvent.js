@@ -1,6 +1,11 @@
-import React from "react";
-import { CompleteButton, MapButton, EventButton } from "./common";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
+import {
+  CompleteButton,
+  MapButton,
+  EventButton,
+  GeoItajaiButton,
+} from "./common";
+import { useDispatch, useSelector } from "react-redux";
 import { getSurveyEventType } from "./utils";
 import { actionCRUDSurvey } from "../../actions/survey/actionSurvey";
 
@@ -18,32 +23,64 @@ const SurveyEventSpan = ({ survey }) => {
 };
 
 const SurveyEventButton = ({ survey, day }) => {
+  let survey_event_type = getSurveyEventType(survey);
   const dispatch = useDispatch();
+  const authuser = useSelector((state) => state.auth.user);
+  const [isOwner, setIsOwner] = useState(false);
+
+  useEffect(() => {
+    if (authuser !== undefined && survey !== undefined) {
+      setIsOwner(authuser.id === survey.owner);
+    } else if (authuser === undefined) {
+      setIsOwner(false);
+    } else {
+      setIsOwner(true);
+    }
+  }, [authuser, survey]);
+
   const completeTask = () => {
     survey.concluded = !survey.concluded;
     dispatch(actionCRUDSurvey.update(survey));
   };
   return (
     <div
+      style={{
+        backgroundColor: survey_event_type
+          ? survey_event_type.css_color
+          : "green",
+      }}
       className={
         "row no-gutters event user-select-none text-truncate " +
-        survey.css_class_name +
         (survey.concluded ? " concluded" : "")
       }
     >
       <EventButton
         survey_id={survey.id}
         modalcall="survey"
-        title={survey.address}
+        title={survey.imovel ? survey.imovel.name_string : ""}
         day={day.format("YYYY-MM-DD")}
       >
         <SurveyEventSpan survey={survey} />
       </EventButton>
       <CompleteButton
         concluded={survey.concluded}
-        onclick={() => completeTask()}
+        onclick={isOwner ? () => completeTask() : () => {}}
       />
-      <MapButton address={survey.address} />
+      <GeoItajaiButton
+        codigo={survey.imovel ? survey.imovel.lote.codigo : ""}
+      />
+      <MapButton
+        address={
+          survey.imovel
+            ? survey.imovel.lote.logradouro +
+              "," +
+              survey.imovel.lote.numero +
+              "-" +
+              survey.imovel.lote.bairro +
+              "-itajaí"
+            : ""
+        }
+      />
     </div>
   );
 };

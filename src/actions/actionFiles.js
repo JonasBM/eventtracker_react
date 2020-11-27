@@ -1,6 +1,7 @@
 import axios from "axios";
 import { returnErrors } from "./actionMessages";
 import { tokenConfig } from "./actionAuth";
+import store from "../store";
 
 export const getReportPDF = (values) => (dispatch, getState) => {
   let headerWithValues = Object.assign(
@@ -8,7 +9,21 @@ export const getReportPDF = (values) => (dispatch, getState) => {
     { responseType: "blob", params: values },
     tokenConfig(getState)
   );
-  let fileName = "relatório_mensal-" + values.month + ".pdf";
+  let user = store
+    .getState()
+    .user.users.users.find(
+      (user) => user.id.toString() === values.user_id.toString()
+    );
+
+  let user_name = "";
+  if (user) {
+    user_name = user.first_name;
+    if (user.last_name) {
+      user_name += " " + user.last_name;
+    }
+    user_name += "-";
+  }
+  let fileName = "relatório_mensal-" + user_name + values.month + ".pdf";
   try {
     axios
       .get(process.env.REACT_APP_API_URL + "api/reportpdf/", headerWithValues)
@@ -17,7 +32,6 @@ export const getReportPDF = (values) => (dispatch, getState) => {
         const fileURL = URL.createObjectURL(file);
         var fileLink = document.createElement("a");
         fileLink.href = fileURL;
-        //fileLink.target = "_blank";
         fileLink.download = fileName;
         fileLink.click();
         URL.revokeObjectURL(fileURL);
@@ -36,7 +50,22 @@ export const getSheetCSV = (values) => (dispatch, getState) => {
     { responseType: "blob", params: values },
     tokenConfig(getState)
   );
-  let fileName = "planilha_mensal-" + values.month + ".csv";
+
+  let user = store
+    .getState()
+    .user.users.users.find(
+      (user) => user.id.toString() === values.user_id.toString()
+    );
+
+  let user_name = "";
+  if (user) {
+    user_name = user.first_name;
+    if (user.last_name) {
+      user_name += " " + user.last_name;
+    }
+    user_name += "-";
+  }
+  let fileName = "planilha_mensal-" + user_name + values.month + ".csv";
   try {
     axios
       .get(process.env.REACT_APP_API_URL + "api/sheetcsv/", headerWithValues)

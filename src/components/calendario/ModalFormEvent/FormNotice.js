@@ -1,6 +1,9 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { actionCRUDNotice } from "../../../actions/notice/actionNotice";
+import {
+  actionCRUDNotice,
+  getLatest,
+} from "../../../actions/notice/actionNotice";
 import { Form } from "react-final-form";
 import arrayMutators from "final-form-arrays";
 import { FieldArray } from "react-final-form-arrays";
@@ -10,16 +13,19 @@ import { getNoticeEventType, filterOnlyInArrayByID } from "../utils";
 import {
   InputFormGroup,
   CheckboxFormGroup,
+  SelectFormGroup,
+  ToogleFieldSet,
   required,
 } from "../../common/Forms";
-import CommonModalFooter from "./CommonModalFooter";
+import CommonModalFooter from "../../common/CommonModalFooter";
+import AutocompleteImovel from "../../common/AutocompleteImovel";
 
 const FormNoticeFine = ({ fields, name, index }) => {
   return (
     <div key={name} className="row px-4 py-1 form-inline">
       <InputFormGroup
         name={name + ".identification"}
-        label="nº:"
+        label="Nº:"
         size="10"
         maxLength="255"
         placeholder="identificação"
@@ -27,7 +33,7 @@ const FormNoticeFine = ({ fields, name, index }) => {
       />
       <InputFormGroup
         name={name + ".date"}
-        label="data:"
+        label="Data:"
         type="date"
         className="mx-1"
       />
@@ -47,7 +53,7 @@ const FormNoticeEvent = ({ fields, name, index, push }) => {
     <div>
       <hr className="m-1" />
       <div className="row text-center">
-        <span className="col text-uppercase w-100 font-weight-bold text-nowrap">
+        <span className="col text-uppercase w-100 font-weight-bold text-nowrap inline-block">
           {getNoticeEventType(fields.value[index]).name}
         </span>
         <button
@@ -58,80 +64,104 @@ const FormNoticeEvent = ({ fields, name, index, push }) => {
           <i className="fa fa-trash fa-lg"></i>
         </button>
       </div>
-      <div className="row">
-        <div className="row pr-1 pb-1 w-100">
-          <div className="col form-inline">
-            <InputFormGroup
-              name={name + ".identification"}
-              label="nº:"
-              type="text"
-              size="15"
-              maxLength="255"
-              placeholder="identificação"
-              className="mx-1"
-              validate={fields.value[index].notice_event_type !== 3 && required}
-            />
-            {fields.value[index].notice_event_type !== 3 && (
-              <CheckboxFormGroup
-                name={name + ".end_concluded"}
-                label="concluído"
-              />
-            )}
-          </div>
-        </div>
-        {fields.value[index].notice_event_type !== 3 && (
-          <div className="row pr-1 pb-1 w-100">
-            <div className="col form-inline">
+      {getNoticeEventType(fields.value[index]) !== undefined && (
+        <div className="row">
+          <div className="d-flex flex-row">
+            <div className="form-inline">
               <InputFormGroup
-                name={name + ".deadline"}
-                label="prazo (dias):"
-                type="number"
-                min="0"
-                max="999"
-                placeholder="prazo"
+                name={name + "date"}
+                label="Data:"
+                type="date"
                 className="mx-1"
+                classNameDiv="m-1"
                 validate={required}
               />
-              <CheckboxFormGroup
-                name={name + ".deadline_working_days"}
-                label="apenas dias úteis"
+              <InputFormGroup
+                name={name + ".identification"}
+                label="Nº:"
+                type="text"
+                size="15"
+                maxLength="255"
+                placeholder="identificação"
+                className="mx-1"
+                classNameDiv="m-1"
               />
+              {getNoticeEventType(fields.value[index]).show_report_number && (
+                <InputFormGroup
+                  name={name + "report_number"}
+                  label="RF:"
+                  type="text"
+                  size="10"
+                  maxLength="255"
+                  className="mx-1"
+                  classNameDiv="m-1"
+                />
+              )}
+              {getNoticeEventType(fields.value[index]).show_concluded && (
+                <CheckboxFormGroup
+                  name={name + ".concluded"}
+                  label="Concluído"
+                  className="mx-1"
+                  classNameDiv="m-1"
+                />
+              )}
+              {getNoticeEventType(fields.value[index]).show_deadline && (
+                <div className="form-inline">
+                  <InputFormGroup
+                    name={name + ".deadline"}
+                    label="Prazo (dias):"
+                    type="number"
+                    min="0"
+                    max="999"
+                    placeholder="prazo"
+                    className="mx-1"
+                    classNameDiv="m-1"
+                    validate={required}
+                  />
+                  <CheckboxFormGroup
+                    name={name + ".deadline_working_days"}
+                    label="Apenas dias úteis"
+                    className="mx-1"
+                    classNameDiv="m-1"
+                  />
+                </div>
+              )}
             </div>
           </div>
-        )}
-        {fields.value[index].notice_event_type === 2 && (
-          <Fragment>
-            <div className="row text-left m-1">
-              <span className="col w-100">Multas:</span>
-              <button
-                type="button"
-                className="btn btn-outline-primary btn-sm"
-                onClick={() =>
-                  push(name + ".notice_fines", {
-                    date: moment().format("YYYY-MM-DD"),
-                  })
-                }
-              >
-                Adicionar multa
-              </button>
-            </div>
-            <div className="row pr-1 pb-1 w-100 justify-content-center">
-              <FieldArray name={name + ".notice_fines"}>
-                {({ fields }) =>
-                  fields.map((name, index) => (
-                    <FormNoticeFine
-                      key={name}
-                      fields={fields}
-                      name={name}
-                      index={index}
-                    />
-                  ))
-                }
-              </FieldArray>
-            </div>
-          </Fragment>
-        )}
-      </div>
+          {getNoticeEventType(fields.value[index]).show_fine && (
+            <Fragment>
+              <div className="row text-left m-1">
+                <span className="col-lg w-100">Multas:</span>
+                <button
+                  type="button"
+                  className="btn btn-outline-primary btn-sm"
+                  onClick={() =>
+                    push(name + ".notice_fines", {
+                      date: moment().format("YYYY-MM-DD"),
+                    })
+                  }
+                >
+                  Adicionar multa
+                </button>
+              </div>
+              <div className="row pr-1 pb-1 w-100 justify-content-center">
+                <FieldArray name={name + ".notice_fines"}>
+                  {({ fields }) =>
+                    fields.map((name, index) => (
+                      <FormNoticeFine
+                        key={name}
+                        fields={fields}
+                        name={name}
+                        index={index}
+                      />
+                    ))
+                  }
+                </FieldArray>
+              </div>
+            </Fragment>
+          )}
+        </div>
+      )}
     </div>
   );
 };
@@ -139,11 +169,24 @@ const FormNoticeEvent = ({ fields, name, index, push }) => {
 const requiredArray = (value) =>
   value && value.length > 0 ? undefined : "Required";
 
-const FormNotice = ({ notice }) => {
+const FormNotice = ({ notice, day }) => {
   const dispatch = useDispatch();
   const notice_event_types = useSelector(
     (state) => state.notice.notice_event_types.notice_event_types
   );
+  const users = useSelector((state) => state.user.users.users);
+  const authuser = useSelector((state) => state.auth.user);
+  const [isOwner, setIsOwner] = useState(false);
+
+  useEffect(() => {
+    if (authuser !== undefined && notice !== undefined) {
+      setIsOwner(authuser.id === notice.owner);
+    } else if (authuser === undefined) {
+      setIsOwner(false);
+    } else {
+      setIsOwner(true);
+    }
+  }, [authuser, notice]);
 
   const onDelete = () => {
     let newLine = "\r\n";
@@ -220,85 +263,132 @@ const FormNotice = ({ notice }) => {
       onSubmit={onSubmit}
       mutators={{
         ...arrayMutators,
+        setValue: ([field, value], state, { changeValue }) => {
+          changeValue(state, field, () => value);
+        },
       }}
       render={({
         handleSubmit,
         form: {
           mutators: { push },
         },
+        form,
       }) => (
         <form onSubmit={handleSubmit} className="needs-validation" noValidate>
           <div className="modal-body container">
             <div className="container">
-              <InputFormGroup
-                name="date"
-                label="data:"
-                type="date"
-                validate={required}
-              />
-              <InputFormGroup
-                name="address"
-                label="endereço:"
-                maxLength="255"
-              />
-              <InputFormGroup
-                name="description"
-                label="descrição:"
-                component="textarea"
-                cols="40"
-                rows="3"
-              />
-              Adicionar:
-              <div className="text-center pt-1">
-                {notice_event_types.map((notice_event_type, index) => (
-                  <button
-                    key={index}
-                    type="button"
-                    className="btn btn-outline-primary btn-sm mx-1"
-                    onClick={() =>
-                      push("notice_events", {
-                        deadline: notice_event_type.default_deadline,
-                        deadline_working_days:
-                          notice_event_type.default_deadline_working_days,
-                        end_concluded: notice_event_type.default_end_concluded,
-                        notice_event_type: notice_event_type.id,
-                      })
-                    }
+              <ToogleFieldSet isDisabled={true}>
+                <div className="row no-gutters form-inline">
+                  <SelectFormGroup
+                    name="owner"
+                    label="AFM:"
+                    validate={required}
+                    className="mx-1"
                   >
-                    {notice_event_type.name}
+                    <option value="">---------</option>
+                    {users.map((user, index) => (
+                      <option key={user.id} value={user.id}>
+                        {user.first_name} {user.last_name}
+                      </option>
+                    ))}
+                  </SelectFormGroup>
+                </div>
+              </ToogleFieldSet>
+              <AutocompleteImovel
+                name="imovel"
+                name_string="imovel.name_string"
+                label="Imóvel:"
+                form={form}
+                disabled={!isOwner}
+              />
+              {form &&
+                notice &&
+                notice.id === 0 &&
+                form.getFieldState("imovel") !== undefined &&
+                form.getFieldState("imovel").value && (
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-outline-primary"
+                    onClick={() => {
+                      dispatch(
+                        getLatest(form.getFieldState("imovel").value.id)
+                      );
+                    }}
+                  >
+                    Carregar Autos passados deste Imóvel
                   </button>
-                ))}
-              </div>
-              <div className="container">
-                <FieldArray name="notice_events" validate={requiredArray}>
-                  {({ fields, meta: { touched } }) => (
-                    <div>
-                      {fields.map((name, index) => (
-                        <FormNoticeEvent
-                          key={name}
-                          fields={fields}
-                          name={name}
-                          index={index}
-                          push={push}
-                        />
-                      ))}
-
-                      {fields.length === 0 && touched ? (
-                        <div className="invalid-feedback d-block">
-                          É necessario adicionar ao menos um Auto ou VA
-                        </div>
-                      ) : null}
-                    </div>
-                  )}
-                </FieldArray>
-              </div>
+                )}
+              <ToogleFieldSet isDisabled={!isOwner}>
+                <InputFormGroup
+                  name="address"
+                  label="Endereço:"
+                  maxLength="255"
+                />
+                <InputFormGroup
+                  name="description"
+                  label="Descrição:"
+                  component="textarea"
+                  cols="40"
+                  rows="3"
+                />
+                <div className="row">
+                  <div className="col-auto">Adicionar:</div>
+                  <div className="col text-left">
+                    {notice_event_types.map((notice_event_type, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        className="btn btn-outline-primary btn-sm m-1"
+                        onClick={() =>
+                          push("notice_events", {
+                            date: day.format("YYYY-MM-DD"),
+                            deadline: notice_event_type.default_deadline,
+                            deadline_working_days:
+                              notice_event_type.default_deadline_working_days,
+                            concluded: notice_event_type.default_concluded,
+                            notice_event_type: notice_event_type.id,
+                          })
+                        }
+                      >
+                        {notice_event_type.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="container">
+                  <FieldArray name="notice_events" validate={requiredArray}>
+                    {({ fields, meta: { touched } }) => (
+                      <div>
+                        {fields.map((name, index) => (
+                          <FormNoticeEvent
+                            key={name}
+                            fields={fields}
+                            name={name}
+                            index={index}
+                            push={push}
+                          />
+                        ))}
+                        {fields.length === 0 && touched ? (
+                          <div className="invalid-feedback d-block">
+                            É necessario adicionar ao menos um Auto ou VA
+                          </div>
+                        ) : null}
+                      </div>
+                    )}
+                  </FieldArray>
+                </div>
+              </ToogleFieldSet>
             </div>
           </div>
           <CommonModalFooter
-            isEdit={
+            canDelete={
+              notice !== undefined ? (notice.id !== 0 ? true : false) : false
+            }
+            canCopy={
               notice !== undefined ? (notice.id !== 0 ? true : false) : false
             }
             onDelete={onDelete}
+            form={form}
           />
         </form>
       )}

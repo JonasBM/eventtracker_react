@@ -3,6 +3,7 @@ import FormNotice from "./FormNotice";
 import FormSurvey from "./FormSurvey";
 import FormActivity from "./FormActivity";
 import store from "../../../store";
+import moment from "moment";
 
 const ModalEventTab = ({ active, name }) => {
   return (
@@ -35,7 +36,9 @@ const ModalEventPanel = ({ name, children }) => {
   );
 };
 
-const ModalEvent = () => {
+export default function () {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [notice, setNotice] = useState();
   const [survey, setSurvey] = useState();
   const [activity, setActivity] = useState();
@@ -47,10 +50,17 @@ const ModalEvent = () => {
     activitytab: true,
   });
 
+  const [date, setDate] = useState();
+
   const handleShowModal = (e) => {
+    const currentUser = store.getState().user.users.current;
+
     const notices = store.getState().notice.notices.notices;
     const surveys = store.getState().survey.surveys.surveys;
     const activitys = store.getState().activity.activitys.activitys;
+
+    setDate(moment(e.relatedTarget.dataset.day));
+
     let notice;
     if (e.relatedTarget.dataset.notice_id !== "0") {
       notice = notices.find(
@@ -62,6 +72,7 @@ const ModalEvent = () => {
     } else {
       setNotice({
         id: 0,
+        owner: currentUser.id,
         notice_events: [],
         date: e.relatedTarget.dataset.day,
         address: "",
@@ -79,6 +90,9 @@ const ModalEvent = () => {
     } else {
       setSurvey({
         id: 0,
+        imovel: "",
+        imovel_id: "",
+        owner: currentUser.id,
         date: e.relatedTarget.dataset.day,
         identification: "",
         address: "",
@@ -99,6 +113,7 @@ const ModalEvent = () => {
     } else {
       setActivity({
         id: 0,
+        owner: currentUser.id,
         date: e.relatedTarget.dataset.day,
         description: "",
       });
@@ -135,6 +150,11 @@ const ModalEvent = () => {
         activitytab: true,
       });
     }
+    setIsModalOpen(true);
+  };
+
+  const handleHiddenModal = (e) => {
+    setIsModalOpen(false);
   };
 
   useEffect(() => {
@@ -156,7 +176,11 @@ const ModalEvent = () => {
       document.getElementById("nav-auto-tab").click();
     }
     window.addEventListener("show.bs.modal", handleShowModal);
-    return () => window.removeEventListener("show.bs.modal", handleShowModal);
+    window.addEventListener("hidden.bs.modal", handleHiddenModal);
+    return () => {
+      window.removeEventListener("show.bs.modal", handleShowModal);
+      window.removeEventListener("hidden.bs.modal", handleHiddenModal);
+    };
   }, [tabstate]);
 
   return (
@@ -166,8 +190,9 @@ const ModalEvent = () => {
       tabIndex="-1"
       role="dialog"
       aria-hidden="true"
+      data-backdrop="static"
     >
-      <div className="modal-dialog" role="document">
+      <div className="modal-dialog modal-lg" role="document">
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title font-weight-bold" id="id_modal-header">
@@ -195,19 +220,29 @@ const ModalEvent = () => {
           </nav>
           <div className="tab-content" id="nav-tabContent">
             <ModalEventPanel name="auto">
-              <FormNotice notice={notice} />
+              <FormNotice
+                notice={notice}
+                day={date}
+                isModalOpen={isModalOpen}
+              />
             </ModalEventPanel>
             <ModalEventPanel name="vistoria">
-              <FormSurvey survey={survey} />
+              <FormSurvey
+                survey={survey}
+                day={date}
+                isModalOpen={isModalOpen}
+              />
             </ModalEventPanel>
             <ModalEventPanel name="atividade">
-              <FormActivity activity={activity} />
+              <FormActivity
+                activity={activity}
+                day={date}
+                isModalOpen={isModalOpen}
+              />
             </ModalEventPanel>
           </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default ModalEvent;
+}

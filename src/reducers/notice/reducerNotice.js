@@ -1,3 +1,4 @@
+import { NOTICE_GETLATEST } from "../../actions/actionTypes.js";
 import { actionCRUDNotice } from "../../actions/notice/actionNotice.js";
 
 const initialState = {
@@ -28,6 +29,16 @@ export default function (state = initialState, action) {
         ...state,
         notices: state.notices.filter((notice) => notice.id !== action.payload),
       };
+    case NOTICE_GETLATEST:
+      if (action.payload.imovel_id !== null) {
+        if (!state.notices.find((notice) => notice.id === action.payload.id)) {
+          return {
+            ...state,
+            notices: [...state.notices, action.payload],
+          };
+        }
+      }
+      return state;
     default:
       return state;
   }

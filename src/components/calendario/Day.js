@@ -1,33 +1,63 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import "./Day.css";
-import NoticeEvent from "./NoticeEvent";
+import { NoticeButton, NoticeEventButton } from "./NoticeEvent";
 import SurveyEvent from "./SurveyEvent";
 
 import {
-  filterNoticebyDate,
+  filterNoticebyDateStart,
+  filterNoticebyDateDeadline,
   filterSurveyByDate,
   filterActivityByDate,
 } from "./utils";
 
 const Day = ({ day, momentdate }) => {
+  const currentUser = useSelector((state) => state.user.users.current);
+
   const notices = useSelector((state) =>
-    state.notice.notices.notices.filter(
-      filterNoticebyDate(day.format("YYYY-MM-DD"))
-    )
+    state.notice.notices.notices
+      .filter((notice) => {
+        return notice.owner === currentUser.id;
+      })
+      .filter(filterNoticebyDateStart(day.format("YYYY-MM-DD")))
+  );
+
+  const notices_deadline = useSelector((state) =>
+    state.notice.notices.notices
+      .filter((notice) => {
+        return notice.owner === currentUser.id;
+      })
+      .filter(filterNoticebyDateDeadline(day.format("YYYY-MM-DD")))
   );
 
   const surveys = useSelector((state) =>
-    state.survey.surveys.surveys.filter(
-      filterSurveyByDate(day.format("YYYY-MM-DD"))
-    )
+    state.survey.surveys.surveys
+      .filter((survey) => {
+        return survey.owner === currentUser.id;
+      })
+      .filter(filterSurveyByDate(day.format("YYYY-MM-DD")))
   );
 
   const activity = useSelector((state) =>
-    state.activity.activitys.activitys.find(
-      filterActivityByDate(day.format("YYYY-MM-DD"))
-    )
+    state.activity.activitys.activitys
+      .filter((activity) => {
+        return activity.owner === currentUser.id;
+      })
+      .find(filterActivityByDate(day.format("YYYY-MM-DD")))
   );
+
+  const authuser = useSelector((state) => state.auth.user);
+  const [isOwner, setIsOwner] = useState(false);
+
+  useEffect(() => {
+    if (authuser !== undefined && activity !== undefined) {
+      setIsOwner(authuser.id === activity.owner);
+    } else if (authuser === undefined) {
+      setIsOwner(false);
+    } else {
+      setIsOwner(true);
+    }
+  }, [authuser, activity]);
 
   if (!momentdate.isSame(day, "month")) {
     return (
@@ -50,17 +80,25 @@ const Day = ({ day, momentdate }) => {
           }
           data-toggle="modal"
           data-target="#ModalEvent"
-          data-modalcall="none"
+          data-modalcall={isOwner ? "none" : "activity"}
           data-notice_id="0"
           data-survey_id="0"
           data-activity_id={activity !== undefined ? activity.id : "0"}
           data-day={day.format("YYYY-MM-DD")}
+          disabled={
+            activity !== undefined || authuser.id === currentUser.id
+              ? ""
+              : "disabled"
+          }
         >
           {day.format("DD").toString()}
         </button>
       </div>
       {notices.map((notice) => (
-        <NoticeEvent key={notice.id} notice={notice} day={day} />
+        <NoticeButton key={notice.id} notice={notice} day={day} />
+      ))}
+      {notices_deadline.map((notice) => (
+        <NoticeEventButton key={notice.id} notice={notice} day={day} />
       ))}
       {surveys.map((survey) => (
         <SurveyEvent key={survey.id} survey={survey} day={day} />

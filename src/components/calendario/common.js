@@ -1,7 +1,7 @@
 import React from "react";
 import moment from "moment";
 
-const IconButton = ({ icon, href = null, onclick = null }) => {
+export const IconButton = ({ icon, href = null, onclick = null, title }) => {
   return (
     <div className="col col-auto p-0 d-flex flex-column justify-content-center">
       <a
@@ -11,7 +11,7 @@ const IconButton = ({ icon, href = null, onclick = null }) => {
         rel="noreferrer noopener"
         className="btn btn-secondary d-flex justify-content-center align-content-between p-1 mr-1 float-right"
         type="button"
-        title="Procurar endereço no GMaps"
+        title={title}
       >
         <i className={"fa " + icon}></i>
       </a>
@@ -24,6 +24,7 @@ export const CompleteButton = ({ concluded, onclick }) => {
     <IconButton
       icon={concluded ? "fa-check-square-o" : "fa-square-o"}
       onclick={onclick}
+      title="Marcar como finalizado"
     />
   );
 };
@@ -33,6 +34,20 @@ export const MapButton = ({ address }) => {
     <IconButton
       href={"https://www.google.com/maps/place/" + address}
       icon="fa-map"
+      title="Procurar endereço no GMaps"
+    />
+  );
+};
+
+export const GeoItajaiButton = ({ codigo }) => {
+  return (
+    <IconButton
+      href={
+        "https://geoitajai.github.io/geo/consultazoneamento_openlayers.html#" +
+        codigo
+      }
+      icon="fa-file-text-o"
+      title="Abrir no GeoItajaí"
     />
   );
 };

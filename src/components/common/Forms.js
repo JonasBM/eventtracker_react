@@ -7,19 +7,25 @@ export const Error = ({ name }) => (
   <Field name={name} subscription={{ error: true, touched: true }}>
     {({ meta: { error, touched } }) =>
       error && touched ? (
-        <div className="invalid-feedback d-block">{error}</div>
+        <div className="invalid-feedback d-block">{error.toString()}</div>
       ) : null
     }
   </Field>
 );
 
-export const InputFormGroup = (props) => {
+export const InputFormGroup = ({ isHidden = false, ...props }) => {
   let className = "form-control form-control-sm";
   if (props.className !== undefined) {
     className += " " + props.className;
+    delete props.className;
+  }
+  let classNameDiv = "form-group mb-0";
+  if (props.classNameDiv !== undefined) {
+    classNameDiv += " " + props.classNameDiv;
+    delete props.classNameDiv;
   }
   return (
-    <div className="form-group mb-0">
+    <div className={isHidden ? "d-none" : classNameDiv}>
       <label htmlFor={"id_" + props.name} className="mb-0">
         {props.label}
       </label>
@@ -36,13 +42,19 @@ export const InputFormGroup = (props) => {
   );
 };
 
-export const CheckboxFormGroup = (props) => {
+export const CheckboxFormGroup = ({ isHidden = false, ...props }) => {
   let className = "custom-control-input";
   if (props.className !== undefined) {
     className += " " + props.className;
+    delete props.className;
+  }
+  let classNameDiv = "custom-control custom-checkbox";
+  if (props.classNameDiv !== undefined) {
+    classNameDiv += " " + props.classNameDiv;
+    delete props.classNameDiv;
   }
   return (
-    <div className="custom-control custom-checkbox" title={props.tooltip}>
+    <div className={isHidden ? "d-none" : classNameDiv} title={props.tooltip}>
       <Field
         component="input"
         type="checkbox"
@@ -59,13 +71,18 @@ export const CheckboxFormGroup = (props) => {
   );
 };
 
-export const SelectFormGroup = (props) => {
+export const SelectFormGroup = ({ isHidden = false, ...props }) => {
   let className = "form-control form-control-sm";
   if (props.className !== undefined) {
     className += " " + props.className;
   }
+  let classNameDiv = "form-group mb-0";
+  if (props.classNameDiv !== undefined) {
+    classNameDiv += " " + props.classNameDiv;
+    delete props.classNameDiv;
+  }
   return (
-    <div className="form-group mb-0">
+    <div className={isHidden ? "d-none" : classNameDiv}>
       <label htmlFor={"id_" + props.name} className="mb-0">
         {props.label}
       </label>
@@ -79,4 +96,38 @@ export const SelectFormGroup = (props) => {
       <Error name={props.name} />
     </div>
   );
+};
+
+export const ComboboxFormGroup = ({ isHidden = false, ...props }) => {
+  let className = "form-control form-control-sm";
+  if (props.className !== undefined) {
+    className += " " + props.className;
+  }
+  const { children, ...childprops } = props;
+  return (
+    <div className={props.isHidden ? "d-none" : "form-group mb-0"}>
+      <label htmlFor={"id_" + props.name} className="mb-0">
+        {props.label}
+      </label>
+      <Field
+        component="input"
+        type="text"
+        {...childprops}
+        className={className}
+        id={"id_" + props.name}
+        name={props.name}
+        list={"id_" + props.name + "_list"}
+      />
+      <datalist id={"id_" + props.name + "_list"}>{children}</datalist>
+      <Error name={props.name} />
+    </div>
+  );
+};
+
+export const ToogleFieldSet = ({ isDisabled = false, ...props }) => {
+  if (isDisabled) {
+    return <fieldset disabled>{props.children}</fieldset>;
+  } else {
+    return <fieldset>{props.children}</fieldset>;
+  }
 };

@@ -1,22 +1,30 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-import { actionCRUDUser } from "../../actions/user/actionUser";
+import { actionCRUDUserProfile } from "../../actions/user/actionUserProfile";
 import { logoutAll } from "../../actions/actionAuth";
 import FormChangePassword from "./FormChangePassword";
 import FormUserData from "./FormUserData";
 import FormReportPDF from "./FormReportPDF";
 import FormSheetCSV from "./FormSheetCSV";
+import { actionCRUDUser } from "../../actions/user/actionUser";
+import FormUpdateImovel from "./FormUpdateImovel";
+import { updateImovelLog } from "../../actions/imovel/actionImovel";
 
 const Perfil = () => {
   const dispatch = useDispatch();
-  const authUserId = useSelector((state) => state.auth.userId);
-  const currentUser = useSelector(
-    (state) => state.user.users.users.filter((el) => el.id === authUserId)[0]
-  );
+  const authUser = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     dispatch(actionCRUDUser.read());
+    dispatch(actionCRUDUserProfile.read());
+    dispatch(updateImovelLog());
+    let intervalId = setInterval(() => {
+      dispatch(updateImovelLog());
+    }, 30000);
+    return () => {
+      clearInterval(intervalId);
+    };
   }, [dispatch]);
 
   const handleLogoutAll = () => {
@@ -35,24 +43,24 @@ const Perfil = () => {
         <div className="col-12 offset-lg-1 col-lg-4">
           <h5>
             {"Bem vindo, "}
-            {currentUser
-              ? currentUser.first_name
-                ? currentUser.first_name
-                : currentUser.username
+            {authUser
+              ? authUser.first_name
+                ? authUser.first_name
+                : authUser.username
               : ""}
             {"!"}
           </h5>
           <h6>
             {" (último login: "}
-            {currentUser ? currentUser.last_login : ""}
+            {authUser ? authUser.last_login : ""}
             {")"}
           </h6>
           <div>
-            <FormUserData currentUser={currentUser} />
+            <FormUserData authUser={authUser} />
           </div>
 
           <div className="mt-2">
-            <FormChangePassword currentUser={currentUser} />
+            <FormChangePassword authUser={authUser} />
           </div>
         </div>
         <div className="col-12 offset-lg-1 col-lg-4 mt-2 mt-lg-0">
@@ -69,11 +77,16 @@ const Perfil = () => {
               className="btn btn-primary font-weight-bold mt-2"
               onClick={handleLogoutAll}
             >
-              Revogar todos os Tokens
+              Sair de todos os locais
             </button>
           </div>
         </div>
       </div>
+      {authUser && authUser.is_staff && (
+        <div className="row mt-3 m-1 p-2 border">
+          <FormUpdateImovel />
+        </div>
+      )}
     </div>
   );
 };

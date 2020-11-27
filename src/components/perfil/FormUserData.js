@@ -3,18 +3,18 @@ import { useDispatch } from "react-redux";
 import { Form } from "react-final-form";
 import { InputFormGroup, required } from "../common/Forms";
 
-import { actionCRUDUser } from "../../actions/user/actionUser";
+import { actionCRUDUserProfile } from "../../actions/user/actionUserProfile";
 
-const FormUserData = ({ currentUser }) => {
+const FormUserData = ({ authUser }) => {
   const dispatch = useDispatch();
 
   const onSubmit = (values) => {
-    dispatch(actionCRUDUser.update(values));
+    dispatch(actionCRUDUserProfile.update(values));
   };
 
   return (
     <Form
-      initialValues={currentUser}
+      initialValues={authUser}
       onSubmit={onSubmit}
       render={({ handleSubmit }) => (
         <form onSubmit={handleSubmit} className="needs-validation" noValidate>

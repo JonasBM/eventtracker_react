@@ -51,7 +51,6 @@ export class actionCRUD {
           type: this.types.READ,
           payload: res.data,
         });
-        // console.log("Informações baixadas " + this.types.READ);
       })
       .catch((err) => {
         dispatch(returnErrors(err));

@@ -39,10 +39,13 @@ const Alerts = (prevProps, props) => {
       if (messages.CRUDread) alert.success(messages.CRUDread);
       if (messages.CRUDupdate) alert.success(messages.CRUDupdate);
       if (messages.CRUDdelete) alert.success(messages.CRUDdelete);
+      if (messages.ERROR) alert.error(messages.ERROR);
+      if (messages.INFO) alert.info(messages.INFO);
+      if (messages.SUCCESS) alert.success(messages.SUCCESS);
     }
     if (errors.status === 401) {
       console.log("Não autorizado");
-      history.push("/login/");
+      // history.push("/login/");
     }
     if (errors.status === 500) {
       console.log("Internal Server Error");

@@ -14,6 +14,18 @@
   display: none;
 }
 
+input[type="color"] {
+  min-width: 50px;
+}
+
+input[type="date"]::-webkit-clear-button {
+  display: none;
+}
+
+/* table > caption {
+  caption-side: top;
+} */
+
 .d-grid {
   display: grid !important;
 }
@@ -52,4 +64,8 @@ p {
 
 .opacity-1 {
   opacity: 1 !important;
+}
+
+.font-size-90 {
+  font-size: 90%;
 }

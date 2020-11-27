@@ -4,10 +4,11 @@ import "moment/locale/pt-br";
 import { useDispatch } from "react-redux";
 import { actionCRUDNotice } from "../../actions/notice/actionNotice";
 import { actionCRUDNoticeEventType } from "../../actions/notice/actionNoticeEventType";
+import { actionCRUDNoticeColor } from "../../actions/notice/actionNoticeColor";
 import { actionCRUDSurvey } from "../../actions/survey/actionSurvey";
 import { actionCRUDSurveyEventType } from "../../actions/survey/actionSurveyEventType";
 import { actionCRUDActivity } from "../../actions/activity/actionActivity";
-
+import { actionCRUDUser } from "../../actions/user/actionUser";
 import "./Calendario.css";
 
 import buildCalendar from "./utils";
@@ -20,7 +21,9 @@ const Calendario = ({ momentdate }) => {
   const dispatch = useDispatch();
   useEffect(() => {
     moment.locale("pt-br");
+    dispatch(actionCRUDUser.read());
     dispatch(actionCRUDNoticeEventType.read());
+    dispatch(actionCRUDNoticeColor.read());
     dispatch(actionCRUDSurveyEventType.read());
     const params = {
       start_date: momentdate
@@ -37,6 +40,7 @@ const Calendario = ({ momentdate }) => {
     dispatch(actionCRUDNotice.read(params));
     dispatch(actionCRUDSurvey.read(params));
     dispatch(actionCRUDActivity.read(params));
+
     setCalendar(buildCalendar(momentdate));
   }, [dispatch, momentdate]);
 

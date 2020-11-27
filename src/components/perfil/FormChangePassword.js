@@ -2,14 +2,14 @@ import React from "react";
 import { Form } from "react-final-form";
 import { InputFormGroup, required } from "../common/Forms";
 import { useDispatch } from "react-redux";
-import { changePassword } from "../../actions/user/actionUser";
+import { changePassword } from "../../actions/user/actionUserProfile";
 
-const FormChangePassword = ({ currentUser }) => {
+const FormChangePassword = ({ authUser }) => {
   const dispatch = useDispatch();
 
   const onSubmit = (values) => {
     if (values.new_password === values.new_password_check) {
-      dispatch(changePassword({ user: currentUser, ...values }));
+      dispatch(changePassword({ user: authUser, ...values }));
     }
   };
 
@@ -29,24 +29,27 @@ const FormChangePassword = ({ currentUser }) => {
           <div className="form-inline p-1">
             <InputFormGroup
               name="old_password"
-              label="Senha atual:"
+              label="Senha atual: "
               type="password"
+              className="mx-1"
               validate={required}
             />
           </div>
           <div className="form-inline p-1">
             <InputFormGroup
               name="new_password"
-              label="Nova Senha:"
+              label="Nova Senha: "
               type="password"
+              className="mx-1"
               validate={required}
             />
           </div>
           <div className="form-inline p-1">
             <InputFormGroup
               name="new_password_check"
-              label="Nova Senha:"
+              label="Nova Senha: "
               type="password"
+              className="mx-1"
               validate={required}
             />
           </div>

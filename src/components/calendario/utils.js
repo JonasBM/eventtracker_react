@@ -30,7 +30,18 @@ export const filterOnlyInArrayByID = (arrayObject) => {
 export const filterNoticebyUnConcluded = () => {
   return function (notice) {
     for (let index = 0; index < notice.notice_events.length; index++) {
-      if (!notice.notice_events[index].end_concluded) {
+      if (!notice.notice_events[index].concluded) {
+        return true;
+      }
+    }
+    return false;
+  };
+};
+
+export const filterNoticebyConcluded = () => {
+  return function (notice) {
+    for (let index = 0; index < notice.notice_events.length; index++) {
+      if (notice.notice_events[index].concluded) {
         return true;
       }
     }
@@ -44,11 +55,39 @@ export const filterSurveybyUnConcluded = () => {
   };
 };
 
+export const filterSurveybyConcluded = () => {
+  return function (survey) {
+    return survey.concluded;
+  };
+};
+
 export const filterNoticebyDate = (stringDate) => {
   return function (notice) {
-    if (notice.date === stringDate) {
-      return true;
+    for (let index = 0; index < notice.notice_events.length; index++) {
+      if (
+        notice.notice_events[index].date === stringDate ||
+        notice.notice_events[index].deadline_date === stringDate
+      ) {
+        return true;
+      }
     }
+    return false;
+  };
+};
+
+export const filterNoticebyDateStart = (stringDate) => {
+  return function (notice) {
+    for (let index = 0; index < notice.notice_events.length; index++) {
+      if (notice.notice_events[index].date === stringDate) {
+        return true;
+      }
+    }
+    return false;
+  };
+};
+
+export const filterNoticebyDateDeadline = (stringDate) => {
+  return function (notice) {
     for (let index = 0; index < notice.notice_events.length; index++) {
       if (notice.notice_events[index].deadline_date === stringDate) {
         return true;
@@ -133,22 +172,32 @@ export const openNoticeModal = (notice) => {
   myModal.show();
 };
 
+export const getNoticeColor = (notice) => {
+  if (notice) {
+    const notice_colors = store.getState().notice.notice_colors.notice_colors;
+    let notice_color = notice_colors.find(
+      (notice_color) => notice_color.css_name === notice.css_name
+    );
+    return notice_color;
+  }
+};
+
 export const getNoticeEventType = (notice_event) => {
   if (notice_event) {
     const notice_event_types = store.getState().notice.notice_event_types
       .notice_event_types;
 
-    let notice_event_type = notice_event_types.filter(
+    let notice_event_type = notice_event_types.find(
       (notice_event_type) =>
         notice_event_type.id === notice_event.notice_event_type
     );
-    return notice_event_type[0];
+    return notice_event_type;
   }
 };
 
 export const getAllNoticeConcluded = (notice) => {
   for (let index = 0; index < notice.notice_events.length; index++) {
-    if (!notice.notice_events[index].end_concluded) {
+    if (!notice.notice_events[index].concluded) {
       return false;
     }
   }
@@ -159,9 +208,9 @@ export const getSurveyEventType = (survey) => {
   if (survey) {
     const survey_event_types = store.getState().survey.survey_event_types
       .survey_event_types;
-    let survey_event_type = survey_event_types.filter(
+    let survey_event_type = survey_event_types.find(
       (survey_event_type) => survey_event_type.id === survey.survey_event_type
     );
-    return survey_event_type[0];
+    return survey_event_type;
   }
 };

@@ -16,6 +16,15 @@ export default function (state = initialState, action) {
         ...state,
         notice_event_types: action.payload,
       };
+    case actionCRUDNoticeEventType.types.UPDATE:
+      return {
+        ...state,
+        notice_event_types: state.notice_event_types.map((notice_event_type) =>
+          notice_event_type.id === action.payload.id
+            ? action.payload
+            : notice_event_type
+        ),
+      };
     case actionCRUDNoticeEventType.types.DELETE:
       return {
         ...state,

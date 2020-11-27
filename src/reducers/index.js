@@ -3,6 +3,7 @@ import { combineReducers } from "redux";
 import notice from "./notice";
 import survey from "./survey";
 import activity from "./activity";
+import imovel from "./imovel";
 import user from "./user";
 import reducerAuth from "./reducerAuth";
 import errors from "./errors";
@@ -18,4 +19,5 @@ export default combineReducers({
   errors,
   messages,
   date,
+  imovel,
 });
