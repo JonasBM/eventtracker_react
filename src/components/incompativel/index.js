@@ -20,7 +20,7 @@ export default function () {
     dispatch(actionCRUDNoticeEventType.read());
     dispatch(actionCRUDNoticeColor.read());
     dispatch(actionCRUDSurveyEventType.read());
-    const params = { concluded: "0" };
+    const params = { incompatible: true };
     dispatch(actionCRUDNotice.read(params));
     dispatch(actionCRUDSurvey.read(params));
   }, [dispatch]);
@@ -34,15 +34,15 @@ export default function () {
           <div className="row row-cols-1 row-cols-lg-2">
             <div className="col">
               <NoticeEventList
-                title="Autos a concluir:"
-                concluded="0"
+                title="Autos sem imóvel:"
+                concluded=""
                 notice_event_type="0"
               />
             </div>
             <div className="col">
               <SurveyEventList
-                title="Vistorias a concluir:"
-                concluded="0"
+                title="Vistorias sem imóvel:"
+                concluded=""
                 survey_event_type="0"
               />
             </div>

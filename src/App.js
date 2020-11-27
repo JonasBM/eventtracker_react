@@ -26,6 +26,7 @@ import Calendario from "./components/calendario/";
 import Tarefas from "./components/tarefas/";
 import Perfil from "./components/perfil/Perfil";
 import Aconcluir from "./components/aconcluir/";
+import Incompativel from "./components/incompativel/";
 import Busca from "./components/busca/";
 import Admin from "./components/admin/";
 
@@ -63,6 +64,11 @@ export const App = () => {
               <PrivateRoute exact path="/aconcluir" component={Aconcluir} />
               <PrivateRoute exact path="/admin" component={Admin} />
               <PrivateRoute exact path="/busca" component={Busca} />
+              <PrivateRoute
+                exact
+                path="/incompativel"
+                component={Incompativel}
+              />
               <Route exact path="/login" component={Login} />
               <Route exact path="/logout" component={Logout} />
               <Route exact path="/loading" component={Loading} />

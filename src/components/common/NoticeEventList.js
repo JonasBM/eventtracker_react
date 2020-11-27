@@ -24,7 +24,7 @@ const NoticeEventSpan = ({ notice_event }) => {
   return null;
 };
 
-export const NoticeEventButton = ({ notice }) => {
+export const NoticeEventButton = ({ notice, concluded, notice_event_type }) => {
   const dispatch = useDispatch();
   const authuser = useSelector((state) => state.auth.user);
   const [isOwner, setIsOwner] = useState(false);
@@ -44,64 +44,118 @@ export const NoticeEventButton = ({ notice }) => {
     dispatch(actionCRUDNotice.update(notice));
   };
 
+  const filterNoticeEventbyConcluded = (notice_event) => {
+    let show_concluded;
+    let notice_event_type = getNoticeEventType(notice_event);
+    if (notice_event_type) {
+      show_concluded = notice_event_type.show_concluded;
+    } else {
+      show_concluded = true;
+    }
+    if (concluded === "0") {
+      if (show_concluded) {
+        return !notice_event.concluded;
+      } else {
+        return false;
+      }
+    } else if (concluded === "1") {
+      if (show_concluded) {
+        return notice_event.concluded;
+      } else {
+        return true;
+      }
+    }
+    return true;
+  };
+
+  const filterNoticeEventbyType = (notice_event) => {
+    if (notice_event_type === "") {
+      return false;
+    }
+    if (notice_event_type === "0") {
+      return true;
+    }
+    if (notice_event.notice_event_type.toString() === notice_event_type) {
+      return true;
+    }
+    return false;
+  };
+
   return notice.notice_events
-    .filter((notice_event) => !notice_event.concluded)
-    .map((notice_event) => (
-      <div
-        key={notice_event.id}
-        style={{
-          backgroundColor: getNoticeEventType(notice_event)
-            ? getNoticeEventType(notice_event).css_color
-            : "blue",
-        }}
-        className={
-          "row no-gutters event user-select-none text-truncate" +
-          (notice_event.concluded ? " concluded" : "")
-        }
-      >
-        <EventButton
-          notice_id={notice.id}
-          modalcall="notice"
-          title={notice.imovel ? notice.imovel.name_string : ""}
-          day={moment().format("YYYY-MM-DD")}
-        >
-          <NoticeEventSpan notice_event={notice_event} />
-        </EventButton>
-        <CompleteButton
-          concluded={notice_event.concluded}
-          onclick={isOwner ? () => completeTask(notice_event) : () => {}}
-        />
-        <GeoItajaiButton
-          codigo={notice.imovel ? notice.imovel.lote.codigo : ""}
-        />
-        <MapButton
-          address={
-            notice.imovel
-              ? notice.imovel.lote.logradouro +
-                "," +
-                notice.imovel.lote.numero +
-                "-" +
-                notice.imovel.lote.bairro +
-                "-itajaí"
-              : ""
+    .filter(filterNoticeEventbyType)
+    .filter(filterNoticeEventbyConcluded)
+    .map((notice_event) => {
+      let notice_event_type = getNoticeEventType(notice_event);
+      return (
+        <div
+          key={notice_event.id}
+          style={{
+            backgroundColor: notice_event_type
+              ? notice_event_type.css_color
+              : "blue",
+          }}
+          className={
+            "row no-gutters event user-select-none text-truncate" +
+            (notice_event.concluded ? " concluded" : "")
           }
-        />
-      </div>
-    ));
+        >
+          <EventButton
+            notice_id={notice.id}
+            modalcall="notice"
+            title={notice.imovel ? notice.imovel.name_string : ""}
+            day={moment().format("YYYY-MM-DD")}
+          >
+            <NoticeEventSpan notice_event={notice_event} />
+          </EventButton>
+          {notice_event_type && notice_event_type.show_concluded && (
+            <CompleteButton
+              concluded={notice_event.concluded}
+              onclick={isOwner ? () => completeTask(notice_event) : () => {}}
+            />
+          )}
+          <GeoItajaiButton
+            codigo={notice.imovel ? notice.imovel.lote.codigo : ""}
+          />
+          <MapButton
+            address={
+              notice.imovel
+                ? notice.imovel.lote.logradouro +
+                  "," +
+                  notice.imovel.lote.numero +
+                  "-" +
+                  notice.imovel.lote.bairro +
+                  "-itajaí"
+                : ""
+            }
+          />
+        </div>
+      );
+    });
 };
 
-const NoticeAconcluir = ({ title, notices }) => {
+const NoticeEventList = ({ title, concluded, notice_event_type }) => {
+  const currentUser = useSelector((state) => state.user.users.current);
+  const notices = useSelector((state) =>
+    state.notice.notices.notices.filter((notice) => {
+      return notice.owner === currentUser.id;
+    })
+  );
   return (
     <div className="border p-2 m-1">
       <span>
         <strong>{title ? title : ""}</strong>
       </span>
       {notices &&
-        notices.map((notice, index) => (
-          <NoticeEventButton key={notice.id} notice={notice} />
+        notices.map((notice) => (
+          <NoticeEventButton
+            key={notice.id}
+            notice={notice}
+            concluded={concluded}
+            notice_event_type={notice_event_type}
+          />
         ))}
     </div>
   );
 };
 
-export default NoticeAconcluir;
+export default NoticeEventList;

@@ -1,24 +1,14 @@
 import React from "react";
 import { Form } from "react-final-form";
-import {
-  InputFormGroup,
-  CheckboxFormGroup,
-  SelectFormGroup,
-} from "../common/Forms";
-import { actionCRUDUser } from "../../actions/user/actionUser";
-import { actionCRUDNoticeEventType } from "../../actions/notice/actionNoticeEventType";
-import { actionCRUDSurveyEventType } from "../../actions/survey/actionSurveyEventType";
+import { InputFormGroup, SelectFormGroup } from "../common/Forms";
 import AutocompleteImovel from "../common/AutocompleteImovel";
 import "./index.css";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
 import { IconButton } from "../calendario/common";
-import { useState } from "react";
 import { actionCRUDNotice } from "../../actions/notice/actionNotice";
 import { actionCRUDSurvey } from "../../actions/survey/actionSurvey";
-import { OnChange } from "react-final-form-listeners";
 
-const FormBusca = ({ imovelID, state, setstate }) => {
+const FormBusca = ({ state, setstate }) => {
   const dispatch = useDispatch();
   const survey_event_types = useSelector(
     (state) => state.survey.survey_event_types.survey_event_types
@@ -28,22 +18,14 @@ const FormBusca = ({ imovelID, state, setstate }) => {
   );
 
   const onSubmit = (values) => {
-    console.log(values);
     if (values.notice_event_type !== "") {
-      console.log("notice_event_type");
       dispatch(actionCRUDNotice.read(values));
     }
     if (values.survey_event_type !== "") {
-      console.log("survey_event_type");
       dispatch(actionCRUDSurvey.read(values));
     }
+    setstate(values);
   };
-
-  useEffect(() => {
-    dispatch(actionCRUDUser.read());
-    dispatch(actionCRUDNoticeEventType.read());
-    dispatch(actionCRUDSurveyEventType.read());
-  }, [dispatch]);
 
   return (
     <Form
@@ -113,11 +95,6 @@ const FormBusca = ({ imovelID, state, setstate }) => {
                     <option value="0">Não concluído</option>
                     <option value="1">Concluído</option>
                   </SelectFormGroup>
-                  <OnChange name="concluded">
-                    {(value, previous) => {
-                      setstate({ ...state, concluded: value });
-                    }}
-                  </OnChange>
                 </div>
                 <div className="form-inline">
                   <SelectFormGroup

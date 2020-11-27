@@ -1,9 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { Route, useHistory } from "react-router-dom";
+import { Route } from "react-router-dom";
 import { NavLink } from "react-router-dom";
-import { Form, Field } from "react-final-form";
-import AutocompleteImovel from "../common/AutocompleteImovel";
 
 const NavItem = ({ to, children }) => {
   return (
@@ -28,7 +26,6 @@ const NavItem = ({ to, children }) => {
 
 const Header = () => {
   const auth = useSelector((state) => state.auth);
-  const history = useHistory();
 
   let authButton;
   if (auth.isAuthenticated) {
@@ -52,15 +49,6 @@ const Header = () => {
       </NavLink>
     );
   }
-
-  const onSubmit = (values) => {
-    if (values.imovel) {
-      history.push("/busca/?imovel_id=" + encodeURIComponent(values.imovel.id));
-    } else {
-      history.push("/busca/");
-    }
-    values.imovel = "";
-  };
 
   return (
     <nav className="navbar navbar-dark bg-dark navbar-expand-lg p-2">
@@ -93,36 +81,10 @@ const Header = () => {
             <NavItem to="/">Calendario</NavItem>
             <NavItem to="/tarefas">Tarefas do Dia</NavItem>
             <NavItem to="/aconcluir">A Concluir</NavItem>
+            <NavItem to="/busca">Buscar</NavItem>
+            <NavItem to="/incompativel">Verificação de imóvel</NavItem>
             <NavItem to="/admin">Administração</NavItem>
           </ul>
-          <Form
-            mutators={{
-              setValue: ([field, value], state, { changeValue }) => {
-                changeValue(state, field, () => value);
-              },
-            }}
-            onSubmit={onSubmit}
-            render={({ handleSubmit, form }) => (
-              <form
-                onSubmit={handleSubmit}
-                className="d-flex my-2 my-lg-0 mr-lg-5"
-              >
-                <AutocompleteImovel
-                  name="imovel"
-                  name_string="imovel.name_string"
-                  label=""
-                  form={form}
-                  showResult={false}
-                />
-                <button
-                  className="btn btn-outline-success btn-sm ml-2"
-                  type="submit"
-                >
-                  Search
-                </button>
-              </form>
-            )}
-          />
           {authButton}
         </div>
       </div>
