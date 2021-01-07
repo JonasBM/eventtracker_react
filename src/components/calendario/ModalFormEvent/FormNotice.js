@@ -9,7 +9,11 @@ import arrayMutators from "final-form-arrays";
 import { FieldArray } from "react-final-form-arrays";
 import moment from "moment";
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
-import { getNoticeEventType, filterOnlyInArrayByID } from "../utils";
+import {
+  getNoticeEventType,
+  filterOnlyInArrayByID,
+  getFirstVA,
+} from "../utils";
 import {
   InputFormGroup,
   CheckboxFormGroup,
@@ -19,8 +23,13 @@ import {
 } from "../../common/Forms";
 import CommonModalFooter from "../../common/CommonModalFooter";
 import AutocompleteImovel from "../../common/AutocompleteImovel";
+import formatString from "format-string-by-pattern";
+import {
+  getnoticereportdocx,
+  getVArequestdocx,
+} from "../../../actions/actionFiles";
 
-const FormNoticeFine = ({ fields, name, index }) => {
+const FormNoticeFine = ({ fields, name, index, isOwner }) => {
   return (
     <div key={name} className="row px-4 py-1 form-inline">
       <InputFormGroup
@@ -37,18 +46,20 @@ const FormNoticeFine = ({ fields, name, index }) => {
         type="date"
         className="mx-1"
       />
-      <button
-        type="button"
-        className="btn btn-outline-danger border-0 btn-sm"
-        onClick={() => fields.remove(index)}
-      >
-        <i className="fa fa-trash fa-sm"></i>
-      </button>
+      {isOwner && (
+        <button
+          type="button"
+          className="btn btn-outline-danger border-0 btn-sm"
+          onClick={() => fields.remove(index)}
+        >
+          <i className="fa fa-trash fa-sm"></i>
+        </button>
+      )}
     </div>
   );
 };
 
-const FormNoticeEvent = ({ fields, name, index, push }) => {
+const FormNoticeEvent = ({ fields, name, index, push, isOwner }) => {
   return (
     <div>
       <hr className="m-1" />
@@ -56,13 +67,15 @@ const FormNoticeEvent = ({ fields, name, index, push }) => {
         <span className="col text-uppercase w-100 font-weight-bold text-nowrap inline-block">
           {getNoticeEventType(fields.value[index]).name}
         </span>
-        <button
-          type="button"
-          className="btn btn-outline-danger border-0"
-          onClick={() => fields.remove(index)}
-        >
-          <i className="fa fa-trash fa-lg"></i>
-        </button>
+        {isOwner && (
+          <button
+            type="button"
+            className="btn btn-outline-danger border-0"
+            onClick={() => fields.remove(index)}
+          >
+            <i className="fa fa-trash fa-lg"></i>
+          </button>
+        )}
       </div>
       {getNoticeEventType(fields.value[index]) !== undefined && (
         <div className="row">
@@ -153,6 +166,7 @@ const FormNoticeEvent = ({ fields, name, index, push }) => {
                         fields={fields}
                         name={name}
                         index={index}
+                        isOwner={isOwner}
                       />
                     ))
                   }
@@ -169,7 +183,7 @@ const FormNoticeEvent = ({ fields, name, index, push }) => {
 const requiredArray = (value) =>
   value && value.length > 0 ? undefined : "Required";
 
-const FormNotice = ({ notice, day }) => {
+const FormNotice = ({ notice, day, isModalOpen }) => {
   const dispatch = useDispatch();
   const notice_event_types = useSelector(
     (state) => state.notice.notice_event_types.notice_event_types
@@ -320,6 +334,20 @@ const FormNotice = ({ notice, day }) => {
                 )}
               <ToogleFieldSet isDisabled={!isOwner}>
                 <InputFormGroup
+                  name="document"
+                  label="CPF/CNPJ:"
+                  maxLength="255"
+                  parse={(value) => {
+                    if (!value) return value;
+                    const onlyNumbers = value.replace(/[^\d]/g, "");
+                    if (value.length > 14) {
+                      return formatString("99.999.999/9999-99", onlyNumbers);
+                    } else {
+                      return formatString("999.999.999-99", onlyNumbers);
+                    }
+                  }}
+                />
+                <InputFormGroup
                   name="address"
                   label="Endereço:"
                   maxLength="255"
@@ -355,6 +383,32 @@ const FormNotice = ({ notice, day }) => {
                     ))}
                   </div>
                 </div>
+              </ToogleFieldSet>
+              <div className="row">
+                <div className="col text-left">
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-sm m-1"
+                    onClick={() => {
+                      console.log("getnoticereportdocx");
+                      dispatch(getnoticereportdocx(notice));
+                    }}
+                  >
+                    Gerar Relatório de Fiscalização
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-sm m-1"
+                    onClick={() => {
+                      console.log("getVArequestdocx");
+                      dispatch(getVArequestdocx(getFirstVA(notice)));
+                    }}
+                  >
+                    Gerar Pedido de VA
+                  </button>
+                </div>
+              </div>
+              <ToogleFieldSet isDisabled={!isOwner}>
                 <div className="container">
                   <FieldArray name="notice_events" validate={requiredArray}>
                     {({ fields, meta: { touched } }) => (
@@ -366,6 +420,7 @@ const FormNotice = ({ notice, day }) => {
                             name={name}
                             index={index}
                             push={push}
+                            isOwner={isOwner}
                           />
                         ))}
                         {fields.length === 0 && touched ? (
@@ -381,6 +436,7 @@ const FormNotice = ({ notice, day }) => {
             </div>
           </div>
           <CommonModalFooter
+            isDisabled={!isOwner}
             canDelete={
               notice !== undefined ? (notice.id !== 0 ? true : false) : false
             }

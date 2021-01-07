@@ -10,7 +10,6 @@ export const actionCRUDUserProfile = new actionCRUD(
 );
 
 export const changePassword = (objeto) => (dispatch, getState) => {
-  console.log(objeto);
   axios
     .put(
       process.env.REACT_APP_API_URL + "api/changepassword/",

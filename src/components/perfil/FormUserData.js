@@ -26,6 +26,7 @@ const FormUserData = ({ authUser }) => {
           <InputFormGroup name="first_name" label="Nome:" validate={required} />
           <InputFormGroup name="last_name" label="Sobrenome:" />
           <InputFormGroup name="email" label="email:" />
+          <InputFormGroup name="profile.matricula" label="Matrícula:" />
           <button
             type="submit"
             className="btn btn-primary font-weight-bold mt-2"

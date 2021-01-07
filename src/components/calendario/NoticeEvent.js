@@ -64,16 +64,16 @@ export const NoticeButton = ({ notice, day }) => {
           ))}
       </EventButton>
       <GeoItajaiButton
-        codigo={notice.imovel ? notice.imovel.lote.codigo : ""}
+        codigo_lote={notice.imovel ? notice.imovel.codigo_lote : ""}
       />
       <MapButton
         address={
           notice.imovel
-            ? notice.imovel.lote.logradouro +
+            ? notice.imovel.logradouro +
               "," +
-              notice.imovel.lote.numero +
+              notice.imovel.numero +
               "-" +
-              notice.imovel.lote.bairro +
+              notice.imovel.bairro +
               "-itajaí"
             : ""
         }
@@ -106,51 +106,60 @@ export const NoticeEventButton = ({ notice, day }) => {
     .filter(
       (notice_event) => notice_event.deadline_date === day.format("YYYY-MM-DD")
     )
-    .map(
-      (notice_event) =>
-        notice_event.deadline_date === day.format("YYYY-MM-DD") && (
-          <div
-            key={notice_event.id}
-            style={{
-              backgroundColor: getNoticeEventType(notice_event)
-                ? getNoticeEventType(notice_event).css_color
-                : "blue",
-            }}
-            className={
-              "row no-gutters event user-select-none text-truncate" +
-              (notice_event.concluded ? " concluded" : "")
-            }
-          >
-            <EventButton
-              notice_id={notice.id}
-              modalcall="notice"
-              title={notice.imovel ? notice.imovel.name_string : ""}
-              day={day.format("YYYY-MM-DD")}
-            >
-              <NoticeEventSpan notice_event={notice_event} day={day} />
-            </EventButton>
-            <CompleteButton
-              concluded={notice_event.concluded}
-              onclick={isOwner ? () => completeTask(notice_event) : () => {}}
-            />
-            <GeoItajaiButton
-              codigo={notice.imovel ? notice.imovel.lote.codigo : ""}
-            />
-            <MapButton
-              address={
-                notice.imovel
-                  ? notice.imovel.lote.logradouro +
-                    "," +
-                    notice.imovel.lote.numero +
-                    "-" +
-                    notice.imovel.lote.bairro +
-                    "-itajaí"
-                  : ""
-              }
-            />
-          </div>
-        )
-    );
+    .map((notice_event) => {
+      let notice_event_type = getNoticeEventType(notice_event);
+      if (notice_event_type) {
+        if (notice_event_type.show_deadline) {
+          return (
+            notice_event.deadline_date === day.format("YYYY-MM-DD") && (
+              <div
+                key={notice_event.id}
+                style={{
+                  backgroundColor: getNoticeEventType(notice_event)
+                    ? getNoticeEventType(notice_event).css_color
+                    : "blue",
+                }}
+                className={
+                  "row no-gutters event user-select-none text-truncate" +
+                  (notice_event.concluded ? " concluded" : "")
+                }
+              >
+                <EventButton
+                  notice_id={notice.id}
+                  modalcall="notice"
+                  title={notice.imovel ? notice.imovel.name_string : ""}
+                  day={day.format("YYYY-MM-DD")}
+                >
+                  <NoticeEventSpan notice_event={notice_event} day={day} />
+                </EventButton>
+                <CompleteButton
+                  concluded={notice_event.concluded}
+                  onclick={
+                    isOwner ? () => completeTask(notice_event) : () => {}
+                  }
+                />
+                <GeoItajaiButton
+                  codigo_lote={notice.imovel ? notice.imovel.codigo_lote : ""}
+                />
+                <MapButton
+                  address={
+                    notice.imovel
+                      ? notice.imovel.logradouro +
+                        "," +
+                        notice.imovel.numero +
+                        "-" +
+                        notice.imovel.bairro +
+                        "-itajaí"
+                      : ""
+                  }
+                />
+              </div>
+            )
+          );
+        }
+      }
+      return null;
+    });
 };
 
 // deprecated

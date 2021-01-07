@@ -36,6 +36,7 @@ import Logout from "./components/accounts/Logout";
 import { actionCRUDUserProfile } from "./actions/user/actionUserProfile";
 
 import "./App.css";
+import AdminRoute from "./components/common/AdminRoute";
 
 export const App = () => {
   useEffect(() => {
@@ -47,6 +48,9 @@ export const App = () => {
   const alertOptions = {
     timeout: 3000,
     position: "bottom center",
+    containerStyle: {
+      zIndex: 1070,
+    },
   };
 
   return (
@@ -62,7 +66,7 @@ export const App = () => {
               <PrivateRoute exact path="/calendario" component={Calendario} />
               <PrivateRoute exact path="/tarefas" component={Tarefas} />
               <PrivateRoute exact path="/aconcluir" component={Aconcluir} />
-              <PrivateRoute exact path="/admin" component={Admin} />
+              <AdminRoute exact path="/admin" component={Admin} />
               <PrivateRoute exact path="/busca" component={Busca} />
               <PrivateRoute
                 exact

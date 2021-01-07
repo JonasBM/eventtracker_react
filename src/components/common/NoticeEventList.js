@@ -114,16 +114,16 @@ export const NoticeEventButton = ({ notice, concluded, notice_event_type }) => {
             />
           )}
           <GeoItajaiButton
-            codigo={notice.imovel ? notice.imovel.lote.codigo : ""}
+            codigo_lote={notice.imovel ? notice.imovel.codigo_lote : ""}
           />
           <MapButton
             address={
               notice.imovel
-                ? notice.imovel.lote.logradouro +
+                ? notice.imovel.logradouro +
                   "," +
-                  notice.imovel.lote.numero +
+                  notice.imovel.numero +
                   "-" +
-                  notice.imovel.lote.bairro +
+                  notice.imovel.bairro +
                   "-itajaí"
                 : ""
             }

@@ -42,6 +42,7 @@ const Users = () => {
           <th scope="col">Nome</th>
           <th scope="col">Sobrenome</th>
           <th scope="col">Email</th>
+          <th scope="col">Matrícula</th>
           <th scope="col">Administrador</th>
           <th scope="col">Último Login</th>
           <th scope="col">Ativo</th>
@@ -56,6 +57,7 @@ const Users = () => {
             <td>{user.first_name}</td>
             <td>{user.last_name}</td>
             <td>{user.email}</td>
+            <td>{user.profile.matricula}</td>
             <td>{user.is_staff ? "Sim" : "Não"}</td>
             <td>{user.last_login}</td>
             <td>{user.is_active ? "Sim" : "Não"}</td>

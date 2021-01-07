@@ -33,6 +33,7 @@ export default function () {
         show_deadline: true,
         show_fine: true,
         show_start: true,
+        resethack: [],
       });
     }
   };

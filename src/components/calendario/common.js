@@ -39,12 +39,12 @@ export const MapButton = ({ address }) => {
   );
 };
 
-export const GeoItajaiButton = ({ codigo }) => {
+export const GeoItajaiButton = ({ codigo_lote }) => {
   return (
     <IconButton
       href={
         "https://geoitajai.github.io/geo/consultazoneamento_openlayers.html#" +
-        codigo
+        codigo_lote
       }
       icon="fa-file-text-o"
       title="Abrir no GeoItajaí"

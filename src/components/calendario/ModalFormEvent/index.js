@@ -72,11 +72,16 @@ export default function () {
     } else {
       setNotice({
         id: 0,
+        imovel: null,
+        imovel_id: null,
+        document: null,
+        date: e.relatedTarget.dataset.day,
+        address: null,
+        description: null,
         owner: currentUser.id,
         notice_events: [],
-        date: e.relatedTarget.dataset.day,
-        address: "",
-        description: "",
+        css_name: null,
+        resethack: [],
       });
     }
     let survey;
@@ -90,15 +95,17 @@ export default function () {
     } else {
       setSurvey({
         id: 0,
-        imovel: "",
-        imovel_id: "",
-        owner: currentUser.id,
+        imovel: null,
+        imovel_id: null,
+        document: null,
+        identification: null,
         date: e.relatedTarget.dataset.day,
-        identification: "",
-        address: "",
-        description: "",
+        survey_event_type: null,
+        address: null,
+        description: null,
         concluded: false,
-        survey_event_type: "",
+        owner: currentUser.id,
+        resethack: [],
       });
     }
     let activity;
@@ -113,9 +120,10 @@ export default function () {
     } else {
       setActivity({
         id: 0,
-        owner: currentUser.id,
         date: e.relatedTarget.dataset.day,
-        description: "",
+        owner: currentUser.id,
+        description: null,
+        resethack: [],
       });
     }
     if (e.relatedTarget.dataset.modalcall === "notice") {

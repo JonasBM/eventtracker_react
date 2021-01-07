@@ -13,7 +13,7 @@ import CommonModalFooter from "../../common/CommonModalFooter";
 import moment from "moment";
 import { createMessage } from "../../../actions/actionMessages";
 
-const FormActivity = ({ activity }) => {
+const FormActivity = ({ activity, day, isModalOpen }) => {
   const dispatch = useDispatch();
   const activitys = useSelector((state) => state.activity.activitys.activitys);
   const users = useSelector((state) => state.user.users.users);

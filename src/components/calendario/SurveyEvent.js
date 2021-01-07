@@ -67,16 +67,16 @@ const SurveyEventButton = ({ survey, day }) => {
         onclick={isOwner ? () => completeTask() : () => {}}
       />
       <GeoItajaiButton
-        codigo={survey.imovel ? survey.imovel.lote.codigo : ""}
+        codigo_lote={survey.imovel ? survey.imovel.codigo_lote : ""}
       />
       <MapButton
         address={
           survey.imovel
-            ? survey.imovel.lote.logradouro +
+            ? survey.imovel.logradouro +
               "," +
-              survey.imovel.lote.numero +
+              survey.imovel.numero +
               "-" +
-              survey.imovel.lote.bairro +
+              survey.imovel.bairro +
               "-itajaí"
             : ""
         }

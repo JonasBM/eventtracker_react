@@ -167,7 +167,6 @@ export const getEndDayOfCalendar = (lastDayOfMonth) => {
 };
 
 export const openNoticeModal = (notice) => {
-  console.log(notice);
   var myModal = new bootstrap.Modal(document.getElementById("ModalEvent"), {});
   myModal.show();
 };
@@ -213,4 +212,16 @@ export const getSurveyEventType = (survey) => {
     );
     return survey_event_type;
   }
+};
+
+export const getFirstVA = (notice) => {
+  if (notice) {
+    for (let index = 0; index < notice.notice_events.length; index++) {
+      let notice_event_type = getNoticeEventType(notice.notice_events[index]);
+      if (notice_event_type.name === "Vistoria Administrativa") {
+        return notice.notice_events[index];
+      }
+    }
+  }
+  return false;
 };

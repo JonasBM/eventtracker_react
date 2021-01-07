@@ -83,7 +83,9 @@ const Header = () => {
             <NavItem to="/aconcluir">A Concluir</NavItem>
             <NavItem to="/busca">Buscar</NavItem>
             <NavItem to="/incompativel">Verificação de imóvel</NavItem>
-            <NavItem to="/admin">Administração</NavItem>
+            {auth && auth.user && auth.user.is_staff && (
+              <NavItem to="/admin">Administração</NavItem>
+            )}
           </ul>
           {authButton}
         </div>

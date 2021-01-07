@@ -14,7 +14,7 @@ export default function (state = initialState, action) {
     case actionCRUDImovel.types.READ:
       return {
         ...state,
-        imoveis: action.payload,
+        imoveis: action.payload.results,
       };
     case actionCRUDImovel.types.UPDATE:
       return {

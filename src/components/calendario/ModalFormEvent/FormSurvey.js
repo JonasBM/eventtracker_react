@@ -13,8 +13,9 @@ import {
 import CommonModalFooter from "../../common/CommonModalFooter";
 import moment from "moment";
 import AutocompleteImovel from "../../common/AutocompleteImovel";
+import formatString from "format-string-by-pattern";
 
-const FormSurvey = ({ survey }) => {
+const FormSurvey = ({ survey, day, isModalOpen }) => {
   const dispatch = useDispatch();
   const survey_event_types = useSelector(
     (state) => state.survey.survey_event_types.survey_event_types
@@ -77,117 +78,129 @@ const FormSurvey = ({ survey }) => {
   return (
     <Form
       initialValues={survey}
+      onSubmit={onSubmit}
       mutators={{
         setValue: ([field, value], state, { changeValue }) => {
           changeValue(state, field, () => value);
         },
       }}
-      onSubmit={onSubmit}
-      render={({ handleSubmit, form }) => {
-        return (
-          <form onSubmit={handleSubmit} className="needs-validation" noValidate>
-            <div className="modal-body container">
-              <div className="container">
-                <div className="form-inline">
-                  <ToogleFieldSet isDisabled={true}>
-                    <SelectFormGroup
-                      name="owner"
-                      label="AFM:"
-                      validate={required}
-                      className="m-1"
-                      classNameDiv="mx-1"
-                    >
-                      <option value="">---------</option>
-                      {users.map((user, index) => (
-                        <option key={user.id} value={user.id}>
-                          {user.first_name} {user.last_name}
-                        </option>
-                      ))}
-                    </SelectFormGroup>
-                  </ToogleFieldSet>
-                  <ToogleFieldSet isDisabled={!isOwner}>
+      render={({ handleSubmit, form }) => (
+        <form onSubmit={handleSubmit} className="needs-validation" noValidate>
+          <div className="modal-body container">
+            <div className="container">
+              <div className="form-inline">
+                <ToogleFieldSet isDisabled={true}>
+                  <SelectFormGroup
+                    name="owner"
+                    label="AFM:"
+                    validate={required}
+                    className="m-1"
+                    classNameDiv="mx-1"
+                  >
+                    <option value="">---------</option>
+                    {users.map((user, index) => (
+                      <option key={user.id} value={user.id}>
+                        {user.first_name} {user.last_name}
+                      </option>
+                    ))}
+                  </SelectFormGroup>
+                </ToogleFieldSet>
+                <ToogleFieldSet isDisabled={!isOwner}>
+                  <InputFormGroup
+                    name="date"
+                    label="Data:"
+                    type="date"
+                    className="m-1"
+                    classNameDiv="mx-1"
+                    validate={required}
+                  />
+                </ToogleFieldSet>
+              </div>
+              <AutocompleteImovel
+                name="imovel"
+                name_string="imovel.name_string"
+                label="Imóvel:"
+                form={form}
+                disabled={!isOwner}
+              />
+              <ToogleFieldSet isDisabled={!isOwner}>
+                <InputFormGroup
+                  name="document"
+                  label="CPF/CNPJ:"
+                  maxLength="255"
+                  parse={(value) => {
+                    if (!value) return value;
+                    const onlyNumbers = value.replace(/[^\d]/g, "");
+                    if (value.length > 14) {
+                      return formatString("99.999.999/9999-99", onlyNumbers);
+                    } else {
+                      return formatString("999.999.999-99", onlyNumbers);
+                    }
+                  }}
+                />
+                <InputFormGroup
+                  name="address"
+                  label="Endereço:"
+                  maxLength="255"
+                />
+                <InputFormGroup
+                  name="description"
+                  label="Descrição:"
+                  component="textarea"
+                  cols="40"
+                  rows="3"
+                />
+                <div className="d-flex flex-row">
+                  <div className="form-inline">
                     <InputFormGroup
-                      name="date"
-                      label="Data:"
-                      type="date"
+                      name="identification"
+                      label="Identificação:"
+                      maxLength="255"
                       className="m-1"
                       classNameDiv="mx-1"
                       validate={required}
                     />
-                  </ToogleFieldSet>
-                </div>
-                <AutocompleteImovel
-                  name="imovel"
-                  name_string="imovel.name_string"
-                  label="Imóvel:"
-                  form={form}
-                  disabled={!isOwner}
-                />
-                <ToogleFieldSet isDisabled={!isOwner}>
-                  <InputFormGroup
-                    name="address"
-                    label="Endereço:"
-                    maxLength="255"
-                  />
-                  <InputFormGroup
-                    name="description"
-                    label="Descrição:"
-                    component="textarea"
-                    cols="40"
-                    rows="3"
-                  />
-                  <div className="d-flex flex-row">
-                    <div className="form-inline">
-                      <InputFormGroup
-                        name="identification"
-                        label="Identificação:"
-                        maxLength="255"
-                        className="m-1"
-                        classNameDiv="mx-1"
-                        validate={required}
-                      />
-                      <SelectFormGroup
-                        name="survey_event_type"
-                        label="Tipo:"
-                        className="m-1"
-                        classNameDiv="mx-1"
-                        validate={required}
-                      >
-                        <option value="">---------</option>
-                        {survey_event_types.map((survey_event_type, index) => (
-                          <option
-                            key={survey_event_type.id}
-                            value={survey_event_type.id}
-                          >
-                            {survey_event_type.order} - {survey_event_type.name}
-                          </option>
-                        ))}
-                      </SelectFormGroup>
-                      <CheckboxFormGroup
-                        name="concluded"
-                        label="Concluído"
-                        className="m-1"
-                        classNameDiv="mx-1"
-                      />
-                    </div>
+                    <SelectFormGroup
+                      name="survey_event_type"
+                      label="Tipo:"
+                      className="m-1"
+                      classNameDiv="mx-1"
+                      validate={required}
+                    >
+                      <option value="">---------</option>
+                      {survey_event_types.map((survey_event_type, index) => (
+                        <option
+                          key={survey_event_type.id}
+                          value={survey_event_type.id}
+                        >
+                          {survey_event_type.order} - {survey_event_type.name}
+                        </option>
+                      ))}
+                    </SelectFormGroup>
+                    <CheckboxFormGroup
+                      name="concluded"
+                      label="Concluído"
+                      className="m-1"
+                      classNameDiv="mx-1"
+                    />
                   </div>
-                </ToogleFieldSet>
-              </div>
+                </div>
+              </ToogleFieldSet>
             </div>
-            <CommonModalFooter
-              isDisabled={!isOwner}
-              canDelete={
-                survey !== undefined ? (survey.id !== 0 ? true : false) : false
-              }
-              canCopy={
-                survey !== undefined ? (survey.id !== 0 ? true : false) : false
-              }
-              onDelete={onDelete}
-              form={form}
-            />
-          </form>
-        );
-      }}
+          </div>
+          <CommonModalFooter
+            isDisabled={!isOwner}
+            canDelete={
+              survey !== undefined ? (survey.id !== 0 ? true : false) : false
+            }
+            canCopy={
+              survey !== undefined ? (survey.id !== 0 ? true : false) : false
+            }
+            onDelete={onDelete}
+            form={form}
+          />
+        </form>
+      )}
     />
   );
 };

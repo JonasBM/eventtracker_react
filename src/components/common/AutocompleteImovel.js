@@ -1,14 +1,16 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import { Field } from "react-final-form";
-import { Error } from "./Forms";
+import { Error, InputFormGroup } from "./Forms";
 import "./AutocompleteImovel.css";
 import { useDispatch, useSelector } from "react-redux";
 import formatString from "format-string-by-pattern";
 import { actionCRUDImovel } from "../../actions/imovel/actionImovel";
 import { OnFocus, OnBlur, OnChange } from "react-final-form-listeners";
-import { GeoItajaiButton, MapButton } from "../calendario/common";
+import { GeoItajaiButton, IconButton, MapButton } from "../calendario/common";
 import { useCallback } from "react";
 import debounce from "lodash.debounce";
+import axios from "axios";
+import { createMessage } from "../../actions/actionMessages";
 
 export const SearchFromString = (value, imovel_id = null) => {
   let all = /^[\d.]+-(.+)$/g;
@@ -53,7 +55,13 @@ export const SearchFromString = (value, imovel_id = null) => {
         complemento = number.slice(secondCommaIndex + 1).trim();
         number = number.slice(0, secondCommaIndex);
       }
-      number = number.replace(/(?<!\/)[nN]|[º°]/g, "").trim();
+      //number = number.replace(/(?<!\/)[nN]|[º°]/g, "").trim();
+      if (!number.includes("s/n")) {
+        number = number.replace(/[nN]|[º°]/g, "").trim();
+      } else {
+        number = number.trim();
+      }
+      //number = number.trim();
       street = street.slice(0, firstCommaIndex).trim();
     }
   }
@@ -83,6 +91,10 @@ const AutocompleteImovel = ({
   const [currentImovel, setCurrentImovel] = useState();
   const [showAutocomplete, setShowAutocomplete] = useState(false);
   const [blurTimer, setBlurTimer] = useState(null);
+
+  const [showNewCEP, setShowNewCEP] = useState(false);
+  const [logradouroBusca, setLogradouroBusca] = useState("");
+  const [CEPResults, setCEPResults] = useState();
 
   useEffect(() => {
     setCurrentImovel(form.getFieldState(name).value);
@@ -132,13 +144,49 @@ const AutocompleteImovel = ({
 
   const handleImovelChoose = (event) => {
     handleFocus(false);
-    form.mutators.setValue(
-      name,
-      imoveis.find(
-        (imovel) => imovel.id.toString() === event.target.dataset.imovel_id
-      )
-    );
-    form.mutators.setValue(name + "_id", event.target.dataset.imovel_id);
+    setShowNewCEP(false);
+    if (imoveis) {
+      form.mutators.setValue(
+        name,
+        imoveis.find(
+          (imovel) => imovel.id.toString() === event.target.dataset.imovel_id
+        )
+      );
+      form.mutators.setValue(name + "_id", event.target.dataset.imovel_id);
+    }
+  };
+
+  const handleBuscaCEP = () => {
+    const header = {
+      crossDomain: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      params: { uf: "SC", localidade: "Itajai", logradouro: logradouroBusca },
+    };
+    axios
+      .get(process.env.REACT_APP_API_URL + "api/buscacep/", header)
+      .then((res) => {
+        if (res.data.total > 0) {
+          setCEPResults(res.data.dados);
+        } else {
+          dispatch(createMessage({ INFO: res.data.mensagem }));
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleSaveCEP = () => {
+    if (form.getFieldState("newCEP")) {
+      form.mutators.setValue(
+        name + ".cep",
+        formatString("99.999-999", form.getFieldState("newCEP").value)
+      );
+      dispatch(actionCRUDImovel.update(form.getFieldState(name).value));
+    }
+    setShowNewCEP(false);
   };
 
   if (className !== undefined) {
@@ -187,23 +235,24 @@ const AutocompleteImovel = ({
         </OnBlur>
         <Field component="input" type="hidden" id={"id_" + name} name={name} />
         <div className={showAutocomplete ? "autocomplete-items" : "d-none"}>
-          {imoveis.map((imovel, index) => (
-            <div
-              key={index}
-              data-imovel_id={imovel.id}
-              data-imovel_value={imovel.name_string}
-              onClick={handleImovelChoose}
-              className={
-                currentImovel
-                  ? imovel.name_string === currentImovel.name_string
-                    ? "autocomplete-active"
+          {imoveis &&
+            imoveis.map((imovel, index) => (
+              <div
+                key={index}
+                data-imovel_id={imovel.id}
+                data-imovel_value={imovel.name_string}
+                onClick={handleImovelChoose}
+                className={
+                  currentImovel
+                    ? imovel.name_string === currentImovel.name_string
+                      ? "autocomplete-active"
+                      : ""
                     : ""
-                  : ""
-              }
-            >
-              {imovel.name_string}
-            </div>
-          ))}
+                }
+              >
+                {imovel.name_string}
+              </div>
+            ))}
         </div>
       </div>
       <Error name={name_string} />
@@ -221,37 +270,108 @@ const AutocompleteImovel = ({
           <li className="list-group-item p-0 border-0">
             Contribuinte: {currentImovel.numero_contribuinte}
           </li>
-          {currentImovel.lote ? (
-            <Fragment>
-              <li className="list-group-item p-0 border-0">
-                Endereço:{" "}
-                {currentImovel.lote.logradouro +
-                  ", " +
-                  currentImovel.lote.numero}
-                {currentImovel.complemento
-                  ? ", " + currentImovel.complemento
-                  : ""}
-                {" - "}
-                Bairro: {currentImovel.lote.bairro}
-                {" - "}CEP: {currentImovel.lote.CEP}
-                <div className="row no-gutters d-inline-flex float-right">
-                  <GeoItajaiButton codigo={currentImovel.lote.codigo} />
-                  <MapButton
-                    address={
-                      currentImovel.lote.logradouro +
-                      "," +
-                      currentImovel.lote.numero +
-                      "-" +
-                      currentImovel.lote.bairro +
-                      "-itajaí"
-                    }
-                  />
+          <li className="list-group-item p-0 border-0">
+            Endereço: {currentImovel.logradouro + ", " + currentImovel.numero}
+            {currentImovel.complemento ? ", " + currentImovel.complemento : ""}
+            {" - "}
+            Bairro: {currentImovel.bairro}
+            {" - "}CEP:{" "}
+            {currentImovel.cep && formatString("99.999-999", currentImovel.cep)}
+            <div className="row no-gutters d-inline-flex float-right">
+              <IconButton
+                icon={showNewCEP ? "fa-envelope-open-o" : "fa-envelope-o"}
+                onclick={() => {
+                  setLogradouroBusca(currentImovel.logradouro);
+                  setCEPResults();
+                  setShowNewCEP(!showNewCEP);
+                  form.mutators.setValue(
+                    "newCEP",
+                    formatString("99.999-999", currentImovel.cep)
+                  );
+                }}
+                title="Autalizar CEP"
+              />
+              <GeoItajaiButton codigo_lote={currentImovel.codigo_lote} />
+              <MapButton
+                address={
+                  currentImovel.logradouro +
+                  "," +
+                  currentImovel.numero +
+                  "-" +
+                  currentImovel.bairro +
+                  "-itajaí"
+                }
+              />
+            </div>
+          </li>
+          <li className="list-group-item p-0 border-0">
+            <div className={showNewCEP ? "collapse show p-1" : "collapse"}>
+              <div className="card card-body d-block p-1">
+                <input
+                  type="text"
+                  className="form-control form-control-sm"
+                  maxLength="255"
+                  value={logradouroBusca}
+                  placeholder="Logradouro sem número e sem bairro"
+                  onChange={(event) => {
+                    setLogradouroBusca(event.target.value);
+                  }}
+                />
+                <button
+                  type="button"
+                  className="btn btn-outline-primary btn-sm my-1"
+                  onClick={() => {
+                    handleBuscaCEP();
+                  }}
+                >
+                  Buscar CEP <i className="fa fa-search"></i>
+                </button>
+                <div className="list-group border-0">
+                  {CEPResults &&
+                    CEPResults.map((result, index) => (
+                      <button
+                        type="button"
+                        className="list-group-item list-group-item-action p-1 "
+                        key={index}
+                        onClick={() => {
+                          form.mutators.setValue(
+                            "newCEP",
+                            formatString("99.999-999", result.cep)
+                          );
+                        }}
+                      >
+                        <span>
+                          {result.logradouroDNEC}
+                          {" - "}
+                          {result.bairro}
+                          {": "}
+                          {result.cep}
+                        </span>
+                      </button>
+                    ))}
                 </div>
-              </li>
-            </Fragment>
-          ) : (
-            ""
-          )}
+                <div className="form-inline">
+                  <InputFormGroup
+                    name="newCEP"
+                    label="Novo CEP:"
+                    maxLength="255"
+                    className="m-1"
+                    classNameDiv="mx-1"
+                    parse={formatString("99.999-999")}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary btn-sm"
+                    onClick={() => {
+                      handleSaveCEP();
+                    }}
+                  >
+                    Salvar CEP
+                  </button>
+                </div>
+              </div>
+            </div>
+          </li>
         </ul>
       )}
     </div>

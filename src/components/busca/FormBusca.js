@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { IconButton } from "../calendario/common";
 import { actionCRUDNotice } from "../../actions/notice/actionNotice";
 import { actionCRUDSurvey } from "../../actions/survey/actionSurvey";
+import formatString from "format-string-by-pattern";
 
 const FormBusca = ({ state, setstate }) => {
   const dispatch = useDispatch();
@@ -82,6 +83,22 @@ const FormBusca = ({ state, setstate }) => {
                     name="identification"
                     label="Identificação/Nº:"
                     maxLength="255"
+                    className="m-1"
+                    classNameDiv="mx-1"
+                  />
+                  <InputFormGroup
+                    name="document"
+                    label="CPF/CNPJ:"
+                    maxLength="255"
+                    parse={(value) => {
+                      if (!value) return value;
+                      const onlyNumbers = value.replace(/[^\d]/g, "");
+                      if (value.length > 14) {
+                        return formatString("99.999.999/9999-99", onlyNumbers);
+                      } else {
+                        return formatString("999.999.999-99", onlyNumbers);
+                      }
+                    }}
                     className="m-1"
                     classNameDiv="mx-1"
                   />

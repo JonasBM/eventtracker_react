@@ -21,6 +21,7 @@ export default function () {
       setNoticeColor({
         id: 0,
         css_color: "",
+        resethack: [],
       });
     }
   };

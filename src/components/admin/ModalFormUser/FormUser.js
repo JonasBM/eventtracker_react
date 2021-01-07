@@ -78,6 +78,13 @@ const FormUser = ({ user }) => {
               <div className="form-inline">
                 <InputFormGroup name="email" label="Email:" className="m-1" />
               </div>
+              <div className="form-inline">
+                <InputFormGroup
+                  name="profile.matricula"
+                  label="Matrícula:"
+                  className="m-1"
+                />
+              </div>
               <CheckboxFormGroup name="is_staff" label="Administrador" />
               <CheckboxFormGroup name="is_active" label="Ativo" />
               <div className="form-inline">

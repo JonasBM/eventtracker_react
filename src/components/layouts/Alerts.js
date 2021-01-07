@@ -33,6 +33,11 @@ const Alerts = (prevProps, props) => {
       if (errors.msg.undefined_error) {
         alert.error(errors.msg.undefined_error.join());
       }
+      if (errors.status >= 300) {
+        if (!errors.msg) {
+          alert.error(errors.status);
+        }
+      }
     }
     if (messages !== prevMessages) {
       if (messages.CRUDcreate) alert.success(messages.CRUDcreate);
@@ -42,14 +47,6 @@ const Alerts = (prevProps, props) => {
       if (messages.ERROR) alert.error(messages.ERROR);
       if (messages.INFO) alert.info(messages.INFO);
       if (messages.SUCCESS) alert.success(messages.SUCCESS);
-    }
-    if (errors.status === 401) {
-      console.log("Não autorizado");
-      // history.push("/login/");
-    }
-    if (errors.status === 500) {
-      console.log("Internal Server Error");
-      alert.error("Internal Server Error");
     }
   }, [errors, prevErrors, messages, prevMessages, alert, history]);
 

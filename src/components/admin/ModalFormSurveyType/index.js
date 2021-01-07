@@ -25,6 +25,7 @@ export default function () {
         name: "",
         short_name: "",
         css_color: "",
+        resethack: [],
       });
     }
   };

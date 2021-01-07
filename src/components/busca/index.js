@@ -10,14 +10,15 @@ import ModalFormEvent from "../calendario/ModalFormEvent";
 import SurveyEventList from "../common/SurveyEventList";
 import NoticeEventList from "../common/NoticeEventList";
 import TaskBar from "../common/TaskBar";
+import moment from "moment";
 
 export default function () {
   const dispatch = useDispatch();
   const location = useLocation();
 
   const [state, setstate] = useState({
-    start_date: "",
-    end_date: "",
+    start_date: moment().startOf("month").format("YYYY-MM-DD"),
+    end_date: moment().endOf("month").format("YYYY-MM-DD"),
     imovel: "",
     imovel_id: "",
     identification: "",

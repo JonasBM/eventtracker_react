@@ -10,7 +10,6 @@ export const createMessage = (msg) => {
 
 // RETURN ERRORS
 export const returnErrors = (err) => {
-  console.log(err);
   let msg;
   let status;
   if (err.response) {

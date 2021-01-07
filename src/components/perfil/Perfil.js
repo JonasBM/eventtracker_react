@@ -18,14 +18,16 @@ const Perfil = () => {
   useEffect(() => {
     dispatch(actionCRUDUser.read());
     dispatch(actionCRUDUserProfile.read());
-    dispatch(updateImovelLog());
-    let intervalId = setInterval(() => {
+    if (authUser.is_staff) {
       dispatch(updateImovelLog());
-    }, 30000);
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [dispatch]);
+      let intervalId = setInterval(() => {
+        dispatch(updateImovelLog());
+      }, 30000);
+      return () => {
+        clearInterval(intervalId);
+      };
+    }
+  }, [dispatch, authUser]);
 
   const handleLogoutAll = () => {
     let newLine = "\r\n";

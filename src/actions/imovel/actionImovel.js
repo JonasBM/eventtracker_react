@@ -25,7 +25,6 @@ export const updateImovel = (check) => (dispatch, getState) => {
       if (res.data.response === "Não Autorizado") {
         dispatch(createMessage({ ERROR: res.data.response }));
       } else {
-        console.log(res.data.response);
         dispatch(createMessage({ SUCCESS: res.data.response }));
       }
     })

@@ -24,6 +24,7 @@ export default function () {
         email: "",
         is_staff: false,
         is_active: true,
+        resethack: [],
       });
     }
   };
