@@ -22,8 +22,8 @@ const TaskBar = ({ momentdate, dateType }) => {
         <button
           className="btn btn-sm btn-outline-primary mx-1 d-none d-lg-inline-block"
           type="button"
-          data-toggle="modal"
-          data-target="#ModalEvent"
+          data-bs-toggle="modal"
+          data-bs-target="#ModalEvent"
           data-modalcall="none"
           data-day={momentDate ? momentDate.format("YYYY-MM-DD") : ""}
         >

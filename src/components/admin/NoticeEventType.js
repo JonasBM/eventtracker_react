@@ -28,8 +28,8 @@ const NoticeEventType = () => {
       <caption>
         Lista de Tipos de Autos e relacionados{" "}
         <button
-          data-toggle="modal"
-          data-target="#ModalNoticeType"
+          data-bs-toggle="modal"
+          data-bs-target="#ModalNoticeType"
           data-modalcall="none"
           data-notice_type_id="0"
           type="button"
@@ -118,8 +118,8 @@ const NoticeEventType = () => {
                   <i className={"fa fa-trash"}></i>
                 </button>
                 <button
-                  data-toggle="modal"
-                  data-target="#ModalNoticeType"
+                  data-bs-toggle="modal"
+                  data-bs-target="#ModalNoticeType"
                   data-modalcall="noticetype"
                   data-notice_type_id={notice_event_type.id}
                   className="btn btn-outline-primary border-0 d-flex justify-content-center align-content-between p-1 mr-1 float-right"

@@ -28,8 +28,8 @@ const SurveyEventType = () => {
       <caption>
         Lista de Tipos de Vistorias{" "}
         <button
-          data-toggle="modal"
-          data-target="#ModalSurveyType"
+          data-bs-toggle="modal"
+          data-bs-target="#ModalSurveyType"
           data-modalcall="none"
           data-survey_type_id="0"
           type="button"
@@ -80,8 +80,8 @@ const SurveyEventType = () => {
                   <i className={"fa fa-trash"}></i>
                 </button>
                 <button
-                  data-toggle="modal"
-                  data-target="#ModalSurveyType"
+                  data-bs-toggle="modal"
+                  data-bs-target="#ModalSurveyType"
                   data-modalcall="surveytype"
                   data-survey_type_id={survey_event_type.id}
                   className="btn btn-outline-primary border-0 d-flex justify-content-center align-content-between p-1 mr-1 float-right"

@@ -27,8 +27,8 @@ const NoticeColor = () => {
       <caption>
         Lista de Cores para data de início dos Autos e relacionados{" "}
         <button
-          data-toggle="modal"
-          data-target="#ModalNoticeColor"
+          data-bs-toggle="modal"
+          data-bs-target="#ModalNoticeColor"
           data-modalcall="none"
           data-notice_color_id="0"
           type="button"
@@ -69,8 +69,8 @@ const NoticeColor = () => {
                 <i className={"fa fa-trash"}></i>
               </button>
               <button
-                data-toggle="modal"
-                data-target="#ModalNoticeColor"
+                data-bs-toggle="modal"
+                data-bs-target="#ModalNoticeColor"
                 data-modalcall="noticecolor"
                 data-notice_color_id={notice_color.id}
                 className="btn btn-outline-primary border-0 d-flex justify-content-center align-content-between p-1 mr-1 float-right"

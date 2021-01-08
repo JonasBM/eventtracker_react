@@ -13,7 +13,7 @@ const ModalEventTab = ({ active, name }) => {
         (!active ? " disabled" : "")
       }
       id={"nav-" + name + "-tab"}
-      data-toggle="tab"
+      data-bs-toggle="tab"
       href={"#nav-" + name}
       role="tab"
       aria-controls={"nav-" + name}
@@ -209,7 +209,7 @@ export default function () {
             <button
               type="button"
               className="close"
-              data-dismiss="modal"
+              data-bs-dismiss="modal"
               aria-label="Close"
             >
               <span aria-hidden="true">&times;</span>

@@ -37,7 +37,7 @@ const CommonModalFooter = ({
       <button
         type="button"
         className="btn btn-secondary font-weight-bold"
-        data-dismiss="modal"
+        data-bs-dismiss="modal"
       >
         Fechar
       </button>

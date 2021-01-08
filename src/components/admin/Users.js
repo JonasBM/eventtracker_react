@@ -25,8 +25,8 @@ const Users = () => {
       <caption>
         Lista de usuários{" "}
         <button
-          data-toggle="modal"
-          data-target="#ModalUser"
+          data-bs-toggle="modal"
+          data-bs-target="#ModalUser"
           data-modalcall="none"
           data-user_id="0"
           type="button"
@@ -71,8 +71,8 @@ const Users = () => {
                 <i className={"fa fa-trash"}></i>
               </button>
               <button
-                data-toggle="modal"
-                data-target="#ModalUser"
+                data-bs-toggle="modal"
+                data-bs-target="#ModalUser"
                 data-modalcall="user"
                 data-user_id={user.id}
                 className="btn btn-outline-primary border-0 d-flex justify-content-center align-content-between p-1 mr-1 float-right"

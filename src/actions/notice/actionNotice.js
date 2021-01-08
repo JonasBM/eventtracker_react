@@ -31,8 +31,8 @@ export const getLatest = (imovel_id) => (dispatch, getState) => {
           var b = document.createElement("button");
           b.type = "button";
           b.setAttribute("role", "button");
-          b.setAttribute("data-toggle", "modal");
-          b.setAttribute("data-target", "#ModalEvent");
+          b.setAttribute("data-bs-toggle", "modal");
+          b.setAttribute("data-bs-target", "#ModalEvent");
           b.setAttribute("data-modalcall", "notice");
           b.setAttribute("data-notice_id", res.data.id);
           b.setAttribute("data-survey_id", "0");

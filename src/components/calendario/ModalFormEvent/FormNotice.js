@@ -384,7 +384,7 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
                   </div>
                 </div>
               </ToogleFieldSet>
-              <div className="row">
+              <div className={notice && notice.id === 0 ? "row d-none" : "row"}>
                 <div className="col text-left">
                   <button
                     type="button"
@@ -392,7 +392,9 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
                     onClick={() => {
                       console.log("getnoticereportdocx");
                       dispatch(getnoticereportdocx(notice));
+                      console.log(notice.imovel);
                     }}
+                    disabled={notice && notice.imovel ? false : true}
                   >
                     Gerar Relatório de Fiscalização
                   </button>
@@ -403,6 +405,7 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
                       console.log("getVArequestdocx");
                       dispatch(getVArequestdocx(getFirstVA(notice)));
                     }}
+                    disabled={notice && notice.imovel ? false : true}
                   >
                     Gerar Pedido de VA
                   </button>

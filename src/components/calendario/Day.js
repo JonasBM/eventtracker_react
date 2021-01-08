@@ -78,9 +78,15 @@ const Day = ({ day, momentdate }) => {
           className={
             "btn btn-circle" + (activity ? " btn-primary" : " btn-secondary")
           }
-          data-toggle="modal"
-          data-target="#ModalEvent"
-          data-modalcall={isOwner ? "none" : "activity"}
+          data-bs-toggle="modal"
+          data-bs-target="#ModalEvent"
+          data-modalcall={
+            isOwner
+              ? activity !== undefined
+                ? "activity"
+                : "none"
+              : "activity"
+          }
           data-notice_id="0"
           data-survey_id="0"
           data-activity_id={activity !== undefined ? activity.id : "0"}
