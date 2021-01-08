@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import "./Day.css";
 import { NoticeButton, NoticeEventButton } from "./NoticeEvent";
 import SurveyEvent from "./SurveyEvent";
-
+import moment from "moment";
 import {
   filterNoticebyDateStart,
   filterNoticebyDateDeadline,
@@ -72,7 +72,10 @@ const Day = ({ day, momentdate }) => {
   }
 
   return (
-    <td id={day.format("YYYY-MM-DD")} className="">
+    <td
+      id={day.format("YYYY-MM-DD")}
+      className={day.isSame(moment(), "day") ? "bg-dark" : ""}
+    >
       <div className="text-right pb-1">
         <button
           className={
