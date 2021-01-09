@@ -73,7 +73,7 @@ export default function () {
       setNotice({
         id: 0,
         imovel: null,
-        imovel_id: null,
+        imovel_id: 0,
         document: null,
         date: e.relatedTarget.dataset.day,
         address: null,
@@ -96,7 +96,7 @@ export default function () {
       setSurvey({
         id: 0,
         imovel: null,
-        imovel_id: null,
+        imovel_id: 0,
         document: null,
         identification: null,
         date: e.relatedTarget.dataset.day,
