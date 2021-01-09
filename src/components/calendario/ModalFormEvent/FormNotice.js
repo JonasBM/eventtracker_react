@@ -252,7 +252,6 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
   };
 
   const onSubmit = (values) => {
-    console.log(values)
     let criarnovo = values.criarnovo;
     delete values["criarnovo"];
     let closeModal = false;
