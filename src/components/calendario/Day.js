@@ -86,7 +86,7 @@ const Day = ({ day, momentdate }) => {
           data-modalcall={
             isOwner
               ? activity !== undefined
-                ? "activity"
+                ? "none"
                 : "none"
               : "activity"
           }
