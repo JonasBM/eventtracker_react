@@ -16,15 +16,28 @@ export default function () {
           surveyType.id.toString() === e.relatedTarget.dataset.survey_type_id
       );
     }
+
+    let MaxOrder = Math.max.apply(
+      Math,
+      store
+        .getState()
+        .survey.survey_event_types.survey_event_types.filter((survey) => {
+          return survey.order !== 99;
+        })
+        .map(function (survey) {
+          return survey.order;
+        })
+    );
+
     if (surveyType !== undefined) {
       setSurveyType(surveyType);
     } else {
       setSurveyType({
         id: 0,
-        order: "",
+        order: MaxOrder + 1,
         name: "",
         short_name: "",
-        css_color: "",
+        css_color: "#000000",
         resethack: [],
       });
     }

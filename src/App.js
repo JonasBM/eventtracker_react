@@ -60,20 +60,6 @@ export const App = () => {
           <Alerts />
           <Header />
           <main role="main">
-          <button onClick={()=>{
-            alert("Teste 01 completo");
-            console.log("Teste 01 completo");
-            }}>
-              CLICK TESTE 01
-            </button>
-            <div onClick={()=>{
-              alert("Teste 02 completo");
-              console.log("Teste 02 completo");
-            }}>CLICK TESTE 02</div>
-            <div role="button" onClick={()=>{
-              alert("Teste 03 completo");
-              console.log("Teste 03 completo");
-            }}>CLICK TESTE 03</div>
             <Switch>
               <PrivateRoute exact path="/" component={Calendario} />
               <PrivateRoute exact path="/perfil" component={Perfil} />

@@ -16,18 +16,26 @@ export default function () {
           noticeType.id.toString() === e.relatedTarget.dataset.notice_type_id
       );
     }
+    let MaxOrder = Math.max.apply(
+      Math,
+      store
+        .getState()
+        .notice.notice_event_types.notice_event_types.map(function (o) {
+          return o.order;
+        })
+    );
     if (noticeType !== undefined) {
       setNoticeType(noticeType);
     } else {
       setNoticeType({
         id: 0,
-        order: "",
+        order: MaxOrder + 1,
         name: "",
         short_name: "",
-        default_deadline: 0,
+        default_deadline: "0",
         default_deadline_working_days: true,
         default_concluded: false,
-        css_color: "",
+        css_color: "#000000",
         show_concluded: true,
         show_report_number: true,
         show_deadline: true,

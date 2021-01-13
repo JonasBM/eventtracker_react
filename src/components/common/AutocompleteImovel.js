@@ -131,15 +131,9 @@ const AutocompleteImovel = ({
       form.getFieldState(name_string).value !== undefined &&
       form.getFieldState(name_string).value.length > 3
     ) {
-      // clearTimeout(blurTimer);
       setShowAutocomplete(true);
     } else {
       setShowAutocomplete(false);
-      // setBlurTimer(
-      //   setTimeout(() => {
-      //     setShowAutocomplete(false);
-      //   }, 0)
-      // );
     }
   };
 

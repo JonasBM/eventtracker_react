@@ -14,7 +14,9 @@ const FormUpdateImovel = () => {
   const updatelog = useSelector((state) => state.imovel.updatelog);
   const onSubmit = (values) => {
     dispatch(updateImovel(values));
-    dispatch(updateImovelLog());
+    setInterval(() => {
+      dispatch(updateImovelLog());
+    }, 300);
   };
   const [duration, setDuration] = useState(moment.duration());
 
