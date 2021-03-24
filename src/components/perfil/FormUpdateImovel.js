@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Form } from "react-final-form";
 import { InputFormGroup, required } from "../common/Forms";
@@ -16,6 +16,12 @@ const FormUpdateImovel = () => {
     dispatch(updateImovel(values));
     dispatch(updateImovelLog());
   };
+  const [duration, setDuration] = useState(moment.duration());
+
+  useEffect(() => {
+    let diffTime = moment(updatelog.datetime).diff(updatelog.datetime_started);
+    setDuration(moment.duration(diffTime));
+  }, [updatelog]);
 
   return (
     <Form
@@ -60,8 +66,23 @@ const FormUpdateImovel = () => {
                 {updatelog.response}
               </li>
               <li className="list-group-item p-0 border-0">
+                Status da leitura do arquivo:
+              </li>
+              <li className="list-group-item p-0 border-0">
                 Total: {updatelog.total} / Inalterados: {updatelog.inalterados}{" "}
                 / Alterados: {updatelog.alterados} / Novos: {updatelog.novos}
+              </li>
+              <li className="list-group-item p-0 border-0">
+                <div className="progress">
+                  <div
+                    className={"progress-bar w-" + updatelog.progresso * 100}
+                    role="progressbar"
+                    aria-valuenow={updatelog.progresso * 100}
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  ></div>
+                </div>
+                Duração: {duration.humanize()}
               </li>
             </ul>
           )}
