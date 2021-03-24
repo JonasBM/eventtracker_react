@@ -90,7 +90,7 @@ const AutocompleteImovel = ({
   const imoveis = useSelector((state) => state.imovel.imoveis.imoveis);
   const [currentImovel, setCurrentImovel] = useState();
   const [showAutocomplete, setShowAutocomplete] = useState(false);
-  const [blurTimer, setBlurTimer] = useState(null);
+  //const [blurTimer, setBlurTimer] = useState(null);
 
   const [showNewCEP, setShowNewCEP] = useState(false);
   const [logradouroBusca, setLogradouroBusca] = useState("");
@@ -131,14 +131,9 @@ const AutocompleteImovel = ({
       form.getFieldState(name_string).value !== undefined &&
       form.getFieldState(name_string).value.length > 3
     ) {
-      clearTimeout(blurTimer);
       setShowAutocomplete(true);
     } else {
-      setBlurTimer(
-        setTimeout(() => {
-          setShowAutocomplete(false);
-        }, 100)
-      );
+      setShowAutocomplete(false);
     }
   };
 
@@ -238,10 +233,12 @@ const AutocompleteImovel = ({
           {imoveis &&
             imoveis.map((imovel, index) => (
               <div
+                role="button"
                 key={index}
                 data-imovel_id={imovel.id}
                 data-imovel_value={imovel.name_string}
-                onClick={handleImovelChoose}
+                onMouseDown={handleImovelChoose}
+                //onClick={handleImovelChoose}
                 className={
                   currentImovel
                     ? imovel.name_string === currentImovel.name_string

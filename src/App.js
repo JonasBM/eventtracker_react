@@ -46,7 +46,7 @@ export const App = () => {
 
   // Alert Options
   const alertOptions = {
-    timeout: 3000,
+    timeout: 5000,
     position: "bottom center",
     containerStyle: {
       zIndex: 1070,

@@ -14,7 +14,9 @@ const FormUpdateImovel = () => {
   const updatelog = useSelector((state) => state.imovel.updatelog);
   const onSubmit = (values) => {
     dispatch(updateImovel(values));
-    dispatch(updateImovelLog());
+    setInterval(() => {
+      dispatch(updateImovelLog());
+    }, 300);
   };
   const [duration, setDuration] = useState(moment.duration());
 
@@ -82,7 +84,11 @@ const FormUpdateImovel = () => {
                     aria-valuemax="100"
                   ></div>
                 </div>
+<<<<<<< HEAD
                 Duração: {duration.humanize()}
+=======
+                Duração: {duration.hours()+" horas, "+duration.minutes()+" minutos e "+duration.seconds()+" segundos"}
+>>>>>>> 2487de066a038d07347c1ff52c61056e4508206b
               </li>
             </ul>
           )}

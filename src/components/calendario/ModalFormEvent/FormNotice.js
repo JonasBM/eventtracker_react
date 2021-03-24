@@ -390,9 +390,7 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
                     type="button"
                     className="btn btn-primary btn-sm m-1"
                     onClick={() => {
-                      console.log("getnoticereportdocx");
                       dispatch(getnoticereportdocx(notice));
-                      console.log(notice.imovel);
                     }}
                     disabled={notice && notice.imovel ? false : true}
                   >
@@ -402,10 +400,9 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
                     type="button"
                     className="btn btn-primary btn-sm m-1"
                     onClick={() => {
-                      console.log("getVArequestdocx");
                       dispatch(getVArequestdocx(getFirstVA(notice)));
                     }}
-                    disabled={notice && notice.imovel ? false : true}
+                    disabled={notice && notice.imovel ? getFirstVA(notice) ? false : true : true}
                   >
                     Gerar Pedido de VA
                   </button>

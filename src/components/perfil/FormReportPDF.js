@@ -26,7 +26,12 @@ const FormReportPDF = () => {
         <form onSubmit={handleSubmit} className="needs-validation" noValidate>
           <h5>{"Baixar relatório"}</h5>
           <div className="form-inline">
-            <SelectFormGroup name="user_id" label="AFM:" className="m-1">
+            <SelectFormGroup
+              name="user_id"
+              id="id_user_id_report"
+              label="AFM:"
+              className="m-1"
+            >
               {users.map((user, index) => (
                 <option key={user.id} value={user.id}>
                   {user.first_name} {user.last_name}
@@ -37,6 +42,7 @@ const FormReportPDF = () => {
           <div className="form-inline">
             <InputFormGroup
               name="month"
+              id="id_month_report"
               label="Referência: "
               type="month"
               className="m-1"

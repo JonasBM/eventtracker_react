@@ -134,8 +134,6 @@ export const getVArequestdocx = (vistoriaAdministrativa) => (
     tokenConfig(getState)
   );
 
-  console.log(vistoriaAdministrativa.id);
-
   let fileName = "Pedido de VA.docx";
   try {
     axios

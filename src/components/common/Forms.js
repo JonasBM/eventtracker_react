@@ -24,10 +24,17 @@ export const InputFormGroup = ({ isHidden = false, ...props }) => {
     classNameDiv += " " + props.classNameDiv;
     delete props.classNameDiv;
   }
+
+  let id = "id_" + props.name;
+  if (props.id !== undefined) {
+    id = props.id;
+    delete props.id;
+  }
+
   return (
     <div className={isHidden ? "d-none" : classNameDiv}>
       {props.label && (
-        <label htmlFor={"id_" + props.name} className="mb-0">
+        <label htmlFor={id} className="mb-0">
           {props.label}
         </label>
       )}
@@ -36,7 +43,7 @@ export const InputFormGroup = ({ isHidden = false, ...props }) => {
         type="text"
         {...props}
         className={className}
-        id={"id_" + props.name}
+        id={id}
         name={props.name}
       />
       <Error name={props.name} />
@@ -55,18 +62,25 @@ export const CheckboxFormGroup = ({ isHidden = false, ...props }) => {
     classNameDiv += " " + props.classNameDiv;
     delete props.classNameDiv;
   }
+
+  let id = "id_" + props.name;
+  if (props.id !== undefined) {
+    id = props.id;
+    delete props.id;
+  }
+
   return (
     <div className={isHidden ? "d-none" : classNameDiv} title={props.tooltip}>
       <Field
         component="input"
         type="checkbox"
         {...props}
-        id={"id_" + props.name}
+        id={id}
         name={props.name}
         className={className}
       />
       {props.label && (
-        <label className="custom-control-label" htmlFor={"id_" + props.name}>
+        <label className="custom-control-label" htmlFor={id}>
           {props.label}
         </label>
       )}
@@ -85,10 +99,15 @@ export const SelectFormGroup = ({ isHidden = false, ...props }) => {
     classNameDiv += " " + props.classNameDiv;
     delete props.classNameDiv;
   }
+  let id = "id_" + props.name;
+  if (props.id !== undefined) {
+    id = props.id;
+    delete props.id;
+  }
   return (
     <div className={isHidden ? "d-none" : classNameDiv}>
       {props.label && (
-        <label htmlFor={"id_" + props.name} className="mb-0">
+        <label htmlFor={id} className="mb-0">
           {props.label}
         </label>
       )}
@@ -96,7 +115,7 @@ export const SelectFormGroup = ({ isHidden = false, ...props }) => {
         component="select"
         {...props}
         className={className}
-        id={"id_" + props.name}
+        id={id}
         name={props.name}
       />
       <Error name={props.name} />
@@ -109,11 +128,16 @@ export const ComboboxFormGroup = ({ isHidden = false, ...props }) => {
   if (props.className !== undefined) {
     className += " " + props.className;
   }
+  let id = "id_" + props.name;
+  if (props.id !== undefined) {
+    id = props.id;
+    delete props.id;
+  }
   const { children, ...childprops } = props;
   return (
     <div className={props.isHidden ? "d-none" : "form-group mb-0"}>
       {props.label && (
-        <label htmlFor={"id_" + props.name} className="mb-0">
+        <label htmlFor={id} className="mb-0">
           {props.label}
         </label>
       )}
@@ -122,11 +146,11 @@ export const ComboboxFormGroup = ({ isHidden = false, ...props }) => {
         type="text"
         {...childprops}
         className={className}
-        id={"id_" + props.name}
+        id={id}
         name={props.name}
-        list={"id_" + props.name + "_list"}
+        list={id + "_list"}
       />
-      <datalist id={"id_" + props.name + "_list"}>{children}</datalist>
+      <datalist id={id + "_list"}>{children}</datalist>
       <Error name={props.name} />
     </div>
   );

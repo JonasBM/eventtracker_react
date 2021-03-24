@@ -20,7 +20,7 @@ export default function () {
     } else {
       setNoticeColor({
         id: 0,
-        css_color: "",
+        css_color: "#000000",
         resethack: [],
       });
     }

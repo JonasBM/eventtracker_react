@@ -48,6 +48,7 @@ export default function () {
     noticetab: true,
     surveytab: true,
     activitytab: true,
+    alltabs: true,
   });
 
   const [date, setDate] = useState();
@@ -73,7 +74,7 @@ export default function () {
       setNotice({
         id: 0,
         imovel: null,
-        imovel_id: null,
+        imovel_id: 0,
         document: null,
         date: e.relatedTarget.dataset.day,
         address: null,
@@ -96,7 +97,7 @@ export default function () {
       setSurvey({
         id: 0,
         imovel: null,
-        imovel_id: null,
+        imovel_id: 0,
         document: null,
         identification: null,
         date: e.relatedTarget.dataset.day,
@@ -132,6 +133,7 @@ export default function () {
         noticetab: true,
         surveytab: false,
         activitytab: false,
+        alltabs: false,
       });
     }
     if (e.relatedTarget.dataset.modalcall === "survey") {
@@ -140,6 +142,7 @@ export default function () {
         noticetab: false,
         surveytab: true,
         activitytab: false,
+        alltabs: false,
       });
     }
     if (e.relatedTarget.dataset.modalcall === "activity") {
@@ -148,6 +151,16 @@ export default function () {
         noticetab: false,
         surveytab: false,
         activitytab: true,
+        alltabs: false,
+      });
+    }
+    if (e.relatedTarget.dataset.modalcall === "activity_all") {
+      setTabstate({
+        title: "Editar Atividade",
+        noticetab: false,
+        surveytab: false,
+        activitytab: true,
+        alltabs: true,
       });
     }
     if (e.relatedTarget.dataset.modalcall === "none") {
@@ -156,6 +169,7 @@ export default function () {
         noticetab: true,
         surveytab: true,
         activitytab: true,
+        alltabs: true,
       });
     }
     setIsModalOpen(true);
@@ -221,9 +235,9 @@ export default function () {
               id="nav-tab"
               role="tablist"
             >
-              <ModalEventTab active={tabstate.noticetab} name="auto" />
-              <ModalEventTab active={tabstate.surveytab} name="vistoria" />
-              <ModalEventTab active={tabstate.activitytab} name="atividade" />
+              <ModalEventTab active={(tabstate.noticetab || tabstate.alltabs)} name="auto" />
+              <ModalEventTab active={(tabstate.surveytab || tabstate.alltabs)} name="vistoria" />
+              <ModalEventTab active={(tabstate.activitytab || tabstate.alltabs)} name="atividade" />
             </div>
           </nav>
           <div className="tab-content" id="nav-tabContent">
