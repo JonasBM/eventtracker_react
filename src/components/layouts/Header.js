@@ -86,6 +86,19 @@ const Header = () => {
             {auth && auth.user && auth.user.is_staff && (
               <NavItem to="/admin">Administração</NavItem>
             )}
+
+            <li className="nav-item ml-lg-5">
+              <a
+                className="nav-link"
+                href="https://github.com/JonasBM/eventtracker_react/wiki"
+                target="_blank"
+                rel="noreferrer noopener"
+                type="button"
+                title="Ajuda"
+              >
+                Ajuda
+              </a>
+            </li>
           </ul>
           {authButton}
         </div>

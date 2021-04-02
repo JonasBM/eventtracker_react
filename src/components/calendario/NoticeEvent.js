@@ -9,6 +9,7 @@ import {
   MapButton,
   EventButton,
   GeoItajaiButton,
+  GeoItajaiAlvaraButton,
 } from "./common";
 import { useDispatch, useSelector } from "react-redux";
 import { actionCRUDNotice } from "../../actions/notice/actionNotice";
@@ -64,6 +65,9 @@ export const NoticeButton = ({ notice, day }) => {
           ))}
       </EventButton>
       <GeoItajaiButton
+        codigo_lote={notice.imovel ? notice.imovel.codigo_lote : ""}
+      />
+      <GeoItajaiAlvaraButton
         codigo_lote={notice.imovel ? notice.imovel.codigo_lote : ""}
       />
       <MapButton
@@ -139,6 +143,9 @@ export const NoticeEventButton = ({ notice, day }) => {
                   }
                 />
                 <GeoItajaiButton
+                  codigo_lote={notice.imovel ? notice.imovel.codigo_lote : ""}
+                />
+                <GeoItajaiAlvaraButton
                   codigo_lote={notice.imovel ? notice.imovel.codigo_lote : ""}
                 />
                 <MapButton

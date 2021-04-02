@@ -2,7 +2,12 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { Form } from "react-final-form";
-import { InputFormGroup, required, SelectFormGroup } from "../common/Forms";
+import {
+  InputFormGroup,
+  CheckboxFormGroup,
+  required,
+  SelectFormGroup,
+} from "../common/Forms";
 
 import { getReportPDF } from "../../actions/actionFiles";
 
@@ -20,6 +25,7 @@ const FormReportPDF = () => {
       initialValues={{
         user_id: authUser.id,
         month: moment().format("YYYY-MM"),
+        include_analytic_data: true,
       }}
       onSubmit={onSubmit}
       render={({ handleSubmit }) => (
@@ -47,6 +53,13 @@ const FormReportPDF = () => {
               type="month"
               className="m-1"
               validate={required}
+            />
+          </div>
+          <div className="form-inline">
+            <CheckboxFormGroup
+              name="include_analytic_data"
+              label="Incluir relatório analítico"
+              className="m-1"
             />
           </div>
           <div className="form-inline">

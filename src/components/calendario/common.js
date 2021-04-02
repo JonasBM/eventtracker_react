@@ -47,7 +47,19 @@ export const GeoItajaiButton = ({ codigo_lote }) => {
         codigo_lote
       }
       icon="fa-file-text-o"
-      title="Abrir no GeoItajaí"
+      title="Consulta Prévia"
+    />
+  );
+};
+
+export const GeoItajaiAlvaraButton = ({ codigo_lote }) => {
+  return (
+    <IconButton
+      href={
+        "https://geoitajai.github.io/geo/consultaalvara.html#" + codigo_lote
+      }
+      icon="fa-id-card-o"
+      title="Grau de risco"
     />
   );
 };

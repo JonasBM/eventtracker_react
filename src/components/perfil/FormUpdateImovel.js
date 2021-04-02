@@ -84,11 +84,13 @@ const FormUpdateImovel = () => {
                     aria-valuemax="100"
                   ></div>
                 </div>
-<<<<<<< HEAD
-                Duração: {duration.humanize()}
-=======
-                Duração: {duration.hours()+" horas, "+duration.minutes()+" minutos e "+duration.seconds()+" segundos"}
->>>>>>> 2487de066a038d07347c1ff52c61056e4508206b
+                Duração:{" "}
+                {duration.hours() +
+                  " horas, " +
+                  duration.minutes() +
+                  " minutos e " +
+                  duration.seconds() +
+                  " segundos"}
               </li>
             </ul>
           )}

@@ -4,6 +4,7 @@ import {
   MapButton,
   EventButton,
   GeoItajaiButton,
+  GeoItajaiAlvaraButton,
 } from "./common";
 import { useDispatch, useSelector } from "react-redux";
 import { getSurveyEventType } from "./utils";
@@ -67,6 +68,9 @@ const SurveyEventButton = ({ survey, day }) => {
         onclick={isOwner ? () => completeTask() : () => {}}
       />
       <GeoItajaiButton
+        codigo_lote={survey.imovel ? survey.imovel.codigo_lote : ""}
+      />
+      <GeoItajaiAlvaraButton
         codigo_lote={survey.imovel ? survey.imovel.codigo_lote : ""}
       />
       <MapButton

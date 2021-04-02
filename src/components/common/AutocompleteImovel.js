@@ -6,7 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import formatString from "format-string-by-pattern";
 import { actionCRUDImovel } from "../../actions/imovel/actionImovel";
 import { OnFocus, OnBlur, OnChange } from "react-final-form-listeners";
-import { GeoItajaiButton, IconButton, MapButton } from "../calendario/common";
+import {
+  GeoItajaiButton,
+  GeoItajaiAlvaraButton,
+  IconButton,
+  MapButton,
+} from "../calendario/common";
 import { useCallback } from "react";
 import debounce from "lodash.debounce";
 import axios from "axios";
@@ -289,6 +294,7 @@ const AutocompleteImovel = ({
                 title="Autalizar CEP"
               />
               <GeoItajaiButton codigo_lote={currentImovel.codigo_lote} />
+              <GeoItajaiAlvaraButton codigo_lote={currentImovel.codigo_lote} />
               <MapButton
                 address={
                   currentImovel.logradouro +
