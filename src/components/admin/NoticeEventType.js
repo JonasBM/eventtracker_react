@@ -58,7 +58,7 @@ const NoticeEventType = () => {
           <th scope="col" rowSpan="2">
             Cor
           </th>
-          <th scope="col" colSpan="5">
+          <th scope="col" colSpan="6">
             Mostrar
           </th>
           <th scope="col" rowSpan="2"></th>
@@ -71,6 +71,7 @@ const NoticeEventType = () => {
           <th scope="col">RF</th>
           <th scope="col">Prazo</th>
           <th scope="col">Multa</th>
+          <th scope="col">Recurso</th>
           <th scope="col">Na data de início</th>
         </tr>
       </thead>
@@ -107,6 +108,7 @@ const NoticeEventType = () => {
               <td>{notice_event_type.show_report_number ? "Sim" : "Não"}</td>
               <td>{notice_event_type.show_deadline ? "Sim" : "Não"}</td>
               <td>{notice_event_type.show_fine ? "Sim" : "Não"}</td>
+              <td>{notice_event_type.show_appeal ? "Sim" : "Não"}</td>
               <td>{notice_event_type.show_start ? "Sim" : "Não"}</td>
               <td>
                 <button

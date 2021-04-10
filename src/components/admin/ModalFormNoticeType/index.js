@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import store from "../../../store";
 import FormNoticeType from "./FormNoticeType";
 
-export default function () {
+export default function ModalFormNoticeType() {
   const [noticeType, setNoticeType] = useState();
 
   const handleShowModal = (e) => {
@@ -24,6 +24,9 @@ export default function () {
           return o.order;
         })
     );
+    if (MaxOrder === -Infinity) {
+      MaxOrder = 0;
+    }
     if (noticeType !== undefined) {
       setNoticeType(noticeType);
     } else {
@@ -58,6 +61,7 @@ export default function () {
       tabIndex="-1"
       role="dialog"
       aria-hidden="true"
+      data-bs-backdrop="static"
     >
       <div className="modal-dialog" role="document">
         <div className="modal-content">

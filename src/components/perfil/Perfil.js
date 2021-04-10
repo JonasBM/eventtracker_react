@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-
 import { actionCRUDUserProfile } from "../../actions/user/actionUserProfile";
 import { logoutAll } from "../../actions/actionAuth";
 import FormChangePassword from "./FormChangePassword";
@@ -8,8 +7,7 @@ import FormUserData from "./FormUserData";
 import FormReportPDF from "./FormReportPDF";
 import FormSheetCSV from "./FormSheetCSV";
 import { actionCRUDUser } from "../../actions/user/actionUser";
-import FormUpdateImovel from "./FormUpdateImovel";
-import { updateImovelLog } from "../../actions/imovel/actionImovel";
+import FormReportPDFAll from "./FormReportPDFAll";
 
 const Perfil = () => {
   const dispatch = useDispatch();
@@ -18,15 +16,6 @@ const Perfil = () => {
   useEffect(() => {
     dispatch(actionCRUDUser.read());
     dispatch(actionCRUDUserProfile.read());
-    if (authUser.is_staff) {
-      dispatch(updateImovelLog());
-      let intervalId = setInterval(() => {
-        dispatch(updateImovelLog());
-      }, 30000);
-      return () => {
-        clearInterval(intervalId);
-      };
-    }
   }, [dispatch, authUser]);
 
   const handleLogoutAll = () => {
@@ -64,15 +53,6 @@ const Perfil = () => {
           <div className="mt-2">
             <FormChangePassword authUser={authUser} />
           </div>
-        </div>
-        <div className="col-12 offset-lg-1 col-lg-4 mt-2 mt-lg-0">
-          <div className="row m-1 p-2 border">
-            <FormReportPDF />
-          </div>
-          <div className="row m-1 p-2 border">
-            <FormSheetCSV />
-          </div>
-
           <div className="row m-1 p-2">
             <button
               type="button"
@@ -83,12 +63,18 @@ const Perfil = () => {
             </button>
           </div>
         </div>
-      </div>
-      {authUser && authUser.is_staff && (
-        <div className="row mt-3 m-1 p-2 border">
-          <FormUpdateImovel />
+        <div className="col-12 offset-lg-1 col-lg-4 mt-2 mt-lg-0">
+          <div className="row m-1 p-2 border">
+            <FormReportPDFAll />
+          </div>
+          <div className="row m-1 p-2 border">
+            <FormReportPDF />
+          </div>
+          <div className="row m-1 p-2 border">
+            <FormSheetCSV />
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

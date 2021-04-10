@@ -69,3 +69,17 @@ p {
 .font-size-90 {
   font-size: 90%;
 }
+
+.concluded {
+  opacity: 0.6;
+}
+
+.modal {
+  overflow: auto !important;
+}
+
+.btn.never-disabled[disabled],
+fieldset[disabled] .btn.never-disabled {
+  opacity: 1 !important;
+  cursor: pointer !important;
+}

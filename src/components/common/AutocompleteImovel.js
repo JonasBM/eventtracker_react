@@ -12,7 +12,6 @@ import {
   IconButton,
   MapButton,
 } from "../calendario/common";
-import { useCallback } from "react";
 import debounce from "lodash.debounce";
 import axios from "axios";
 import { createMessage } from "../../actions/actionMessages";
@@ -108,19 +107,17 @@ const AutocompleteImovel = ({
     }
   }, [form, name, name_string]);
 
-  const debouncedImovelSearch = useCallback(
-    debounce((value) => {
-      if (form.getFieldState(name).value) {
-        let params = SearchFromString(value, form.getFieldState(name).value.id);
-        dispatch(actionCRUDImovel.read(params));
-      }
-    }, 500),
-    []
-  );
+  const ImovelSearch = (value) => {
+    if (form.getFieldState(name).value) {
+      let params = SearchFromString(value, form.getFieldState(name).value.id);
+      dispatch(actionCRUDImovel.read(params));
+    }
+  };
 
   const handleValueChange = (value, previous) => {
     if (value.length > 3) {
-      debouncedImovelSearch(value);
+      const debouncedSave = debounce(() => ImovelSearch(value), 500);
+      debouncedSave();
       handleFocus(true);
     } else {
       handleFocus(false);

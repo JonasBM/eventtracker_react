@@ -84,6 +84,7 @@ const FormNoticeType = ({ noticeType }) => {
               <div className="form-inline">
                 <InputFormGroup
                   name="default_deadline"
+                  format={(value) => (value ? parseInt(value) : "0")}
                   label="Prazo padrão (dias):"
                   type="number"
                   min="0"
@@ -133,7 +134,10 @@ const FormNoticeType = ({ noticeType }) => {
                 <CheckboxFormGroup name="show_deadline" label="Tem prazo?" />
               </div>
               <div className="form-inline">
-                <CheckboxFormGroup name="show_fine" label="Tem Multas?" />
+                <CheckboxFormGroup name="show_fine" label="Tem Multa?" />
+              </div>
+              <div className="form-inline">
+                <CheckboxFormGroup name="show_appeal" label="Tem Recurso?" />
               </div>
               <div className="form-inline">
                 <CheckboxFormGroup

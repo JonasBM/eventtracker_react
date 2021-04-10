@@ -13,6 +13,7 @@ import {
   getNoticeEventType,
   filterOnlyInArrayByID,
   getFirstVA,
+  hasNotification,
 } from "../utils";
 import {
   InputFormGroup,
@@ -28,10 +29,11 @@ import {
   getnoticereportdocx,
   getVArequestdocx,
 } from "../../../actions/actionFiles";
+import { IconButton } from "../common";
 
 const FormNoticeFine = ({ fields, name, index, isOwner }) => {
   return (
-    <div key={name} className="row px-4 py-1 form-inline">
+    <div key={name} className="row px-4 py-1 form-inline border-bottom">
       <InputFormGroup
         name={name + ".identification"}
         label="Nº:"
@@ -59,14 +61,87 @@ const FormNoticeFine = ({ fields, name, index, isOwner }) => {
   );
 };
 
-const FormNoticeEvent = ({ fields, name, index, push, isOwner }) => {
+const FormNoticeAppeal = ({ form, fields, name, index, isOwner }) => {
+  return (
+    <Fragment key={name}>
+      <div className="row px-4 py-1 form-inline">
+        <InputFormGroup
+          name={name + ".identification"}
+          label="Nº:"
+          size="10"
+          maxLength="255"
+          placeholder="identificação"
+          className="mx-1"
+        />
+        <InputFormGroup
+          name={name + ".extension"}
+          label="Extensão (dias):"
+          type="number"
+          min="0"
+          max="999"
+          placeholder="0"
+          className="mx-1"
+          classNameDiv="m-1"
+        />
+        {isOwner && (
+          <button
+            type="button"
+            className="btn btn-outline-danger border-0 btn-sm"
+            onClick={() => fields.remove(index)}
+          >
+            <i className="fa fa-trash fa-sm"></i>
+          </button>
+        )}
+      </div>
+      <div className="row px-4 py-1 form-inline border-bottom">
+        <InputFormGroup
+          name={name + ".start_date"}
+          label="Inicio:"
+          type="date"
+          className="mx-1"
+          validate={required}
+        />
+        <InputFormGroup
+          name={name + ".end_date"}
+          label="Fim:"
+          type="date"
+          className="mx-1"
+        />
+        <IconButton
+          icon={"fa-times-circle-o"}
+          onclick={() => {
+            form.mutators.setValue(name + ".end_date", null);
+          }}
+          title="Limpar data"
+        />
+      </div>
+    </Fragment>
+  );
+};
+
+const FormNoticeEvent = ({ form, fields, name, index, push, isOwner }) => {
+  const notice_event_type = getNoticeEventType(fields.value[index]);
   return (
     <div>
       <hr className="m-1" />
       <div className="row text-center">
         <span className="col text-uppercase w-100 font-weight-bold text-nowrap inline-block">
-          {getNoticeEventType(fields.value[index]).name}
+          {notice_event_type.name}
+          {hasNotification(notice_event_type) && (
+            <button
+              type="button"
+              className="btn btn-outline-primary border-0 btn-sm mx-1 never-disabled"
+              data-bs-toggle="modal"
+              data-bs-target="#ModalNoticeNotification"
+              data-modalcall="notification"
+              data-notice_event_id={fields.value[index].id}
+              data-notice_type_id={notice_event_type.id}
+            >
+              <i className="fa fa-print"></i>
+            </button>
+          )}
         </span>
+
         {isOwner && (
           <button
             type="button"
@@ -163,6 +238,40 @@ const FormNoticeEvent = ({ fields, name, index, push, isOwner }) => {
                     fields.map((name, index) => (
                       <FormNoticeFine
                         key={name}
+                        fields={fields}
+                        name={name}
+                        index={index}
+                        isOwner={isOwner}
+                      />
+                    ))
+                  }
+                </FieldArray>
+              </div>
+            </Fragment>
+          )}
+          {getNoticeEventType(fields.value[index]).show_appeal && (
+            <Fragment>
+              <div className="row text-left m-1">
+                <span className="col-lg w-100">Recursos:</span>
+                <button
+                  type="button"
+                  className="btn btn-outline-primary btn-sm"
+                  onClick={() =>
+                    push(name + ".notice_appeals", {
+                      start_date: moment().format("YYYY-MM-DD"),
+                    })
+                  }
+                >
+                  Adicionar recurso
+                </button>
+              </div>
+              <div className="row pr-1 pb-1 w-100 justify-content-center">
+                <FieldArray name={name + ".notice_appeals"}>
+                  {({ fields }) =>
+                    fields.map((name, index) => (
+                      <FormNoticeAppeal
+                        key={name}
+                        form={form}
                         fields={fields}
                         name={name}
                         index={index}
@@ -402,7 +511,13 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
                     onClick={() => {
                       dispatch(getVArequestdocx(getFirstVA(notice)));
                     }}
-                    disabled={notice && notice.imovel ? getFirstVA(notice) ? false : true : true}
+                    disabled={
+                      notice && notice.imovel
+                        ? getFirstVA(notice)
+                          ? false
+                          : true
+                        : true
+                    }
                   >
                     Gerar Pedido de VA
                   </button>
@@ -416,6 +531,7 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
                         {fields.map((name, index) => (
                           <FormNoticeEvent
                             key={name}
+                            form={form}
                             fields={fields}
                             name={name}
                             index={index}

@@ -4,7 +4,7 @@ const initialState = {
   survey_event_types: [],
 };
 
-export default function (state = initialState, action) {
+export default function reducerSurveyEventType(state = initialState, action) {
   switch (action.type) {
     case actionCRUDSurveyEventType.types.CREATE:
       return {

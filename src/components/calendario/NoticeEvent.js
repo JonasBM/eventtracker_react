@@ -23,7 +23,12 @@ const NoticeEventSpan = ({ notice_event, day }) => {
       notice_event.deadline_date === day.format("YYYY-MM-DD")
     ) {
       return (
-        <span className="row no-gutters py-1 text-truncate d-inline-block font-weight-bold">
+        <span
+          className={
+            "row no-gutters py-1 text-truncate d-inline-block" +
+            (notice_event.is_frozen ? " text-white" : " font-weight-bold")
+          }
+        >
           {"A. " + notice_event_type.short_name + ": "}
           {notice_event.identification !== null && notice_event.identification}
         </span>
@@ -113,7 +118,7 @@ export const NoticeEventButton = ({ notice, day }) => {
     .map((notice_event) => {
       let notice_event_type = getNoticeEventType(notice_event);
       if (notice_event_type) {
-        if (notice_event_type.show_deadline) {
+        if (notice_event_type.show_deadline && !notice_event.is_frozen) {
           return (
             notice_event.deadline_date === day.format("YYYY-MM-DD") && (
               <div

@@ -2,11 +2,23 @@ import axios from "axios";
 import { returnErrors } from "./actionMessages";
 import { tokenConfig } from "../actions/actionAuth";
 import { createMessage } from "./actionMessages";
-
 var nomes = [];
+var header;
+
+const formatData = (objeto, header) => {
+  if (objeto && header) {
+    if (header["Content-Type"] === "multipart/form-data") {
+      return Object.keys(objeto).reduce((formData, key) => {
+        formData.append(key, objeto[key]);
+        return formData;
+      }, new FormData());
+    }
+  }
+  return objeto;
+};
 
 export class actionCRUD {
-  constructor(nome, url) {
+  constructor(nome, url, header = { "Content-Type": "application/json" }) {
     if (nomes.includes(nome)) {
       throw new Error('nome: "' + nome + '" já existe, o nome deve ser unico.');
     } else {
@@ -21,12 +33,17 @@ export class actionCRUD {
       UPDATE: "UPDATE_" + this.nome.toUpperCase(),
       DELETE: "DELETE_" + this.nome.toUpperCase(),
     };
+    this.header = header;
   }
 
   // CREATE
   create = (objeto) => (dispatch, getState) => {
     axios
-      .post(this.url, objeto, tokenConfig(getState))
+      .post(
+        this.url,
+        formatData(objeto, this.header),
+        tokenConfig(getState, this.header)
+      )
       .then((res) => {
         dispatch({
           type: this.types.CREATE,
@@ -38,11 +55,11 @@ export class actionCRUD {
   };
 
   // READ
-  read = (values) => (dispatch, getState) => {
+  read = (objeto) => (dispatch, getState) => {
     let headerWithValues = Object.assign(
       {},
-      { params: values },
-      tokenConfig(getState)
+      { params: formatData(objeto, this.header) },
+      tokenConfig(getState, this.header)
     );
     axios
       .get(this.url, headerWithValues)
@@ -60,7 +77,7 @@ export class actionCRUD {
   // READ_OPTIONS
   readOptions = () => (dispatch, getState) => {
     axios
-      .options(this.url, tokenConfig(getState))
+      .options(this.url, tokenConfig(getState, this.header))
       .then((res) => {
         dispatch({
           type: this.types.READ_OPTIONS,
@@ -73,7 +90,11 @@ export class actionCRUD {
   // UPDATE
   update = (objeto) => (dispatch, getState) => {
     axios
-      .put(this.url + objeto.id + "/", { ...objeto }, tokenConfig(getState))
+      .patch(
+        this.url + objeto.id + "/",
+        formatData(objeto, this.header),
+        tokenConfig(getState, this.header)
+      )
       .then((res) => {
         dispatch({
           type: this.types.UPDATE,
@@ -87,7 +108,7 @@ export class actionCRUD {
   //DELETE
   delete = (id) => (dispatch, getState) => {
     axios
-      .delete(this.url + id + "/", tokenConfig(getState))
+      .delete(this.url + id + "/", tokenConfig(getState, header))
       .then((res) => {
         dispatch({
           type: this.types.DELETE,

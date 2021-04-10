@@ -8,8 +8,9 @@ import { newDate } from "../../actions/actionDate";
 import { useSelector } from "react-redux";
 import ModalFormEvent from "./ModalFormEvent";
 import TaskBar from "../common/TaskBar";
+import ModalNoticeNotification from "./ModalFormEvent/ModalNoticeNotification";
 
-export default function () {
+export default function CalendarioMain() {
   const dispatch = useDispatch();
   const momentdate = useSelector((state) => state.date);
   const user = useSelector((state) => state.user.users.current);
@@ -27,6 +28,7 @@ export default function () {
         <div className="container-fluid">
           <div className="row no-gutters px-3">
             <ModalFormEvent />
+            <ModalNoticeNotification />
             <div className="col col-12">
               <TaskBar momentdate={momentdate} dateType="month" />
               <Calendario momentdate={momentdate} user={user} />

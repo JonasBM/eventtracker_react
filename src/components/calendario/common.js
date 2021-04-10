@@ -67,6 +67,7 @@ export const GeoItajaiAlvaraButton = ({ codigo_lote }) => {
 export const EventButton = ({
   notice_id = "0",
   survey_id = "0",
+  report_id = "0",
   activity_id = "0",
   modalcall = "none",
   title = "",
@@ -83,6 +84,7 @@ export const EventButton = ({
       data-modalcall={modalcall}
       data-notice_id={notice_id}
       data-survey_id={survey_id}
+      data-report_id={report_id}
       data-activity_id={activity_id}
       data-day={day}
     >

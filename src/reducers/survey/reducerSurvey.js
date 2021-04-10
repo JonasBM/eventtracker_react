@@ -4,7 +4,7 @@ const initialState = {
   surveys: [],
 };
 
-export default function (state = initialState, action) {
+export default function reducerSurvey(state = initialState, action) {
   switch (action.type) {
     case actionCRUDSurvey.types.CREATE:
       return {

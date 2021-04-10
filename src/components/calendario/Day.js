@@ -3,11 +3,13 @@ import { useSelector } from "react-redux";
 import "./Day.css";
 import { NoticeButton, NoticeEventButton } from "./NoticeEvent";
 import SurveyEvent from "./SurveyEvent";
+import ReportEvent from "./ReportEvent";
 import moment from "moment";
 import {
   filterNoticebyDateStart,
   filterNoticebyDateDeadline,
   filterSurveyByDate,
+  filterReportByDate,
   filterActivityByDate,
 } from "./utils";
 
@@ -36,6 +38,14 @@ const Day = ({ day, momentdate }) => {
         return survey.owner === currentUser.id;
       })
       .filter(filterSurveyByDate(day.format("YYYY-MM-DD")))
+  );
+
+  const reports = useSelector((state) =>
+    state.report.reports.reports
+      .filter((report) => {
+        return report.owner === currentUser.id;
+      })
+      .filter(filterReportByDate(day.format("YYYY-MM-DD")))
   );
 
   const activity = useSelector((state) =>
@@ -92,6 +102,7 @@ const Day = ({ day, momentdate }) => {
           }
           data-notice_id="0"
           data-survey_id="0"
+          data-report_id="0"
           data-activity_id={activity !== undefined ? activity.id : "0"}
           data-day={day.format("YYYY-MM-DD")}
           disabled={
@@ -111,6 +122,9 @@ const Day = ({ day, momentdate }) => {
       ))}
       {surveys.map((survey) => (
         <SurveyEvent key={survey.id} survey={survey} day={day} />
+      ))}
+      {reports.map((report) => (
+        <ReportEvent key={report.id} report={report} day={day} />
       ))}
     </td>
   );

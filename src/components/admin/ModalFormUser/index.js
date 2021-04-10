@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import store from "../../../store";
 import FormUser from "./FormUser";
 
-export default function () {
+export default function ModalFormUser() {
   const [user, setUser] = useState();
 
   const handleShowModal = (e) => {
@@ -41,6 +41,7 @@ export default function () {
       tabIndex="-1"
       role="dialog"
       aria-hidden="true"
+      data-bs-backdrop="static"
     >
       <div className="modal-dialog" role="document">
         <div className="modal-content">

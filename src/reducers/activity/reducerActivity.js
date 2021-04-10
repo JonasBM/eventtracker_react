@@ -4,7 +4,7 @@ const initialState = {
   activitys: [],
 };
 
-export default function (state = initialState, action) {
+export default function reducerActivity(state = initialState, action) {
   switch (action.type) {
     case actionCRUDActivity.types.CREATE:
       return {

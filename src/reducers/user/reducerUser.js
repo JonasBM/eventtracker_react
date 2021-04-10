@@ -6,7 +6,7 @@ const initialState = {
   current: {},
 };
 
-export default function (state = initialState, action) {
+export default function reducerUser(state = initialState, action) {
   switch (action.type) {
     case actionCRUDUser.types.CREATE:
       return {

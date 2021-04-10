@@ -4,7 +4,7 @@ const initialState = {
   notice_colors: [],
 };
 
-export default function (state = initialState, action) {
+export default function reducerNoticeColor(state = initialState, action) {
   switch (action.type) {
     case actionCRUDNoticeColor.types.CREATE:
       return {

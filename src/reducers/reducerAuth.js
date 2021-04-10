@@ -14,7 +14,7 @@ const initialState = {
   isLoading: null,
 };
 
-export default function (state = initialState, action) {
+export default function reducerAuth(state = initialState, action) {
   switch (action.type) {
     case USER_LOADING:
       return {

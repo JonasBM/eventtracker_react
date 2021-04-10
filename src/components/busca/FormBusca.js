@@ -7,10 +7,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { IconButton } from "../calendario/common";
 import { actionCRUDNotice } from "../../actions/notice/actionNotice";
 import { actionCRUDSurvey } from "../../actions/survey/actionSurvey";
+import { actionCRUDReport } from "../../actions/report/actionReport";
 import formatString from "format-string-by-pattern";
 
 const FormBusca = ({ state, setstate }) => {
   const dispatch = useDispatch();
+  const report_event_types = useSelector(
+    (state) => state.report.report_event_types.report_event_types
+  );
   const survey_event_types = useSelector(
     (state) => state.survey.survey_event_types.survey_event_types
   );
@@ -24,6 +28,9 @@ const FormBusca = ({ state, setstate }) => {
     }
     if (values.survey_event_type !== "") {
       dispatch(actionCRUDSurvey.read(values));
+    }
+    if (values.report_event_type !== "") {
+      dispatch(actionCRUDReport.read(values));
     }
     setstate(values);
   };
@@ -145,6 +152,23 @@ const FormBusca = ({ state, setstate }) => {
                         value={survey_event_type.id}
                       >
                         {survey_event_type.order} - {survey_event_type.name}
+                      </option>
+                    ))}
+                  </SelectFormGroup>
+                  <SelectFormGroup
+                    name="report_event_type"
+                    label="Tipo de Relatório:"
+                    className="m-1"
+                    classNameDiv="mx-1"
+                  >
+                    <option value="">Nenhum</option>
+                    <option value="0">Todos</option>
+                    {report_event_types.map((report_event_type, index) => (
+                      <option
+                        key={report_event_type.id}
+                        value={report_event_type.id}
+                      >
+                        {report_event_type.order} - {report_event_type.name}
                       </option>
                     ))}
                   </SelectFormGroup>

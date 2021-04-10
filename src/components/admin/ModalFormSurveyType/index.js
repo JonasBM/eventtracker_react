@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import store from "../../../store";
 import FormSurveyType from "./FormSurveyType";
 
-export default function () {
+export default function ModalFormSurveyType() {
   const [surveyType, setSurveyType] = useState();
 
   const handleShowModal = (e) => {
@@ -28,7 +28,9 @@ export default function () {
           return survey.order;
         })
     );
-
+    if (MaxOrder === -Infinity) {
+      MaxOrder = 0;
+    }
     if (surveyType !== undefined) {
       setSurveyType(surveyType);
     } else {
@@ -55,6 +57,7 @@ export default function () {
       tabIndex="-1"
       role="dialog"
       aria-hidden="true"
+      data-bs-backdrop="static"
     >
       <div className="modal-dialog" role="document">
         <div className="modal-content">

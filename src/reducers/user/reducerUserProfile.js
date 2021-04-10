@@ -4,7 +4,7 @@ const initialState = {
   users: [],
 };
 
-export default function (state = initialState, action) {
+export default function reducerUserProfile(state = initialState, action) {
   switch (action.type) {
     case actionCRUDUserProfile.types.CREATE:
       return {

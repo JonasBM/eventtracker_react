@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Field } from "react-final-form";
 
 export const required = (value) => (value ? undefined : "Campo obrigatório");
@@ -162,4 +162,34 @@ export const ToogleFieldSet = ({ isDisabled = false, ...props }) => {
   } else {
     return <fieldset>{props.children}</fieldset>;
   }
+};
+
+export const FileField = ({ name, ...props }) => {
+  const [label, setLabel] = useState(props.label);
+  return (
+    <div className="custom-file">
+      <Field name={name}>
+        {({ input: { value, onChange, ...input } }) => (
+          <input
+            {...input}
+            type="file"
+            onChange={({ target }) => {
+              onChange(target.files[0]);
+              if (target.files[0] !== undefined) {
+                setLabel(target.files[0].name);
+              } else {
+                setLabel(props.label);
+              }
+            }}
+            {...props}
+            className="custom-file-input form-control form-control-sm"
+          />
+        )}
+      </Field>
+      <label className="custom-file-label col-form-label-sm" htmlFor={props.id}>
+        {label}
+      </label>
+      <Error name={props.name} />
+    </div>
+  );
 };

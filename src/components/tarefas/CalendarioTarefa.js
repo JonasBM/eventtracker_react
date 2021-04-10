@@ -7,6 +7,8 @@ import { actionCRUDNoticeEventType } from "../../actions/notice/actionNoticeEven
 import { actionCRUDNoticeColor } from "../../actions/notice/actionNoticeColor";
 import { actionCRUDSurvey } from "../../actions/survey/actionSurvey";
 import { actionCRUDSurveyEventType } from "../../actions/survey/actionSurveyEventType";
+import { actionCRUDReport } from "../../actions/report/actionReport";
+import { actionCRUDReportEventType } from "../../actions/report/actionReportEventType";
 import { actionCRUDActivity } from "../../actions/activity/actionActivity";
 import { actionCRUDUser } from "../../actions/user/actionUser";
 import Day from "../calendario/Day";
@@ -20,12 +22,14 @@ const CalendarioTarefa = ({ momentdate }) => {
     dispatch(actionCRUDNoticeEventType.read());
     dispatch(actionCRUDNoticeColor.read());
     dispatch(actionCRUDSurveyEventType.read());
+    dispatch(actionCRUDReportEventType.read());
     const params = {
       start_date: momentdate.clone().format("YYYY-MM-DD"),
       end_date: momentdate.clone().format("YYYY-MM-DD"),
     };
     dispatch(actionCRUDNotice.read(params));
     dispatch(actionCRUDSurvey.read(params));
+    dispatch(actionCRUDReport.read(params));
     dispatch(actionCRUDActivity.read(params));
   }, [dispatch, momentdate]);
 

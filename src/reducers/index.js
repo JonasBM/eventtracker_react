@@ -2,6 +2,7 @@ import { combineReducers } from "redux";
 
 import notice from "./notice";
 import survey from "./survey";
+import report from "./report";
 import activity from "./activity";
 import imovel from "./imovel";
 import user from "./user";
@@ -15,6 +16,7 @@ export default combineReducers({
   user,
   notice,
   survey,
+  report,
   activity,
   errors,
   messages,

@@ -5,7 +5,7 @@ const initialState = {
   notices: [],
 };
 
-export default function (state = initialState, action) {
+export default function reducerNotice(state = initialState, action) {
   switch (action.type) {
     case actionCRUDNotice.types.CREATE:
       return {

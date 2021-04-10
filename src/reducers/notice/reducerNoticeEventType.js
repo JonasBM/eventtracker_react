@@ -4,7 +4,7 @@ const initialState = {
   notice_event_types: [],
 };
 
-export default function (state = initialState, action) {
+export default function reducerNoticeEventType(state = initialState, action) {
   switch (action.type) {
     case actionCRUDNoticeEventType.types.CREATE:
       return {

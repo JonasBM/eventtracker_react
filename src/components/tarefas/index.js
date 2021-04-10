@@ -9,7 +9,7 @@ import TaskBar from "../common/TaskBar";
 import ModalFormEvent from "../calendario/ModalFormEvent";
 import CalendarioTarefa from "./CalendarioTarefa";
 
-export default function () {
+export default function Tarefas() {
   const dispatch = useDispatch();
   const momentdate = useSelector((state) => state.date);
   const user = useSelector((state) => state.user.users.current);

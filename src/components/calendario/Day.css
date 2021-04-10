@@ -28,3 +28,8 @@ td.grid-container {
   border: 1px solid;
   text-decoration: none;
 }
+
+#calendar .event .frozen,
+#div_unfinished .event .frozen {
+  color: white;
+}

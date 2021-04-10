@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import FormNotice from "./FormNotice";
 import FormSurvey from "./FormSurvey";
+import FormReport from "./FormReport";
 import FormActivity from "./FormActivity";
 import store from "../../../store";
 import moment from "moment";
@@ -36,17 +37,19 @@ const ModalEventPanel = ({ name, children }) => {
   );
 };
 
-export default function () {
+export default function ModelFormEvent() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [notice, setNotice] = useState();
   const [survey, setSurvey] = useState();
+  const [report, setReport] = useState();
   const [activity, setActivity] = useState();
 
   const [tabstate, setTabstate] = useState({
     title: "Criar",
     noticetab: true,
     surveytab: true,
+    reporttab: true,
     activitytab: true,
     alltabs: true,
   });
@@ -54,10 +57,22 @@ export default function () {
   const [date, setDate] = useState();
 
   const handleShowModal = (e) => {
+    const modalcall = e.relatedTarget.dataset.modalcall;
+
+    if (
+      modalcall !== "notice" &&
+      modalcall !== "survey" &&
+      modalcall !== "report" &&
+      modalcall !== "activity_all" &&
+      modalcall !== "none"
+    ) {
+      return false;
+    }
     const currentUser = store.getState().user.users.current;
 
     const notices = store.getState().notice.notices.notices;
     const surveys = store.getState().survey.surveys.surveys;
+    const reports = store.getState().report.reports.reports;
     const activitys = store.getState().activity.activitys.activitys;
 
     setDate(moment(e.relatedTarget.dataset.day));
@@ -109,6 +124,30 @@ export default function () {
         resethack: [],
       });
     }
+    let report;
+    if (e.relatedTarget.dataset.report_id !== "0") {
+      report = reports.find(
+        (report) => report.id.toString() === e.relatedTarget.dataset.report_id
+      );
+    }
+    if (report !== undefined) {
+      setReport(report);
+    } else {
+      setReport({
+        id: 0,
+        imovel: null,
+        imovel_id: 0,
+        document: null,
+        identification: null,
+        date: e.relatedTarget.dataset.day,
+        report_event_type: null,
+        address: null,
+        description: null,
+        concluded: false,
+        owner: currentUser.id,
+        resethack: [],
+      });
+    }
     let activity;
     if (e.relatedTarget.dataset.activity_id !== "0") {
       activity = activitys.find(
@@ -132,6 +171,7 @@ export default function () {
         title: "Editar Auto",
         noticetab: true,
         surveytab: false,
+        reporttab: false,
         activitytab: false,
         alltabs: false,
       });
@@ -141,6 +181,17 @@ export default function () {
         title: "Editar Vistoria",
         noticetab: false,
         surveytab: true,
+        reporttab: false,
+        activitytab: false,
+        alltabs: false,
+      });
+    }
+    if (e.relatedTarget.dataset.modalcall === "report") {
+      setTabstate({
+        title: "Editar Relatório",
+        noticetab: false,
+        surveytab: false,
+        reporttab: true,
         activitytab: false,
         alltabs: false,
       });
@@ -150,6 +201,7 @@ export default function () {
         title: "Editar Atividade",
         noticetab: false,
         surveytab: false,
+        reporttab: false,
         activitytab: true,
         alltabs: false,
       });
@@ -159,6 +211,7 @@ export default function () {
         title: "Editar Atividade",
         noticetab: false,
         surveytab: false,
+        reporttab: false,
         activitytab: true,
         alltabs: true,
       });
@@ -168,6 +221,7 @@ export default function () {
         title: "Criar",
         noticetab: true,
         surveytab: true,
+        reporttab: true,
         activitytab: true,
         alltabs: true,
       });
@@ -180,17 +234,31 @@ export default function () {
   };
 
   useEffect(() => {
-    if (tabstate.noticetab && !tabstate.surveytab && !tabstate.activitytab) {
+    if (
+      tabstate.noticetab &&
+      !tabstate.surveytab &&
+      !tabstate.reporttab &&
+      !tabstate.activitytab
+    ) {
       document.getElementById("nav-auto-tab").click();
     } else if (
       !tabstate.noticetab &&
       tabstate.surveytab &&
+      !tabstate.reporttab &&
       !tabstate.activitytab
     ) {
       document.getElementById("nav-vistoria-tab").click();
     } else if (
       !tabstate.noticetab &&
       !tabstate.surveytab &&
+      tabstate.reporttab &&
+      !tabstate.activitytab
+    ) {
+      document.getElementById("nav-relatório-tab").click();
+    } else if (
+      !tabstate.noticetab &&
+      !tabstate.surveytab &&
+      !tabstate.reporttab &&
       tabstate.activitytab
     ) {
       document.getElementById("nav-atividade-tab").click();
@@ -212,7 +280,7 @@ export default function () {
       tabIndex="-1"
       role="dialog"
       aria-hidden="true"
-      data-backdrop="static"
+      data-bs-backdrop="static"
     >
       <div className="modal-dialog modal-lg" role="document">
         <div className="modal-content">
@@ -235,9 +303,22 @@ export default function () {
               id="nav-tab"
               role="tablist"
             >
-              <ModalEventTab active={(tabstate.noticetab || tabstate.alltabs)} name="auto" />
-              <ModalEventTab active={(tabstate.surveytab || tabstate.alltabs)} name="vistoria" />
-              <ModalEventTab active={(tabstate.activitytab || tabstate.alltabs)} name="atividade" />
+              <ModalEventTab
+                active={tabstate.noticetab || tabstate.alltabs}
+                name="auto"
+              />
+              <ModalEventTab
+                active={tabstate.surveytab || tabstate.alltabs}
+                name="vistoria"
+              />
+              <ModalEventTab
+                active={tabstate.reporttab || tabstate.alltabs}
+                name="relatório"
+              />
+              <ModalEventTab
+                active={tabstate.activitytab || tabstate.alltabs}
+                name="atividade"
+              />
             </div>
           </nav>
           <div className="tab-content" id="nav-tabContent">
@@ -251,6 +332,13 @@ export default function () {
             <ModalEventPanel name="vistoria">
               <FormSurvey
                 survey={survey}
+                day={date}
+                isModalOpen={isModalOpen}
+              />
+            </ModalEventPanel>
+            <ModalEventPanel name="relatório">
+              <FormReport
+                report={report}
                 day={date}
                 isModalOpen={isModalOpen}
               />

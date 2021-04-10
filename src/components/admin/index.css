@@ -1,0 +1,12 @@
+.card-header:not(.collapsed) {
+  background-color: wheat;
+}
+
+#inputGroupFile02222::before {
+  content: "Pick file";
+  position: absolute;
+  z-index: 2;
+  display: block;
+  background-color: #eee;
+  width: 80px;
+}

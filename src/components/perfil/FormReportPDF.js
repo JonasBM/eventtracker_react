@@ -9,7 +9,7 @@ import {
   SelectFormGroup,
 } from "../common/Forms";
 
-import { getReportPDF } from "../../actions/actionFiles";
+import { getReportPDF } from "../../actions/actionFiles.js";
 
 const FormReportPDF = () => {
   const dispatch = useDispatch();
@@ -30,7 +30,7 @@ const FormReportPDF = () => {
       onSubmit={onSubmit}
       render={({ handleSubmit }) => (
         <form onSubmit={handleSubmit} className="needs-validation" noValidate>
-          <h5>{"Baixar relatório"}</h5>
+          <h5>{"Baixar relatório individual"}</h5>
           <div className="form-inline">
             <SelectFormGroup
               name="user_id"

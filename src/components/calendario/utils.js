@@ -106,6 +106,15 @@ export const filterSurveyByDate = (stringDate) => {
   };
 };
 
+export const filterReportByDate = (stringDate) => {
+  return function (report) {
+    if (report.date === stringDate) {
+      return true;
+    }
+    return false;
+  };
+};
+
 export const filterActivityByDate = (stringDate) => {
   return function (activity) {
     if (activity.date === stringDate) {
@@ -171,6 +180,25 @@ export const openNoticeModal = (notice) => {
   myModal.show();
 };
 
+export const getNoticeEvent = (notice_event_id) => {
+  if (notice_event_id) {
+    const notices = store.getState().notice.notices.notices;
+    for (let index = 0; index < notices.length; index++) {
+      let notice_event;
+      if (notices[index].notice_events) {
+        notice_event = notices[index].notice_events.find(
+          (notice_event) =>
+            notice_event.id.toString() === notice_event_id.toString()
+        );
+      }
+      if (notice_event) {
+        return notice_event;
+      }
+    }
+    return null;
+  }
+};
+
 export const getNoticeColor = (notice) => {
   if (notice) {
     const notice_colors = store.getState().notice.notice_colors.notice_colors;
@@ -214,6 +242,17 @@ export const getSurveyEventType = (survey) => {
   }
 };
 
+export const getReportEventType = (report) => {
+  if (report) {
+    const report_event_types = store.getState().report.report_event_types
+      .report_event_types;
+    let report_event_type = report_event_types.find(
+      (report_event_type) => report_event_type.id === report.report_event_type
+    );
+    return report_event_type;
+  }
+};
+
 export const getFirstVA = (notice) => {
   if (notice) {
     for (let index = 0; index < notice.notice_events.length; index++) {
@@ -224,4 +263,21 @@ export const getFirstVA = (notice) => {
     }
   }
   return false;
+};
+
+export const hasNotification = (notice_event_type) => {
+  if (notice_event_type) {
+    const notice_event_type_files = store.getState().notice
+      .notice_event_type_files.notice_event_type_files;
+
+    for (let index = 0; index < notice_event_type_files.length; index++) {
+      if (
+        notice_event_type.id ===
+        notice_event_type_files[index].notice_event_type
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
 };

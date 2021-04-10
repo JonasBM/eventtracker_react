@@ -4,7 +4,7 @@ const initialState = {
   imoveis: [],
 };
 
-export default function (state = initialState, action) {
+export default function reducerImovel(state = initialState, action) {
   switch (action.type) {
     case actionCRUDImovel.types.CREATE:
       return {

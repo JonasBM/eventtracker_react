@@ -111,19 +111,20 @@ export const logoutAll = () => (dispatch, getState) => {
 };
 
 // Setup config with token - helper function
-export const tokenConfig = (getState) => {
+export const tokenConfig = (getState, header) => {
   // Get token from state
   const token = getState().auth.token;
   if (token == null) {
     return null;
   }
   // Headers
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
+  if (header === undefined) {
+    header = { "Content-Type": "application/json" };
+  }
 
+  const config = {
+    headers: header,
+  };
   // If token, add to headers config
   if (token) {
     config.headers["Authorization"] = `Token ${token}`;
