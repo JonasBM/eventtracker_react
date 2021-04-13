@@ -48,6 +48,7 @@ export default function ModalNoticeNotification() {
       );
       setNoticeEventType(noticeEventType);
     }
+    setNoticeEventReference("");
   };
 
   useEffect(() => {

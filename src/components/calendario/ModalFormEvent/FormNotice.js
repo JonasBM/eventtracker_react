@@ -127,19 +127,21 @@ const FormNoticeEvent = ({ form, fields, name, index, push, isOwner }) => {
       <div className="row text-center">
         <span className="col text-uppercase w-100 font-weight-bold text-nowrap inline-block">
           {notice_event_type.name}
-          {hasNotification(notice_event_type) && (
-            <button
-              type="button"
-              className="btn btn-outline-primary border-0 btn-sm mx-1 never-disabled"
-              data-bs-toggle="modal"
-              data-bs-target="#ModalNoticeNotification"
-              data-modalcall="notification"
-              data-notice_event_id={fields.value[index].id}
-              data-notice_type_id={notice_event_type.id}
-            >
-              <i className="fa fa-print"></i>
-            </button>
-          )}
+          {hasNotification(notice_event_type) &&
+            fields.value[index].id &&
+            fields.value[index].id.toString() !== "0" && (
+              <button
+                type="button"
+                className="btn btn-outline-primary border-0 btn-sm mx-1 never-disabled"
+                data-bs-toggle="modal"
+                data-bs-target="#ModalNoticeNotification"
+                data-modalcall="notification"
+                data-notice_event_id={fields.value[index].id}
+                data-notice_type_id={notice_event_type.id}
+              >
+                <i className="fa fa-print"></i>
+              </button>
+            )}
         </span>
 
         {isOwner && (

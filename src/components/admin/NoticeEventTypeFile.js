@@ -59,13 +59,21 @@ const NoticeEventTypeFile = () => {
                 notice_event_type.id ===
                 notice_event_type_file.notice_event_type
             );
+
+            let notice_event_type_file_link = notice_event_type_file.file_doc;
+            if (!notice_event_type_file_link.startsWith("https")) {
+              notice_event_type_file_link = notice_event_type_file_link.replace(
+                "http",
+                "https"
+              );
+            }
             return (
               <tr key={notice_event_type_file.id}>
                 <td>{notice_event_type_file.id}</td>
                 <td>{notice_event_type_file.order}</td>
                 <td>
                   <a
-                    href={notice_event_type_file.file_doc}
+                    href={notice_event_type_file_link}
                     target="_blank"
                     rel="noreferrer noopener"
                   >
