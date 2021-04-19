@@ -15,6 +15,7 @@ import {
 import debounce from "lodash.debounce";
 import axios from "axios";
 import { createMessage } from "../../actions/actionMessages";
+import { useCallback } from "react";
 
 export const SearchFromString = (value, imovel_id = null) => {
   let all = /^[\d.]+-(.+)$/g;
@@ -107,17 +108,20 @@ const AutocompleteImovel = ({
     }
   }, [form, name, name_string]);
 
-  const ImovelSearch = (value) => {
-    if (form.getFieldState(name).value) {
-      let params = SearchFromString(value, form.getFieldState(name).value.id);
-      dispatch(actionCRUDImovel.read(params));
-    }
-  };
+  // eslint-disable-next-line
+  const debouncedImovelSearch = useCallback(
+    debounce((value) => {
+      if (form.getFieldState(name).value) {
+        let params = SearchFromString(value, form.getFieldState(name).value.id);
+        dispatch(actionCRUDImovel.read(params));
+      }
+    }, 500),
+    []
+  );
 
   const handleValueChange = (value, previous) => {
     if (value.length > 3) {
-      const debouncedSave = debounce(() => ImovelSearch(value), 500);
-      debouncedSave();
+      debouncedImovelSearch(value);
       handleFocus(true);
     } else {
       handleFocus(false);
