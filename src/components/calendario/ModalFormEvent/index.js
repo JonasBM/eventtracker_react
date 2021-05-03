@@ -59,10 +59,13 @@ export default function ModelFormEvent() {
   const handleShowModal = (e) => {
     const modalcall = e.relatedTarget.dataset.modalcall;
 
+    console.log(modalcall);
+
     if (
       modalcall !== "notice" &&
       modalcall !== "survey" &&
       modalcall !== "report" &&
+      modalcall !== "activity" &&
       modalcall !== "activity_all" &&
       modalcall !== "none"
     ) {

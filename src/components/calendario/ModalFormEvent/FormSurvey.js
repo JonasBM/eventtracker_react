@@ -180,6 +180,7 @@ const FormSurvey = ({ survey, day, isModalOpen }) => {
                     <CheckboxFormGroup
                       name="concluded"
                       label="Concluído"
+                      id="survey_concluded"
                       className="m-1"
                       classNameDiv="mx-1"
                     />

@@ -33,6 +33,8 @@ const FormReport = ({ report, day, isModalOpen }) => {
       setIsOwner(true);
     }
   }, [authuser, report]);
+  console.log(report);
+  console.log(isOwner);
 
   const onDelete = () => {
     let newLine = "\r\n";
@@ -180,6 +182,7 @@ const FormReport = ({ report, day, isModalOpen }) => {
                     <CheckboxFormGroup
                       name="concluded"
                       label="Concluído"
+                      id="report_concluded"
                       className="m-1"
                       classNameDiv="mx-1"
                     />

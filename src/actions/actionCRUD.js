@@ -1,4 +1,5 @@
 import axios from "axios";
+import { ThunkAction } from "redux-thunk";
 import { returnErrors } from "./actionMessages";
 import { tokenConfig } from "../actions/actionAuth";
 import { createMessage } from "./actionMessages";
@@ -37,7 +38,7 @@ export class actionCRUD {
   }
 
   // CREATE
-  create = (objeto) => (dispatch, getState) => {
+  create: ThunkAction = (objeto) => (dispatch, getState) => {
     axios
       .post(
         this.url,
