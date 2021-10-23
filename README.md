@@ -14,3 +14,5 @@ Build the application
 ```
 npm run build
 ```
+
+For help in the usage, visit the [Wiki](https://github.com/JonasBM/eventtracker_react/wiki)
