@@ -24,6 +24,10 @@ export default function ModalFormUser() {
         email: "",
         is_staff: false,
         is_active: true,
+        profile: {
+          matricula: "",
+          user_type: "PA",
+        },
         resethack: [],
       });
     }

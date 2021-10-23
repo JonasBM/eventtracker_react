@@ -138,11 +138,11 @@ const FormSurvey = ({ survey, day, isModalOpen }) => {
                     }
                   }}
                 />
-                <InputFormGroup
+                {/* <InputFormGroup
                   name="address"
                   label="Endereço:"
                   maxLength="255"
-                />
+                /> */}
                 <InputFormGroup
                   name="description"
                   label="Descrição:"

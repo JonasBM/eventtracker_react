@@ -1,33 +1,33 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import ReportEvent from "../calendario/ReportEvent";
+import SurveyEvent from "../calendario/SurveyEvent";
 import moment from "moment";
 
-const ReportEventList = ({ title, concluded, report_event_type }) => {
+const SurveyEventList = ({ title, concluded, survey_event_type }) => {
   const currentUser = useSelector((state) => state.user.users.current);
-  const reports = useSelector((state) =>
-    state.report.reports.reports.filter((notice) => {
+  const surveys = useSelector((state) =>
+    state.survey.surveys.surveys.filter((notice) => {
       return notice.owner === currentUser.id;
     })
   );
 
-  const filterReportEventbyConcluded = (report) => {
+  const filterSurveyEventbyConcluded = (survey) => {
     if (concluded === "0") {
-      return !report.concluded;
+      return !survey.concluded;
     } else if (concluded === "1") {
-      return report.concluded;
+      return survey.concluded;
     }
     return true;
   };
 
-  const filterReportEventbyType = (report) => {
-    if (report_event_type === "") {
+  const filterSurveyEventbyType = (survey) => {
+    if (survey_event_type === "") {
       return false;
     }
-    if (report_event_type === "0") {
+    if (survey_event_type === "0") {
       return true;
     }
-    if (report.report_event_type.toString() === report_event_type) {
+    if (survey.survey_event_type.toString() === survey_event_type) {
       return true;
     }
     return false;
@@ -38,19 +38,19 @@ const ReportEventList = ({ title, concluded, report_event_type }) => {
       <span>
         <strong>{title ? title : ""}</strong>
       </span>
-      {reports &&
-        reports
-          .filter(filterReportEventbyType)
-          .filter(filterReportEventbyConcluded)
-          .map((report) => (
-            <ReportEvent
-              key={report.id}
-              report={report}
-              day={moment(report.date)}
+      {surveys &&
+        surveys
+          .filter(filterSurveyEventbyType)
+          .filter(filterSurveyEventbyConcluded)
+          .map((survey) => (
+            <SurveyEvent
+              key={survey.id}
+              survey={survey}
+              day={moment(survey.date)}
             />
           ))}
     </div>
   );
 };
 
-export default ReportEventList;
+export default SurveyEventList;

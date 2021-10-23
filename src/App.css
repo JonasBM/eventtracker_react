@@ -83,3 +83,7 @@ fieldset[disabled] .btn.never-disabled {
   opacity: 1 !important;
   cursor: pointer !important;
 }
+
+.max-width-300 {
+  max-width: 300px;
+}

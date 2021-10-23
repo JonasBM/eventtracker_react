@@ -43,7 +43,7 @@ const TaskBar = ({ momentdate, dateType }) => {
                   <SelectFormGroup
                     name="currentUser.id"
                     label="AFM:"
-                    className="mx-1"
+                    className="mx-1 max-width-300"
                   >
                     {users.map((user, index) => (
                       <option key={user.id} value={user.id}>
@@ -63,7 +63,7 @@ const TaskBar = ({ momentdate, dateType }) => {
                   </OnChange>
                 </div>
                 {momentdate && dateType && (
-                  <div className="col form-inline">
+                  <div className="col form-inline ml-2">
                     <InputFormGroup
                       name="momentdate"
                       label="data:"

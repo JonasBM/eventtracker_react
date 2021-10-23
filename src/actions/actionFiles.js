@@ -229,7 +229,6 @@ export const downloadFileVARequestDocx = () => (dispatch, getState) => {
 };
 
 export const uploadFileVARequestDocx = (values) => (dispatch, getState) => {
-  console.log("ploadFileVARequestDocx:", values);
   let formData = new FormData();
   formData.append("va_padrao", values.va_padrao);
   try {
@@ -286,7 +285,6 @@ export const downloadFileRFRequestDocx = () => (dispatch, getState) => {
 };
 
 export const uploadFileRFRequestDocx = (values) => (dispatch, getState) => {
-  console.log("uploadFileRFRequestDocx:", values);
   let formData = new FormData();
   formData.append("rf_padrao", values.rf_padrao);
   try {

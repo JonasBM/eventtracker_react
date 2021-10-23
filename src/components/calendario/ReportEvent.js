@@ -3,8 +3,8 @@ import {
   CompleteButton,
   MapButton,
   EventButton,
-  GeoItajaiButton,
-  GeoItajaiAlvaraButton,
+  // GeoItajaiButton,
+  // GeoItajaiAlvaraButton,
 } from "./common";
 import { useDispatch, useSelector } from "react-redux";
 import { getReportEventType } from "./utils";
@@ -67,12 +67,12 @@ const ReportEventButton = ({ report, day }) => {
         concluded={report.concluded}
         onclick={isOwner ? () => completeTask() : () => {}}
       />
-      <GeoItajaiButton
+      {/* <GeoItajaiButton
         codigo_lote={report.imovel ? report.imovel.codigo_lote : ""}
       />
       <GeoItajaiAlvaraButton
         codigo_lote={report.imovel ? report.imovel.codigo_lote : ""}
-      />
+      /> */}
       <MapButton
         address={
           report.imovel

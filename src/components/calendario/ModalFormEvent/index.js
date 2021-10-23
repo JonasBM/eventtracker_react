@@ -5,6 +5,7 @@ import FormReport from "./FormReport";
 import FormActivity from "./FormActivity";
 import store from "../../../store";
 import moment from "moment";
+import { useSelector } from "react-redux";
 
 const ModalEventTab = ({ active, name }) => {
   return (
@@ -56,10 +57,10 @@ export default function ModelFormEvent() {
 
   const [date, setDate] = useState();
 
+  const authuser = useSelector((state) => state.auth.user);
+
   const handleShowModal = (e) => {
     const modalcall = e.relatedTarget.dataset.modalcall;
-
-    console.log(modalcall);
 
     if (
       modalcall !== "notice" &&
@@ -71,6 +72,8 @@ export default function ModelFormEvent() {
     ) {
       return false;
     }
+
+    
     const currentUser = store.getState().user.users.current;
 
     const notices = store.getState().notice.notices.notices;
@@ -222,8 +225,8 @@ export default function ModelFormEvent() {
     if (e.relatedTarget.dataset.modalcall === "none") {
       setTabstate({
         title: "Criar",
-        noticetab: true,
-        surveytab: true,
+        noticetab: !authuser.profile.is_assistente,
+        surveytab: !authuser.profile.is_assistente,
         reporttab: true,
         activitytab: true,
         alltabs: true,
@@ -266,7 +269,12 @@ export default function ModelFormEvent() {
     ) {
       document.getElementById("nav-atividade-tab").click();
     } else {
-      document.getElementById("nav-auto-tab").click();
+      if (authuser.profile.is_assistente){
+        document.getElementById("nav-relatório-tab").click();
+      } else {
+        document.getElementById("nav-auto-tab").click();
+      }
+      
     }
     window.addEventListener("show.bs.modal", handleShowModal);
     window.addEventListener("hidden.bs.modal", handleHiddenModal);
@@ -274,7 +282,7 @@ export default function ModelFormEvent() {
       window.removeEventListener("show.bs.modal", handleShowModal);
       window.removeEventListener("hidden.bs.modal", handleHiddenModal);
     };
-  }, [tabstate]);
+  }, [tabstate, authuser.profile.is_assistente]);
 
   return (
     <div
@@ -307,11 +315,11 @@ export default function ModelFormEvent() {
               role="tablist"
             >
               <ModalEventTab
-                active={tabstate.noticetab || tabstate.alltabs}
+                active={(tabstate.noticetab || tabstate.alltabs) && !authuser.profile.is_assistente}
                 name="auto"
               />
               <ModalEventTab
-                active={tabstate.surveytab || tabstate.alltabs}
+                active={(tabstate.surveytab || tabstate.alltabs) && !authuser.profile.is_assistente}
                 name="vistoria"
               />
               <ModalEventTab

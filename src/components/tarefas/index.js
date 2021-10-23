@@ -28,7 +28,7 @@ export default function Tarefas() {
       <div className="container-fluid">
         <div className="row no-gutters px-3 justify-content-md-center">
           <ModalFormEvent />
-          <div className="col col-12 col-md-9 col-lg-6">
+          <div className="col col-12 col-lg-9">
             <TaskBar momentdate={momentdate} dateType="date" />
             <CalendarioTarefa momentdate={momentdate} user={user} />
           </div>

@@ -31,7 +31,7 @@ const Perfil = () => {
   return (
     <div className="modal-body container">
       <div className="row">
-        <div className="col-12 offset-lg-1 col-lg-4">
+        <div className="col-12 offset-lg-1 col-lg-5">
           <h5>
             {"Bem vindo, "}
             {authUser
@@ -63,7 +63,7 @@ const Perfil = () => {
             </button>
           </div>
         </div>
-        <div className="col-12 offset-lg-1 col-lg-4 mt-2 mt-lg-0">
+        <div className="col-12 offset-lg-1 col-lg-5 mt-2 mt-lg-0">
           <div className="row m-1 p-2 border">
             <FormReportPDFAll />
           </div>

@@ -36,7 +36,7 @@ const FormReportPDF = () => {
               name="user_id"
               id="id_user_id_report"
               label="AFM:"
-              className="m-1"
+              className="m-1 max-width-300"
             >
               {users.map((user, index) => (
                 <option key={user.id} value={user.id}>

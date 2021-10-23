@@ -75,15 +75,6 @@ const FormUpdateImovel = () => {
                 / Alterados: {updatelog.alterados} / Novos: {updatelog.novos}
               </li>
               <li className="list-group-item p-0 border-0">
-                <div className="progress">
-                  <div
-                    className={"progress-bar w-" + updatelog.progresso * 100}
-                    role="progressbar"
-                    aria-valuenow={updatelog.progresso * 100}
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
-                </div>
                 Duração:{" "}
                 {duration.hours() +
                   " horas, " +

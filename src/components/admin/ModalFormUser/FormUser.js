@@ -4,12 +4,14 @@ import { Form } from "react-final-form";
 import {
   InputFormGroup,
   CheckboxFormGroup,
+  SelectFormGroup,
   required,
 } from "../../common/Forms";
 
 import { useDispatch } from "react-redux";
 import { actionCRUDUserProfile } from "../../../actions/user/actionUserProfile";
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
+import { UserTypes } from "../Users";
 
 const FormUser = ({ user }) => {
   const dispatch = useDispatch();
@@ -85,7 +87,24 @@ const FormUser = ({ user }) => {
                   className="m-1"
                 />
               </div>
+
               <CheckboxFormGroup name="is_staff" label="Administrador" />
+              <div className="form-inline">
+                <SelectFormGroup
+                  name="profile.user_type"
+                  label="Tipo:"
+                  className="m-1"
+                  classNameDiv="mx-1"
+                  validate={required}
+                  defaultValue={UserTypes.AS}
+                >
+                  {Object.keys(UserTypes).map((key, index) => (
+                    <option key={index} value={key}>
+                      {UserTypes[key]}
+                    </option>
+                  ))}
+                </SelectFormGroup>
+              </div>
               <CheckboxFormGroup name="is_active" label="Ativo" />
               <div className="form-inline">
                 <InputFormGroup

@@ -38,7 +38,7 @@ export class actionCRUD {
   }
 
   // CREATE
-  create: ThunkAction = (objeto) => (dispatch, getState) => {
+  create = (objeto) => (dispatch, getState) => {
     axios
       .post(
         this.url,

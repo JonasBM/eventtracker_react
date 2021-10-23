@@ -2,6 +2,12 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { actionCRUDUserProfile } from "../../actions/user/actionUserProfile";
 
+export const UserTypes = {
+  AU: "Auditor",
+  AS: "Assistente",
+  PA: "Particular",
+};
+
 const Users = () => {
   const dispatch = useDispatch();
   const users = useSelector((state) => state.user.userprofiles.users);
@@ -44,6 +50,7 @@ const Users = () => {
           <th scope="col">Email</th>
           <th scope="col">Matrícula</th>
           <th scope="col">Administrador</th>
+          <th scope="col">Grupo</th>
           <th scope="col">Último Login</th>
           <th scope="col">Ativo</th>
           <th scope="col"></th>
@@ -59,6 +66,7 @@ const Users = () => {
             <td>{user.email}</td>
             <td>{user.profile.matricula}</td>
             <td>{user.is_staff ? "Sim" : "Não"}</td>
+            <td>{UserTypes[user.profile.user_type]}</td>
             <td>{user.last_login}</td>
             <td>{user.is_active ? "Sim" : "Não"}</td>
             <td>

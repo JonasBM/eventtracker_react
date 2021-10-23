@@ -82,7 +82,7 @@ const Header = () => {
             <NavItem to="/tarefas">Tarefas do Dia</NavItem>
             <NavItem to="/aconcluir">A Concluir</NavItem>
             <NavItem to="/busca">Buscar</NavItem>
-            <NavItem to="/incompativel">Verificação de imóvel</NavItem>
+            {/* <NavItem to="/incompativel">Verificação de imóvel</NavItem> */}
             {auth && auth.user && auth.user.is_staff && (
               <NavItem to="/admin">Administração</NavItem>
             )}

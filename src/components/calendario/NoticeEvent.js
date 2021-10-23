@@ -8,8 +8,8 @@ import {
   CompleteButton,
   MapButton,
   EventButton,
-  GeoItajaiButton,
-  GeoItajaiAlvaraButton,
+  // GeoItajaiButton,
+  // GeoItajaiAlvaraButton,
 } from "./common";
 import { useDispatch, useSelector } from "react-redux";
 import { actionCRUDNotice } from "../../actions/notice/actionNotice";
@@ -69,12 +69,12 @@ export const NoticeButton = ({ notice, day }) => {
             />
           ))}
       </EventButton>
-      <GeoItajaiButton
+      {/* <GeoItajaiButton
         codigo_lote={notice.imovel ? notice.imovel.codigo_lote : ""}
-      />
-      <GeoItajaiAlvaraButton
+      /> */}
+      {/* <GeoItajaiAlvaraButton
         codigo_lote={notice.imovel ? notice.imovel.codigo_lote : ""}
-      />
+      /> */}
       <MapButton
         address={
           notice.imovel
@@ -147,12 +147,12 @@ export const NoticeEventButton = ({ notice, day }) => {
                     isOwner ? () => completeTask(notice_event) : () => {}
                   }
                 />
-                <GeoItajaiButton
+                {/* <GeoItajaiButton
                   codigo_lote={notice.imovel ? notice.imovel.codigo_lote : ""}
-                />
-                <GeoItajaiAlvaraButton
+                /> */}
+                {/* <GeoItajaiAlvaraButton
                   codigo_lote={notice.imovel ? notice.imovel.codigo_lote : ""}
-                />
+                /> */}
                 <MapButton
                   address={
                     notice.imovel

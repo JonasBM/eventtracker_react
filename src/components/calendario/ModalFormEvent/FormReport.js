@@ -33,8 +33,6 @@ const FormReport = ({ report, day, isModalOpen }) => {
       setIsOwner(true);
     }
   }, [authuser, report]);
-  console.log(report);
-  console.log(isOwner);
 
   const onDelete = () => {
     let newLine = "\r\n";
@@ -140,11 +138,11 @@ const FormReport = ({ report, day, isModalOpen }) => {
                     }
                   }}
                 />
-                <InputFormGroup
+                {/* <InputFormGroup
                   name="address"
                   label="Endereço:"
                   maxLength="255"
-                />
+                /> */}
                 <InputFormGroup
                   name="description"
                   label="Descrição:"

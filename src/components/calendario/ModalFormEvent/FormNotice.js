@@ -458,11 +458,11 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
                     }
                   }}
                 />
-                <InputFormGroup
+                {/* <InputFormGroup
                   name="address"
                   label="Endereço:"
                   maxLength="255"
-                />
+                /> */}
                 <InputFormGroup
                   name="description"
                   label="Descrição:"
