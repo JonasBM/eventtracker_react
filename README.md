@@ -16,3 +16,5 @@ npm run build
 ```
 
 For help in the usage, visit the [Wiki](https://github.com/JonasBM/eventtracker_react/wiki)
+
+To access the [example app](https://event.calculoengenharia.com.br/), please contact me via email: contato@jonasbm.com.br
