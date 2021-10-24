@@ -15,6 +15,10 @@ Build the application
 npm run build
 ```
 
+## Usage
+
 For help in the usage, visit the [Wiki](https://github.com/JonasBM/eventtracker_react/wiki)
+
+## Example app
 
 To access the [example app](https://event.calculoengenharia.com.br/), please contact me via email: contato@jonasbm.com.br
