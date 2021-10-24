@@ -21,4 +21,4 @@ For help in the usage, visit the [Wiki](https://github.com/JonasBM/eventtracker_
 
 ## Example app
 
-To access the [example app](https://event.calculoengenharia.com.br/), please contact me via email: contato@jonasbm.com.br
+To access to the [example app](https://event.calculoengenharia.com.br/), please contact me via email: contato@jonasbm.com.br
