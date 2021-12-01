@@ -1,17 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import "./Day.css";
+
 import { NoticeButton, NoticeEventButton } from "./NoticeEvent";
-import SurveyEvent from "./SurveyEvent";
-import ReportEvent from "./ReportEvent";
-import moment from "moment";
+import React, { useEffect, useState } from "react";
 import {
-  filterNoticebyDateStart,
-  filterNoticebyDateDeadline,
-  filterSurveyByDate,
-  filterReportByDate,
   filterActivityByDate,
+  filterNoticebyDateDeadline,
+  filterNoticebyDateStart,
+  filterReportByDate,
+  filterSurveyByDate,
+  hasPermission,
 } from "./utils";
+
+import ReportEvent from "./ReportEvent";
+import SurveyEvent from "./SurveyEvent";
+import moment from "moment";
+import { useSelector } from "react-redux";
 
 const Day = ({ day, momentdate }) => {
   const currentUser = useSelector((state) => state.user.users.current);
@@ -57,15 +60,15 @@ const Day = ({ day, momentdate }) => {
   );
 
   const authuser = useSelector((state) => state.auth.user);
-  const [isOwner, setIsOwner] = useState(false);
+  const [hasOwnerPermission, setHasOwnerPermission] = useState(false);
 
   useEffect(() => {
     if (authuser !== undefined && activity !== undefined) {
-      setIsOwner(authuser.id === activity.owner);
+      setHasOwnerPermission(hasPermission(authuser, activity.owner));
     } else if (authuser === undefined) {
-      setIsOwner(false);
+      setHasOwnerPermission(false);
     } else {
-      setIsOwner(true);
+      setHasOwnerPermission(true);
     }
   }, [authuser, activity]);
 
@@ -94,7 +97,7 @@ const Day = ({ day, momentdate }) => {
           data-bs-toggle="modal"
           data-bs-target="#ModalEvent"
           data-modalcall={
-            isOwner
+            hasOwnerPermission
               ? activity !== undefined
                 ? "activity_all"
                 : "none"
@@ -106,7 +109,7 @@ const Day = ({ day, momentdate }) => {
           data-activity_id={activity !== undefined ? activity.id : "0"}
           data-day={day.format("YYYY-MM-DD")}
           disabled={
-            activity !== undefined || authuser.id === currentUser.id
+            activity !== undefined || hasPermission(authuser, currentUser.id)
               ? ""
               : "disabled"
           }

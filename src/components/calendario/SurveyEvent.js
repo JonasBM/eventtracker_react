@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from "react";
 import {
   CompleteButton,
-  MapButton,
   EventButton,
-  // GeoItajaiButton,
-  // GeoItajaiAlvaraButton,
+  MapButton,
 } from "./common";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getSurveyEventType } from "./utils";
+
 import { actionCRUDSurvey } from "../../actions/survey/actionSurvey";
+import { getSurveyEventType } from "./utils";
 
 const SurveyEventSpan = ({ survey }) => {
   let survey_event_type = getSurveyEventType(survey);
@@ -66,6 +65,7 @@ const SurveyEventButton = ({ survey, day }) => {
       <CompleteButton
         concluded={survey.concluded}
         onclick={isOwner ? () => completeTask() : () => {}}
+        disabled={!isOwner}
       />
       {/* <GeoItajaiButton
         codigo_lote={survey.imovel ? survey.imovel.codigo_lote : ""}

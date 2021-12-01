@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from "react";
 import {
   CompleteButton,
-  MapButton,
   EventButton,
-  // GeoItajaiButton,
-  // GeoItajaiAlvaraButton,
+  MapButton,
 } from "./common";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getReportEventType } from "./utils";
+
 import { actionCRUDReport } from "../../actions/report/actionReport";
+import { getReportEventType } from "./utils";
 
 const ReportEventSpan = ({ report }) => {
   let report_event_type = getReportEventType(report);
@@ -66,6 +65,7 @@ const ReportEventButton = ({ report, day }) => {
       <CompleteButton
         concluded={report.concluded}
         onclick={isOwner ? () => completeTask() : () => {}}
+        disabled={!isOwner}
       />
       {/* <GeoItajaiButton
         codigo_lote={report.imovel ? report.imovel.codigo_lote : ""}

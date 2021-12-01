@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getNoticeEventType } from "../calendario/utils";
-import { actionCRUDNotice } from "../../actions/notice/actionNotice";
-import moment from "moment";
 import {
   CompleteButton,
   EventButton,
   GeoItajaiButton,
   MapButton,
 } from "../calendario/common";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import { actionCRUDNotice } from "../../actions/notice/actionNotice";
+import { getNoticeEventType } from "../calendario/utils";
+import moment from "moment";
 
 const NoticeEventSpan = ({ notice_event }) => {
   let notice_event_type = getNoticeEventType(notice_event);
@@ -111,6 +112,7 @@ export const NoticeEventButton = ({ notice, concluded, notice_event_type }) => {
             <CompleteButton
               concluded={notice_event.concluded}
               onclick={isOwner ? () => completeTask(notice_event) : () => {}}
+              disabled={!isOwner}
             />
           )}
           <GeoItajaiButton

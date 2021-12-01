@@ -1,32 +1,34 @@
-import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { actionCRUDActivity } from "../../../actions/activity/actionActivity";
-import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
-import { Form } from "react-final-form";
 import {
   InputFormGroup,
   SelectFormGroup,
   ToogleFieldSet,
   required,
 } from "../../common/Forms";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
 import CommonModalFooter from "../../common/CommonModalFooter";
-import moment from "moment";
+import { Form } from "react-final-form";
+import { actionCRUDActivity } from "../../../actions/activity/actionActivity";
+import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
 import { createMessage } from "../../../actions/actionMessages";
+import { hasPermission } from "../utils";
+import moment from "moment";
 
 const FormActivity = ({ activity, day, isModalOpen }) => {
   const dispatch = useDispatch();
   const activitys = useSelector((state) => state.activity.activitys.activitys);
   const users = useSelector((state) => state.user.users.users);
   const authuser = useSelector((state) => state.auth.user);
-  const [isOwner, setIsOwner] = useState(false);
+  const [hasOwnerPermission, setHasOwnerPermission] = useState(false);
 
   useEffect(() => {
     if (authuser !== undefined && activity !== undefined) {
-      setIsOwner(authuser.id === activity.owner);
+      setHasOwnerPermission(hasPermission(authuser, activity.owner));
     } else if (authuser === undefined) {
-      setIsOwner(false);
+      setHasOwnerPermission(false);
     } else {
-      setIsOwner(true);
+      setHasOwnerPermission(true);
     }
   }, [authuser, activity]);
 
@@ -106,14 +108,21 @@ const FormActivity = ({ activity, day, isModalOpen }) => {
                     validate={required}
                   >
                     <option value="">---------</option>
-                    {users.map((user, index) => (
-                      <option key={user.id} value={user.id}>
-                        {user.first_name} {user.last_name}
-                      </option>
-                    ))}
+                    {users
+                      .filter((user) => {
+                        if (!hasOwnerPermission) {
+                          return true;
+                        }
+                        return hasPermission(authuser, user.id);
+                      })
+                      .map((user, index) => (
+                        <option key={user.id} value={user.id}>
+                          {user.first_name} {user.last_name}
+                        </option>
+                      ))}
                   </SelectFormGroup>
                 </ToogleFieldSet>
-                <ToogleFieldSet isDisabled={!isOwner}>
+                <ToogleFieldSet isDisabled={!hasOwnerPermission}>
                   <InputFormGroup
                     name="date"
                     label="Data:"
@@ -124,7 +133,7 @@ const FormActivity = ({ activity, day, isModalOpen }) => {
                   />
                 </ToogleFieldSet>
               </div>
-              <ToogleFieldSet isDisabled={!isOwner}>
+              <ToogleFieldSet isDisabled={!hasOwnerPermission}>
                 <InputFormGroup
                   name="description"
                   label="Descrição:"
@@ -137,7 +146,7 @@ const FormActivity = ({ activity, day, isModalOpen }) => {
             </div>
           </div>
           <CommonModalFooter
-            isDisabled={!isOwner}
+            isDisabled={!hasOwnerPermission}
             canDelete={
               activity !== undefined
                 ? activity.id !== 0

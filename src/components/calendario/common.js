@@ -1,7 +1,13 @@
 import React from "react";
 import moment from "moment";
 
-export const IconButton = ({ icon, href = null, onclick = null, title }) => {
+export const IconButton = ({
+  icon,
+  href = null,
+  onclick = null,
+  title,
+  disabled,
+}) => {
   return (
     <div className="col col-auto p-0 d-flex flex-column justify-content-center">
       <a
@@ -9,7 +15,10 @@ export const IconButton = ({ icon, href = null, onclick = null, title }) => {
         onClick={onclick}
         target="_blank"
         rel="noreferrer noopener"
-        className="btn btn-secondary d-flex justify-content-center align-content-between p-1 mr-1 float-right"
+        className={
+          "btn btn-secondary d-flex justify-content-center align-content-between p-1 mr-1 float-right" +
+          (disabled ? " disabled" : "")
+        }
         type="button"
         title={title}
       >
@@ -19,12 +28,13 @@ export const IconButton = ({ icon, href = null, onclick = null, title }) => {
   );
 };
 
-export const CompleteButton = ({ concluded, onclick }) => {
+export const CompleteButton = ({ concluded, onclick, disabled }) => {
   return (
     <IconButton
       icon={concluded ? "fa-check-square-o" : "fa-square-o"}
       onclick={onclick}
       title="Marcar como finalizado"
+      disabled={disabled}
     />
   );
 };

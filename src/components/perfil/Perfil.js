@@ -1,20 +1,21 @@
 import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+
+import FormChangePassword from "./FormChangePassword";
+import FormReportPDF from "./FormReportPDF";
+import FormReportPDFAll from "./FormReportPDFAll";
+import FormSheetCSV from "./FormSheetCSV";
+import FormUserData from "./FormUserData";
+import { actionCRUDUser } from "../../actions/user/actionUser";
 import { actionCRUDUserProfile } from "../../actions/user/actionUserProfile";
 import { logoutAll } from "../../actions/actionAuth";
-import FormChangePassword from "./FormChangePassword";
-import FormUserData from "./FormUserData";
-import FormReportPDF from "./FormReportPDF";
-import FormSheetCSV from "./FormSheetCSV";
-import { actionCRUDUser } from "../../actions/user/actionUser";
-import FormReportPDFAll from "./FormReportPDFAll";
 
 const Perfil = () => {
   const dispatch = useDispatch();
   const authUser = useSelector((state) => state.auth.user);
 
   useEffect(() => {
-    dispatch(actionCRUDUser.read());
+    dispatch(actionCRUDUser.read({ assistente_only: true }));
     dispatch(actionCRUDUserProfile.read());
   }, [dispatch, authUser]);
 
@@ -49,7 +50,6 @@ const Perfil = () => {
           <div>
             <FormUserData authUser={authUser} />
           </div>
-
           <div className="mt-2">
             <FormChangePassword authUser={authUser} />
           </div>

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
 import { login, logout } from "../../actions/actionAuth";
-import { useInput } from "../../hooks/input-hook";
+import { useDispatch, useSelector } from "react-redux";
+
 import { useHistory } from "react-router-dom";
+import { useInput } from "../../hooks/input-hook";
 
 const Login = () => {
   const history = useHistory();
@@ -74,6 +75,21 @@ const Login = () => {
             Entrar
           </button>
         </div>
+        {/* <div className="d-flex justify-content-center">
+          <div className="card">
+            <div className="card-body">
+              <h5>
+                To access the example app,
+                <br />
+                please contact me via email:
+                <br />
+                <a href="mailto:contato@jonasbm.com.br">
+                  contato@jonasbm.com.br
+                </a>
+              </h5>
+            </div>
+          </div>
+        </div> */}
       </form>
     </div>
   );

@@ -1,27 +1,28 @@
-import React, { useEffect, useState } from "react";
-import moment from "moment";
 import "moment/locale/pt-br";
-import { useDispatch } from "react-redux";
-import { actionCRUDNotice } from "../../actions/notice/actionNotice";
-import { actionCRUDNoticeEventType } from "../../actions/notice/actionNoticeEventType";
-import { actionCRUDNoticeEventTypeFile } from "../../actions/notice/actionNoticeEventTypeFile";
-import { actionCRUDNoticeColor } from "../../actions/notice/actionNoticeColor";
-import { actionCRUDSurvey } from "../../actions/survey/actionSurvey";
-import { actionCRUDSurveyEventType } from "../../actions/survey/actionSurveyEventType";
-import { actionCRUDReport } from "../../actions/report/actionReport";
-import { actionCRUDReportEventType } from "../../actions/report/actionReportEventType";
-import { actionCRUDActivity } from "../../actions/activity/actionActivity";
-import { actionCRUDUser } from "../../actions/user/actionUser";
 import "./Calendario.css";
 
-import buildCalendar from "./utils";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import Caption from "./Caption";
 import Day from "./Day";
+import { actionCRUDActivity } from "../../actions/activity/actionActivity";
+import { actionCRUDNotice } from "../../actions/notice/actionNotice";
+import { actionCRUDNoticeColor } from "../../actions/notice/actionNoticeColor";
+import { actionCRUDNoticeEventType } from "../../actions/notice/actionNoticeEventType";
+import { actionCRUDNoticeEventTypeFile } from "../../actions/notice/actionNoticeEventTypeFile";
+import { actionCRUDReport } from "../../actions/report/actionReport";
+import { actionCRUDReportEventType } from "../../actions/report/actionReportEventType";
+import { actionCRUDSurvey } from "../../actions/survey/actionSurvey";
+import { actionCRUDSurveyEventType } from "../../actions/survey/actionSurveyEventType";
+import { actionCRUDUser } from "../../actions/user/actionUser";
+import buildCalendar from "./utils";
+import moment from "moment";
 
 const Calendario = ({ momentdate }) => {
   const [calendar, setCalendar] = useState([]);
   const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.user.users.current);
   useEffect(() => {
     moment.locale("pt-br");
     dispatch(actionCRUDUser.read());
@@ -41,6 +42,7 @@ const Calendario = ({ momentdate }) => {
         .endOf("month")
         .endOf("week")
         .format("YYYY-MM-DD"),
+      user_id: currentUser.id,
     };
     dispatch(actionCRUDNotice.read(params));
     dispatch(actionCRUDSurvey.read(params));
@@ -48,7 +50,7 @@ const Calendario = ({ momentdate }) => {
     dispatch(actionCRUDActivity.read(params));
 
     setCalendar(buildCalendar(momentdate));
-  }, [dispatch, momentdate]);
+  }, [dispatch, momentdate, currentUser]);
 
   return (
     <section>

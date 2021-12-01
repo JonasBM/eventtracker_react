@@ -1,8 +1,9 @@
-import axios from "axios";
 import { ThunkAction } from "redux-thunk";
+import axios from "axios";
+import { createMessage } from "./actionMessages";
 import { returnErrors } from "./actionMessages";
 import { tokenConfig } from "../actions/actionAuth";
-import { createMessage } from "./actionMessages";
+
 var nomes = [];
 var header;
 
@@ -62,6 +63,9 @@ export class actionCRUD {
       { params: formatData(objeto, this.header) },
       tokenConfig(getState, this.header)
     );
+    if (this.types.READ === "READ_NOTICE") {
+      document.body.classList.add("loading-indicator-notice");
+    }
     axios
       .get(this.url, headerWithValues)
       .then((res) => {
@@ -69,8 +73,14 @@ export class actionCRUD {
           type: this.types.READ,
           payload: res.data,
         });
+        if (this.types.READ === "READ_NOTICE") {
+          document.body.classList.remove("loading-indicator-notice");
+        }
       })
       .catch((err) => {
+        if (this.types.READ === "READ_NOTICE") {
+          document.body.classList.remove("loading-indicator-notice");
+        }
         dispatch(returnErrors(err));
       });
   };

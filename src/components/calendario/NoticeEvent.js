@@ -1,17 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { CompleteButton, EventButton, MapButton } from "./common";
+import React, { useEffect, useState } from "react";
 import {
-  getNoticeEventType,
   getAllNoticeConcluded,
   getNoticeColor,
+  getNoticeEventType,
 } from "./utils";
-import {
-  CompleteButton,
-  MapButton,
-  EventButton,
-  // GeoItajaiButton,
-  // GeoItajaiAlvaraButton,
-} from "./common";
 import { useDispatch, useSelector } from "react-redux";
+
 import { actionCRUDNotice } from "../../actions/notice/actionNotice";
 
 const NoticeEventSpan = ({ notice_event, day }) => {
@@ -146,6 +141,7 @@ export const NoticeEventButton = ({ notice, day }) => {
                   onclick={
                     isOwner ? () => completeTask(notice_event) : () => {}
                   }
+                  disabled={!isOwner}
                 />
                 {/* <GeoItajaiButton
                   codigo_lote={notice.imovel ? notice.imovel.codigo_lote : ""}

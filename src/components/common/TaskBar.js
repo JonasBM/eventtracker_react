@@ -1,17 +1,20 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { Form } from "react-final-form";
 import { InputFormGroup, SelectFormGroup, required } from "../common/Forms";
+
+import { Form } from "react-final-form";
+import { OnChange } from "react-final-form-listeners";
+import React from "react";
+import { hasPermission } from "../calendario/utils";
+import moment from "moment";
 import { newDate } from "../../actions/actionDate";
 import { newUser } from "../../actions/user/actionUser";
-import moment from "moment";
 import { useDispatch } from "react-redux";
-import { OnChange } from "react-final-form-listeners";
+import { useSelector } from "react-redux";
 
 const TaskBar = ({ momentdate, dateType }) => {
   const dispatch = useDispatch();
   const users = useSelector((state) => state.user.users.users);
   const currentUser = useSelector((state) => state.user.users.current);
+  const authuser = useSelector((state) => state.auth.user);
   const momentDate = useSelector((state) => state.date);
 
   const onSubmit = (values) => {};
@@ -26,6 +29,7 @@ const TaskBar = ({ momentdate, dateType }) => {
           data-bs-target="#ModalEvent"
           data-modalcall="none"
           data-day={momentDate ? momentDate.format("YYYY-MM-DD") : ""}
+          disabled={!hasPermission(authuser, currentUser.id)}
         >
           Novo Evento
         </button>
@@ -45,11 +49,21 @@ const TaskBar = ({ momentdate, dateType }) => {
                     label="AFM:"
                     className="mx-1 max-width-300"
                   >
-                    {users.map((user, index) => (
-                      <option key={user.id} value={user.id}>
-                        {user.first_name} {user.last_name}
-                      </option>
-                    ))}
+                    {users
+                      .filter((user) => {
+                        if (authuser.profile.is_auditor) {
+                          return true;
+                        }
+                        if (authuser.id === user.id) {
+                          return true;
+                        }
+                        return hasPermission(authuser, user.id);
+                      })
+                      .map((user, index) => (
+                        <option key={user.id} value={user.id}>
+                          {user.first_name} {user.last_name}
+                        </option>
+                      ))}
                   </SelectFormGroup>
                   <OnChange name="currentUser.id">
                     {(value, previous) => {

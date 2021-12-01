@@ -1,37 +1,39 @@
-import React, { Fragment, useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import {
-  actionCRUDNotice,
-  getLatest,
-} from "../../../actions/notice/actionNotice";
-import { Form } from "react-final-form";
-import arrayMutators from "final-form-arrays";
-import { FieldArray } from "react-final-form-arrays";
-import moment from "moment";
-import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
-import {
-  getNoticeEventType,
-  filterOnlyInArrayByID,
-  getFirstVA,
-  hasNotification,
-} from "../utils";
-import {
-  InputFormGroup,
   CheckboxFormGroup,
+  InputFormGroup,
   SelectFormGroup,
   ToogleFieldSet,
   required,
 } from "../../common/Forms";
-import CommonModalFooter from "../../common/CommonModalFooter";
-import AutocompleteImovel from "../../common/AutocompleteImovel";
-import formatString from "format-string-by-pattern";
+import React, { Fragment, useEffect, useState } from "react";
 import {
-  getnoticereportdocx,
+  actionCRUDNotice,
+  getLatest,
+} from "../../../actions/notice/actionNotice";
+import {
+  filterOnlyInArrayByID,
+  getFirstVA,
+  getNoticeEventType,
+  hasNotification,
+  hasPermission,
+} from "../utils";
+import {
   getVArequestdocx,
+  getnoticereportdocx,
 } from "../../../actions/actionFiles";
-import { IconButton } from "../common";
+import { useDispatch, useSelector } from "react-redux";
 
-const FormNoticeFine = ({ fields, name, index, isOwner }) => {
+import AutocompleteImovel from "../../common/AutocompleteImovel";
+import CommonModalFooter from "../../common/CommonModalFooter";
+import { FieldArray } from "react-final-form-arrays";
+import { Form } from "react-final-form";
+import { IconButton } from "../common";
+import arrayMutators from "final-form-arrays";
+import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
+import formatString from "format-string-by-pattern";
+import moment from "moment";
+
+const FormNoticeFine = ({ fields, name, index, hasOwnerPermission }) => {
   return (
     <div key={name} className="row px-4 py-1 form-inline border-bottom">
       <InputFormGroup
@@ -48,7 +50,7 @@ const FormNoticeFine = ({ fields, name, index, isOwner }) => {
         type="date"
         className="mx-1"
       />
-      {isOwner && (
+      {hasOwnerPermission && (
         <button
           type="button"
           className="btn btn-outline-danger border-0 btn-sm"
@@ -61,7 +63,13 @@ const FormNoticeFine = ({ fields, name, index, isOwner }) => {
   );
 };
 
-const FormNoticeAppeal = ({ form, fields, name, index, isOwner }) => {
+const FormNoticeAppeal = ({
+  form,
+  fields,
+  name,
+  index,
+  hasOwnerPermission,
+}) => {
   return (
     <Fragment key={name}>
       <div className="row px-4 py-1 form-inline">
@@ -83,7 +91,7 @@ const FormNoticeAppeal = ({ form, fields, name, index, isOwner }) => {
           className="mx-1"
           classNameDiv="m-1"
         />
-        {isOwner && (
+        {hasOwnerPermission && (
           <button
             type="button"
             className="btn btn-outline-danger border-0 btn-sm"
@@ -119,7 +127,14 @@ const FormNoticeAppeal = ({ form, fields, name, index, isOwner }) => {
   );
 };
 
-const FormNoticeEvent = ({ form, fields, name, index, push, isOwner }) => {
+const FormNoticeEvent = ({
+  form,
+  fields,
+  name,
+  index,
+  push,
+  hasOwnerPermission,
+}) => {
   const notice_event_type = getNoticeEventType(fields.value[index]);
   return (
     <div>
@@ -144,7 +159,7 @@ const FormNoticeEvent = ({ form, fields, name, index, push, isOwner }) => {
             )}
         </span>
 
-        {isOwner && (
+        {hasOwnerPermission && (
           <button
             type="button"
             className="btn btn-outline-danger border-0"
@@ -243,7 +258,7 @@ const FormNoticeEvent = ({ form, fields, name, index, push, isOwner }) => {
                         fields={fields}
                         name={name}
                         index={index}
-                        isOwner={isOwner}
+                        hasOwnerPermission={hasOwnerPermission}
                       />
                     ))
                   }
@@ -277,7 +292,7 @@ const FormNoticeEvent = ({ form, fields, name, index, push, isOwner }) => {
                         fields={fields}
                         name={name}
                         index={index}
-                        isOwner={isOwner}
+                        hasOwnerPermission={hasOwnerPermission}
                       />
                     ))
                   }
@@ -301,15 +316,15 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
   );
   const users = useSelector((state) => state.user.users.users);
   const authuser = useSelector((state) => state.auth.user);
-  const [isOwner, setIsOwner] = useState(false);
+  const [hasOwnerPermission, setHasOwnerPermission] = useState(false);
 
   useEffect(() => {
     if (authuser !== undefined && notice !== undefined) {
-      setIsOwner(authuser.id === notice.owner);
+      setHasOwnerPermission(hasPermission(authuser, notice.owner));
     } else if (authuser === undefined) {
-      setIsOwner(false);
+      setHasOwnerPermission(false);
     } else {
-      setIsOwner(true);
+      setHasOwnerPermission(true);
     }
   }, [authuser, notice]);
 
@@ -402,8 +417,8 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
         <form onSubmit={handleSubmit} className="needs-validation" noValidate>
           <div className="modal-body container">
             <div className="container">
-              <ToogleFieldSet isDisabled={true}>
-                <div className="row no-gutters form-inline">
+              <div className="row no-gutters form-inline">
+                <ToogleFieldSet isDisabled={true}>
                   <SelectFormGroup
                     name="owner"
                     label="AFM:"
@@ -411,20 +426,27 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
                     className="mx-1"
                   >
                     <option value="">---------</option>
-                    {users.map((user, index) => (
-                      <option key={user.id} value={user.id}>
-                        {user.first_name} {user.last_name}
-                      </option>
-                    ))}
+                    {users
+                      .filter((user) => {
+                        if (!hasOwnerPermission) {
+                          return true;
+                        }
+                        return hasPermission(authuser, user.id);
+                      })
+                      .map((user, index) => (
+                        <option key={user.id} value={user.id}>
+                          {user.first_name} {user.last_name}
+                        </option>
+                      ))}
                   </SelectFormGroup>
-                </div>
-              </ToogleFieldSet>
+                </ToogleFieldSet>
+              </div>
               <AutocompleteImovel
                 name="imovel"
                 name_string="imovel.name_string"
                 label="Imóvel:"
                 form={form}
-                disabled={!isOwner}
+                disabled={!hasOwnerPermission}
               />
               {form &&
                 notice &&
@@ -443,7 +465,7 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
                     Carregar Autos passados deste Imóvel
                   </button>
                 )}
-              <ToogleFieldSet isDisabled={!isOwner}>
+              <ToogleFieldSet isDisabled={!hasOwnerPermission}>
                 <InputFormGroup
                   name="document"
                   label="CPF/CNPJ:"
@@ -525,7 +547,7 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
                   </button>
                 </div>
               </div>
-              <ToogleFieldSet isDisabled={!isOwner}>
+              <ToogleFieldSet isDisabled={!hasOwnerPermission}>
                 <div className="container">
                   <FieldArray name="notice_events" validate={requiredArray}>
                     {({ fields, meta: { touched } }) => (
@@ -538,7 +560,7 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
                             name={name}
                             index={index}
                             push={push}
-                            isOwner={isOwner}
+                            hasOwnerPermission={hasOwnerPermission}
                           />
                         ))}
                         {fields.length === 0 && touched ? (
@@ -554,7 +576,7 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
             </div>
           </div>
           <CommonModalFooter
-            isDisabled={!isOwner}
+            isDisabled={!hasOwnerPermission}
             canDelete={
               notice !== undefined ? (notice.id !== 0 ? true : false) : false
             }

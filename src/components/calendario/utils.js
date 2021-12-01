@@ -211,8 +211,8 @@ export const getNoticeColor = (notice) => {
 
 export const getNoticeEventType = (notice_event) => {
   if (notice_event) {
-    const notice_event_types = store.getState().notice.notice_event_types
-      .notice_event_types;
+    const notice_event_types =
+      store.getState().notice.notice_event_types.notice_event_types;
 
     let notice_event_type = notice_event_types.find(
       (notice_event_type) =>
@@ -233,8 +233,8 @@ export const getAllNoticeConcluded = (notice) => {
 
 export const getSurveyEventType = (survey) => {
   if (survey) {
-    const survey_event_types = store.getState().survey.survey_event_types
-      .survey_event_types;
+    const survey_event_types =
+      store.getState().survey.survey_event_types.survey_event_types;
     let survey_event_type = survey_event_types.find(
       (survey_event_type) => survey_event_type.id === survey.survey_event_type
     );
@@ -244,8 +244,8 @@ export const getSurveyEventType = (survey) => {
 
 export const getReportEventType = (report) => {
   if (report) {
-    const report_event_types = store.getState().report.report_event_types
-      .report_event_types;
+    const report_event_types =
+      store.getState().report.report_event_types.report_event_types;
     let report_event_type = report_event_types.find(
       (report_event_type) => report_event_type.id === report.report_event_type
     );
@@ -267,8 +267,8 @@ export const getFirstVA = (notice) => {
 
 export const hasNotification = (notice_event_type) => {
   if (notice_event_type) {
-    const notice_event_type_files = store.getState().notice
-      .notice_event_type_files.notice_event_type_files;
+    const notice_event_type_files =
+      store.getState().notice.notice_event_type_files.notice_event_type_files;
 
     for (let index = 0; index < notice_event_type_files.length; index++) {
       if (
@@ -280,4 +280,14 @@ export const hasNotification = (notice_event_type) => {
     }
     return false;
   }
+};
+
+export const hasPermission = (authuser, ownerID) => {
+  if (authuser.id === ownerID) {
+    return true;
+  }
+  if (authuser.profile.my_auditores.includes(ownerID)) {
+    return true;
+  }
+  return false;
 };
