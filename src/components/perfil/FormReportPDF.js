@@ -1,15 +1,16 @@
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import moment from "moment";
-import { Form } from "react-final-form";
 import {
-  InputFormGroup,
   CheckboxFormGroup,
-  required,
+  InputFormGroup,
   SelectFormGroup,
+  required,
 } from "../common/Forms";
+import { useDispatch, useSelector } from "react-redux";
 
+import { Form } from "react-final-form";
+import React from "react";
 import { getReportPDF } from "../../actions/actionFiles.js";
+import { hasPermission } from "../calendario/utils";
+import moment from "moment";
 
 const FormReportPDF = () => {
   const dispatch = useDispatch();
@@ -38,11 +39,18 @@ const FormReportPDF = () => {
               label="AFM:"
               className="m-1 max-width-300"
             >
-              {users.map((user, index) => (
-                <option key={user.id} value={user.id}>
-                  {user.first_name} {user.last_name}
-                </option>
-              ))}
+              {users
+                .filter((user) => {
+                  if (authUser.profile.is_auditor) {
+                    return true;
+                  }
+                  return hasPermission(authUser, user.id);
+                })
+                .map((user, index) => (
+                  <option key={user.id} value={user.id}>
+                    {user.first_name} {user.last_name}
+                  </option>
+                ))}
             </SelectFormGroup>
           </div>
           <div className="form-inline">

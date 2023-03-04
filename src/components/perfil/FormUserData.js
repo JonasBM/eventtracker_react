@@ -50,33 +50,37 @@ const FormUserData = ({ authUser }) => {
           {!authUser.profile.is_assistente && (
             <div>
               <label className="mb-0">Assistentes:</label>
-              {users.map((user, index) => (
-                <CheckboxFormGroup
-                  key={user.id}
-                  name={"profile.assistentes" + user.id}
-                  label={user.first_name + " " + user.last_name}
-                  className="m-1"
-                  onClick={(e) => {
-                    if (e.target.checked) {
-                      form
-                        .getFieldState("profile.assistentes")
-                        .value.push(user.id);
-                    } else {
-                      form.mutators.setValue(
-                        "profile.assistentes",
+              {users
+                .filter((user) => {
+                  return user.is_assistente;
+                })
+                .map((user, index) => (
+                  <CheckboxFormGroup
+                    key={user.id}
+                    name={"profile.assistentes" + user.id}
+                    label={user.first_name + " " + user.last_name}
+                    className="m-1"
+                    onClick={(e) => {
+                      if (e.target.checked) {
                         form
                           .getFieldState("profile.assistentes")
-                          .value.filter((assistenteID) => {
-                            return assistenteID !== user.id;
-                          })
-                      );
-                    }
-                  }}
-                  checked={form
-                    .getFieldState("profile.assistentes")
-                    ?.value.includes(user.id)}
-                />
-              ))}
+                          .value.push(user.id);
+                      } else {
+                        form.mutators.setValue(
+                          "profile.assistentes",
+                          form
+                            .getFieldState("profile.assistentes")
+                            .value.filter((assistenteID) => {
+                              return assistenteID !== user.id;
+                            })
+                        );
+                      }
+                    }}
+                    checked={form
+                      .getFieldState("profile.assistentes")
+                      ?.value.includes(user.id)}
+                  />
+                ))}
               <SelectFormGroup
                 name="profile.assistentes"
                 label="Assistentes:"

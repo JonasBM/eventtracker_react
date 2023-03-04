@@ -1,10 +1,11 @@
-import React from "react";
+import { InputFormGroup, SelectFormGroup, required } from "../common/Forms";
 import { useDispatch, useSelector } from "react-redux";
-import moment from "moment";
-import { Form } from "react-final-form";
-import { InputFormGroup, required, SelectFormGroup } from "../common/Forms";
 
+import { Form } from "react-final-form";
+import React from "react";
 import { getSheetCSV } from "../../actions/actionFiles";
+import { hasPermission } from "../calendario/utils";
+import moment from "moment";
 
 const FormSheetCSV = () => {
   const dispatch = useDispatch();
@@ -32,11 +33,18 @@ const FormSheetCSV = () => {
               label="AFM:"
               className="m-1 max-width-300"
             >
-              {users.map((user, index) => (
-                <option key={user.id} value={user.id}>
-                  {user.first_name} {user.last_name}
-                </option>
-              ))}
+              {users
+                .filter((user) => {
+                  if (authUser.profile.is_auditor) {
+                    return true;
+                  }
+                  return hasPermission(authUser, user.id);
+                })
+                .map((user, index) => (
+                  <option key={user.id} value={user.id}>
+                    {user.first_name} {user.last_name}
+                  </option>
+                ))}
             </SelectFormGroup>
           </div>
           <div className="form-inline">

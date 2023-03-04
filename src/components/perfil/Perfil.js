@@ -15,7 +15,7 @@ const Perfil = () => {
   const authUser = useSelector((state) => state.auth.user);
 
   useEffect(() => {
-    dispatch(actionCRUDUser.read({ assistente_only: true }));
+    dispatch(actionCRUDUser.read());
     dispatch(actionCRUDUserProfile.read());
   }, [dispatch, authUser]);
 
@@ -64,9 +64,12 @@ const Perfil = () => {
           </div>
         </div>
         <div className="col-12 offset-lg-1 col-lg-5 mt-2 mt-lg-0">
-          <div className="row m-1 p-2 border">
-            <FormReportPDFAll />
-          </div>
+          {!authUser.profile.is_assistente && (
+            <div className="row m-1 p-2 border">
+              <FormReportPDFAll />
+            </div>
+          )}
+
           <div className="row m-1 p-2 border">
             <FormReportPDF />
           </div>

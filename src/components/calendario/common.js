@@ -53,9 +53,11 @@ export const GeoItajaiButton = ({ codigo_lote }) => {
   return (
     <IconButton
       href={
-        "https://geoitajai.github.io/geo/consultazoneamento_openlayers.html#" +
+        "https://arcgis.itajai.sc.gov.br/geoitajai/plantacadastral/consultazoneamento.html#i" +
         codigo_lote
       }
+      // https://geoitajai.github.io/geo/consultazoneamento_openlayers.html#2110810320
+      // https://arcgis.itajai.sc.gov.br/geoitajai/plantacadastral/consultazoneamento.html#i2110810320
       icon="fa-file-text-o"
       title="Consulta Prévia"
     />
@@ -66,8 +68,11 @@ export const GeoItajaiAlvaraButton = ({ codigo_lote }) => {
   return (
     <IconButton
       href={
-        "https://geoitajai.github.io/geo/consultaalvara.html#" + codigo_lote
+        "https://arcgis.itajai.sc.gov.br/geoitajai/plantacadastral/consultaalvara.html#i" +
+        codigo_lote
       }
+      // https://geoitajai.github.io/geo/consultaalvara.html#2110810320
+      // https://arcgis.itajai.sc.gov.br/geoitajai/plantacadastral/consultaalvara.html#i2110810320
       icon="fa-id-card-o"
       title="Grau de risco"
     />
