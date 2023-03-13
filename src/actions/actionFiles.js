@@ -5,16 +5,8 @@ import store from "../store";
 import { getNoticeEventType } from "../components/calendario/utils";
 
 export const getReportPDF = (values) => (dispatch, getState) => {
-  let headerWithValues = Object.assign(
-    {},
-    { responseType: "blob", params: values },
-    tokenConfig(getState)
-  );
-  let user = store
-    .getState()
-    .user.users.users.find(
-      (user) => user.id.toString() === values.user_id.toString()
-    );
+  let headerWithValues = Object.assign({}, { responseType: "blob", params: values }, tokenConfig(getState));
+  let user = store.getState().user.users.users.find((user) => user.id.toString() === values.user_id.toString());
 
   let user_name = "";
   if (user) {
@@ -46,18 +38,11 @@ export const getReportPDF = (values) => (dispatch, getState) => {
 };
 
 export const getReportPDFAll = (values) => (dispatch, getState) => {
-  let headerWithValues = Object.assign(
-    {},
-    { responseType: "blob", params: values },
-    tokenConfig(getState)
-  );
+  let headerWithValues = Object.assign({}, { responseType: "blob", params: values }, tokenConfig(getState));
   let fileName = "relatório mensal de desempenho-" + values.month + ".pdf";
   try {
     axios
-      .get(
-        process.env.REACT_APP_API_URL + "api/reportpdfall/",
-        headerWithValues
-      )
+      .get(process.env.REACT_APP_API_URL + "api/reportpdfall/", headerWithValues)
       .then((response) => {
         const file = new Blob([response.data], { type: "application/pdf" });
         const fileURL = URL.createObjectURL(file);
@@ -76,17 +61,9 @@ export const getReportPDFAll = (values) => (dispatch, getState) => {
 };
 
 export const getSheetCSV = (values) => (dispatch, getState) => {
-  let headerWithValues = Object.assign(
-    {},
-    { responseType: "blob", params: values },
-    tokenConfig(getState)
-  );
+  let headerWithValues = Object.assign({}, { responseType: "blob", params: values }, tokenConfig(getState));
 
-  let user = store
-    .getState()
-    .user.users.users.find(
-      (user) => user.id.toString() === values.user_id.toString()
-    );
+  let user = store.getState().user.users.users.find((user) => user.id.toString() === values.user_id.toString());
 
   let user_name = "";
   if (user) {
@@ -127,14 +104,10 @@ export const getnoticereportdocx = (notice) => (dispatch, getState) => {
   let fileName = "relatório de Fiscalização.docx";
   try {
     axios
-      .get(
-        process.env.REACT_APP_API_URL + "api/noticereportdocx/",
-        headerWithValues
-      )
+      .get(process.env.REACT_APP_API_URL + "api/noticereportdocx/", headerWithValues)
       .then((response) => {
         const file = new Blob([response.data], {
-          type:
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         });
         const fileURL = URL.createObjectURL(file);
         var fileLink = document.createElement("a");
@@ -152,10 +125,7 @@ export const getnoticereportdocx = (notice) => (dispatch, getState) => {
   }
 };
 
-export const getVArequestdocx = (vistoriaAdministrativa) => (
-  dispatch,
-  getState
-) => {
+export const getVArequestdocx = (vistoriaAdministrativa) => (dispatch, getState) => {
   let headerWithValues = Object.assign(
     {},
     {
@@ -168,14 +138,10 @@ export const getVArequestdocx = (vistoriaAdministrativa) => (
   let fileName = "Pedido de VA.docx";
   try {
     axios
-      .get(
-        process.env.REACT_APP_API_URL + "api/varequestdocx/",
-        headerWithValues
-      )
+      .get(process.env.REACT_APP_API_URL + "api/varequestdocx/", headerWithValues)
       .then((response) => {
         const file = new Blob([response.data], {
-          type:
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         });
         const fileURL = URL.createObjectURL(file);
         var fileLink = document.createElement("a");
@@ -204,14 +170,10 @@ export const downloadFileVARequestDocx = () => (dispatch, getState) => {
 
   try {
     axios
-      .get(
-        process.env.REACT_APP_API_URL + "api/filevarequestdocx/",
-        headerWithValues
-      )
+      .get(process.env.REACT_APP_API_URL + "api/filevarequestdocx/", headerWithValues)
       .then((response) => {
         const file = new Blob([response.data], {
-          type:
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         });
         const fileURL = URL.createObjectURL(file);
         var fileLink = document.createElement("a");
@@ -260,14 +222,10 @@ export const downloadFileRFRequestDocx = () => (dispatch, getState) => {
 
   try {
     axios
-      .get(
-        process.env.REACT_APP_API_URL + "api/filerfrequestdocx/",
-        headerWithValues
-      )
+      .get(process.env.REACT_APP_API_URL + "api/filerfrequestdocx/", headerWithValues)
       .then((response) => {
         const file = new Blob([response.data], {
-          type:
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         });
         const fileURL = URL.createObjectURL(file);
         var fileLink = document.createElement("a");
@@ -305,71 +263,64 @@ export const uploadFileRFRequestDocx = (values) => (dispatch, getState) => {
   }
 };
 
-export const downloadNotification = (
-  notice_event_type_file,
-  notice_event,
-  notice_event_reference
-) => (dispatch, getState) => {
-  if (!notice_event || !notice_event_type_file) {
-    return false;
-  }
-  let params = {
-    notice_event_id: notice_event.id,
-    notice_event_type_file_id: notice_event_type_file.id,
-  };
-
-  if (notice_event_reference) {
-    params = {
+export const downloadNotification =
+  (notice_event_type_file, notice_event, notice_event_reference) => (dispatch, getState) => {
+    if (!notice_event || !notice_event_type_file) {
+      return false;
+    }
+    let params = {
       notice_event_id: notice_event.id,
       notice_event_type_file_id: notice_event_type_file.id,
-      notice_event_reference: notice_event_reference,
     };
-  }
 
-  const notice_event_type = getNoticeEventType(notice_event);
+    if (notice_event_reference) {
+      params = {
+        notice_event_id: notice_event.id,
+        notice_event_type_file_id: notice_event_type_file.id,
+        notice_event_reference: notice_event_reference,
+      };
+    }
 
-  let headerWithValues = Object.assign(
-    {},
-    {
-      responseType: "blob",
-      params: params,
-    },
-    tokenConfig(getState)
-  );
+    const notice_event_type = getNoticeEventType(notice_event);
 
-  let fileName =
-    "Auto " +
-    notice_event_type.name.toUpperCase() +
-    "_" +
-    notice_event.identification +
-    "_" +
-    notice_event_type_file.name +
-    ".docx";
+    let headerWithValues = Object.assign(
+      {},
+      {
+        responseType: "blob",
+        params: params,
+      },
+      tokenConfig(getState)
+    );
 
-  fileName = fileName.replace(/[/\\?%*:|"<>,;=]/g, "-");
+    let fileName =
+      "Auto " +
+      notice_event_type.name.toUpperCase() +
+      "_" +
+      notice_event.identification +
+      "_" +
+      notice_event_type_file.name +
+      ".docx";
 
-  try {
-    axios
-      .get(
-        process.env.REACT_APP_API_URL + "api/downloadnotification/",
-        headerWithValues
-      )
-      .then((response) => {
-        const file = new Blob([response.data], {
-          type:
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    fileName = fileName.replace(/[/\\?%*:|"<>,;=]/g, "-");
+
+    try {
+      axios
+        .get(process.env.REACT_APP_API_URL + "api/downloadnotification/", headerWithValues)
+        .then((response) => {
+          const file = new Blob([response.data], {
+            type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          });
+          const fileURL = URL.createObjectURL(file);
+          var fileLink = document.createElement("a");
+          fileLink.href = fileURL;
+          fileLink.download = fileName;
+          fileLink.click();
+          URL.revokeObjectURL(fileURL);
+        })
+        .catch((err) => {
+          dispatch(returnErrors(err));
         });
-        const fileURL = URL.createObjectURL(file);
-        var fileLink = document.createElement("a");
-        fileLink.href = fileURL;
-        fileLink.download = fileName;
-        fileLink.click();
-        URL.revokeObjectURL(fileURL);
-      })
-      .catch((err) => {
-        dispatch(returnErrors(err));
-      });
-  } catch (err) {
-    console.log(err);
-  }
-};
+    } catch (err) {
+      console.log(err);
+    }
+  };

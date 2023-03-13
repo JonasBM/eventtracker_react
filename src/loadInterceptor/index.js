@@ -1,13 +1,11 @@
 import axios from "axios";
 import "./index.css";
 
-const noLoading = ["api/imovelupdatelog/", "api/imovel/"];
+const noLoading = ["api/imovelupdatelog/", "api/imovel/", "api/update-imovel/"];
 
 axios.interceptors.request.use(
   function (config) {
-    if (
-      !noLoading.includes(config.url.replace(process.env.REACT_APP_API_URL, ""))
-    ) {
+    if (!noLoading.includes(config.url.replace(process.env.REACT_APP_API_URL, ""))) {
       document.body.classList.add("loading-indicator");
     }
     // const token = window.localStorage.token;

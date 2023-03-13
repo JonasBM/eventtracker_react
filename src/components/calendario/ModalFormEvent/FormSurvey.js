@@ -1,10 +1,4 @@
-import {
-  CheckboxFormGroup,
-  InputFormGroup,
-  SelectFormGroup,
-  ToogleFieldSet,
-  required,
-} from "../../common/Forms";
+import { CheckboxFormGroup, InputFormGroup, SelectFormGroup, ToogleFieldSet, required } from "../../common/Forms";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -16,12 +10,12 @@ import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
 import formatString from "format-string-by-pattern";
 import { hasPermission } from "../utils";
 import moment from "moment";
+import { OnChange } from "react-final-form-listeners";
+import { formatCNPJCPF } from "../utils";
 
 const FormSurvey = ({ survey, day, isModalOpen }) => {
   const dispatch = useDispatch();
-  const survey_event_types = useSelector(
-    (state) => state.survey.survey_event_types.survey_event_types
-  );
+  const survey_event_types = useSelector((state) => state.survey.survey_event_types.survey_event_types);
   const users = useSelector((state) => state.user.users.users);
   const authuser = useSelector((state) => state.auth.user);
   const [hasOwnerPermission, setHasOwnerPermission] = useState(false);
@@ -39,10 +33,7 @@ const FormSurvey = ({ survey, day, isModalOpen }) => {
   const onDelete = () => {
     let newLine = "\r\n";
     let confirm_alert = "Tem certeza que gostaria de deletar esta Vistoria de ";
-    confirm_alert +=
-      survey_event_types.find(
-        (element) => element.id === survey.survey_event_type
-      ).name + "?";
+    confirm_alert += survey_event_types.find((element) => element.id === survey.survey_event_type).name + "?";
     confirm_alert += newLine;
     confirm_alert += "Nº: " + survey.identification;
     confirm_alert += newLine;
@@ -88,17 +79,23 @@ const FormSurvey = ({ survey, day, isModalOpen }) => {
       }}
       render={({ handleSubmit, form }) => (
         <form onSubmit={handleSubmit} className="needs-validation" noValidate>
+          <OnChange name="imovel">
+            {(value, previous) => {
+              if (value?.id !== previous?.id) {
+                if (value?.cnpj_cpf) {
+                  const document = form.getFieldState("document");
+                  if (!document?.value) {
+                    form.mutators.setValue("document", formatCNPJCPF(value?.cnpj_cpf));
+                  }
+                }
+              }
+            }}
+          </OnChange>
           <div className="modal-body container">
             <div className="container">
               <div className="form-inline">
                 <ToogleFieldSet isDisabled={true}>
-                  <SelectFormGroup
-                    name="owner"
-                    label="AFM:"
-                    validate={required}
-                    className="m-1"
-                    classNameDiv="mx-1"
-                  >
+                  <SelectFormGroup name="owner" label="AFM:" validate={required} className="m-1" classNameDiv="mx-1">
                     <option value="">---------</option>
                     {users
                       .filter((user) => {
@@ -152,13 +149,7 @@ const FormSurvey = ({ survey, day, isModalOpen }) => {
                   label="Endereço:"
                   maxLength="255"
                 /> */}
-                <InputFormGroup
-                  name="description"
-                  label="Descrição:"
-                  component="textarea"
-                  cols="40"
-                  rows="3"
-                />
+                <InputFormGroup name="description" label="Descrição:" component="textarea" cols="40" rows="3" />
                 <div className="d-flex flex-row">
                   <div className="form-inline">
                     <InputFormGroup
@@ -178,10 +169,7 @@ const FormSurvey = ({ survey, day, isModalOpen }) => {
                     >
                       <option value="">---------</option>
                       {survey_event_types.map((survey_event_type, index) => (
-                        <option
-                          key={survey_event_type.id}
-                          value={survey_event_type.id}
-                        >
+                        <option key={survey_event_type.id} value={survey_event_type.id}>
                           {survey_event_type.order} - {survey_event_type.name}
                         </option>
                       ))}
@@ -200,12 +188,8 @@ const FormSurvey = ({ survey, day, isModalOpen }) => {
           </div>
           <CommonModalFooter
             isDisabled={!hasOwnerPermission}
-            canDelete={
-              survey !== undefined ? (survey.id !== 0 ? true : false) : false
-            }
-            canCopy={
-              survey !== undefined ? (survey.id !== 0 ? true : false) : false
-            }
+            canDelete={survey !== undefined ? (survey.id !== 0 ? true : false) : false}
+            canCopy={survey !== undefined ? (survey.id !== 0 ? true : false) : false}
             onDelete={onDelete}
             form={form}
           />

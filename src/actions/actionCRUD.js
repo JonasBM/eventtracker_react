@@ -7,7 +7,7 @@ import { tokenConfig } from "../actions/actionAuth";
 var nomes = [];
 var header;
 
-const formatData = (objeto, header) => {
+export const formatData = (objeto, header) => {
   if (objeto && header) {
     if (header["Content-Type"] === "multipart/form-data") {
       return Object.keys(objeto).reduce((formData, key) => {
@@ -41,11 +41,7 @@ export class actionCRUD {
   // CREATE
   create = (objeto) => (dispatch, getState) => {
     axios
-      .post(
-        this.url,
-        formatData(objeto, this.header),
-        tokenConfig(getState, this.header)
-      )
+      .post(this.url, formatData(objeto, this.header), tokenConfig(getState, this.header))
       .then((res) => {
         dispatch({
           type: this.types.CREATE,
@@ -101,11 +97,7 @@ export class actionCRUD {
   // UPDATE
   update = (objeto) => (dispatch, getState) => {
     axios
-      .patch(
-        this.url + objeto.id + "/",
-        formatData(objeto, this.header),
-        tokenConfig(getState, this.header)
-      )
+      .patch(this.url + objeto.id + "/", formatData(objeto, this.header), tokenConfig(getState, this.header))
       .then((res) => {
         dispatch({
           type: this.types.UPDATE,

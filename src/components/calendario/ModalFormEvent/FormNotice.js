@@ -1,26 +1,8 @@
-import {
-  CheckboxFormGroup,
-  InputFormGroup,
-  SelectFormGroup,
-  ToogleFieldSet,
-  required,
-} from "../../common/Forms";
+import { CheckboxFormGroup, InputFormGroup, SelectFormGroup, ToogleFieldSet, required } from "../../common/Forms";
 import React, { Fragment, useEffect, useState } from "react";
-import {
-  actionCRUDNotice,
-  getLatest,
-} from "../../../actions/notice/actionNotice";
-import {
-  filterOnlyInArrayByID,
-  getFirstVA,
-  getNoticeEventType,
-  hasNotification,
-  hasPermission,
-} from "../utils";
-import {
-  getVArequestdocx,
-  getnoticereportdocx,
-} from "../../../actions/actionFiles";
+import { actionCRUDNotice, getLatest } from "../../../actions/notice/actionNotice";
+import { filterOnlyInArrayByID, getFirstVA, getNoticeEventType, hasNotification, hasPermission } from "../utils";
+import { getVArequestdocx, getnoticereportdocx } from "../../../actions/actionFiles";
 import { useDispatch, useSelector } from "react-redux";
 
 import AutocompleteImovel from "../../common/AutocompleteImovel";
@@ -32,6 +14,8 @@ import arrayMutators from "final-form-arrays";
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
 import formatString from "format-string-by-pattern";
 import moment from "moment";
+import { OnChange } from "react-final-form-listeners";
+import { formatCNPJCPF } from "../utils";
 
 const FormNoticeFine = ({ fields, name, index, hasOwnerPermission }) => {
   return (
@@ -44,18 +28,9 @@ const FormNoticeFine = ({ fields, name, index, hasOwnerPermission }) => {
         placeholder="identificação"
         className="mx-1"
       />
-      <InputFormGroup
-        name={name + ".date"}
-        label="Data:"
-        type="date"
-        className="mx-1"
-      />
+      <InputFormGroup name={name + ".date"} label="Data:" type="date" className="mx-1" />
       {hasOwnerPermission && (
-        <button
-          type="button"
-          className="btn btn-outline-danger border-0 btn-sm"
-          onClick={() => fields.remove(index)}
-        >
+        <button type="button" className="btn btn-outline-danger border-0 btn-sm" onClick={() => fields.remove(index)}>
           <i className="fa fa-trash fa-sm"></i>
         </button>
       )}
@@ -63,13 +38,7 @@ const FormNoticeFine = ({ fields, name, index, hasOwnerPermission }) => {
   );
 };
 
-const FormNoticeAppeal = ({
-  form,
-  fields,
-  name,
-  index,
-  hasOwnerPermission,
-}) => {
+const FormNoticeAppeal = ({ form, fields, name, index, hasOwnerPermission }) => {
   return (
     <Fragment key={name}>
       <div className="row px-4 py-1 form-inline">
@@ -92,29 +61,14 @@ const FormNoticeAppeal = ({
           classNameDiv="m-1"
         />
         {hasOwnerPermission && (
-          <button
-            type="button"
-            className="btn btn-outline-danger border-0 btn-sm"
-            onClick={() => fields.remove(index)}
-          >
+          <button type="button" className="btn btn-outline-danger border-0 btn-sm" onClick={() => fields.remove(index)}>
             <i className="fa fa-trash fa-sm"></i>
           </button>
         )}
       </div>
       <div className="row px-4 py-1 form-inline border-bottom">
-        <InputFormGroup
-          name={name + ".start_date"}
-          label="Inicio:"
-          type="date"
-          className="mx-1"
-          validate={required}
-        />
-        <InputFormGroup
-          name={name + ".end_date"}
-          label="Fim:"
-          type="date"
-          className="mx-1"
-        />
+        <InputFormGroup name={name + ".start_date"} label="Inicio:" type="date" className="mx-1" validate={required} />
+        <InputFormGroup name={name + ".end_date"} label="Fim:" type="date" className="mx-1" />
         <IconButton
           icon={"fa-times-circle-o"}
           onclick={() => {
@@ -127,14 +81,7 @@ const FormNoticeAppeal = ({
   );
 };
 
-const FormNoticeEvent = ({
-  form,
-  fields,
-  name,
-  index,
-  push,
-  hasOwnerPermission,
-}) => {
+const FormNoticeEvent = ({ form, fields, name, index, push, hasOwnerPermission }) => {
   const notice_event_type = getNoticeEventType(fields.value[index]);
   return (
     <div>
@@ -160,11 +107,7 @@ const FormNoticeEvent = ({
         </span>
 
         {hasOwnerPermission && (
-          <button
-            type="button"
-            className="btn btn-outline-danger border-0"
-            onClick={() => fields.remove(index)}
-          >
+          <button type="button" className="btn btn-outline-danger border-0" onClick={() => fields.remove(index)}>
             <i className="fa fa-trash fa-lg"></i>
           </button>
         )}
@@ -203,12 +146,7 @@ const FormNoticeEvent = ({
                 />
               )}
               {getNoticeEventType(fields.value[index]).show_concluded && (
-                <CheckboxFormGroup
-                  name={name + ".concluded"}
-                  label="Concluído"
-                  className="mx-1"
-                  classNameDiv="m-1"
-                />
+                <CheckboxFormGroup name={name + ".concluded"} label="Concluído" className="mx-1" classNameDiv="m-1" />
               )}
               {getNoticeEventType(fields.value[index]).show_deadline && (
                 <div className="form-inline">
@@ -306,14 +244,11 @@ const FormNoticeEvent = ({
   );
 };
 
-const requiredArray = (value) =>
-  value && value.length > 0 ? undefined : "Required";
+const requiredArray = (value) => (value && value.length > 0 ? undefined : "Required");
 
 const FormNotice = ({ notice, day, isModalOpen }) => {
   const dispatch = useDispatch();
-  const notice_event_types = useSelector(
-    (state) => state.notice.notice_event_types.notice_event_types
-  );
+  const notice_event_types = useSelector((state) => state.notice.notice_event_types.notice_event_types);
   const users = useSelector((state) => state.user.users.users);
   const authuser = useSelector((state) => state.auth.user);
   const [hasOwnerPermission, setHasOwnerPermission] = useState(false);
@@ -339,10 +274,7 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
       confirm_alert += "Nº: " + notice.notice_events[index].identification;
       confirm_alert +=
         " (" +
-        notice_event_types.find(
-          (element) =>
-            element.id === notice.notice_events[index].notice_event_type
-        ).name +
+        notice_event_types.find((element) => element.id === notice.notice_events[index].notice_event_type).name +
         ")";
     }
     if (window.confirm(confirm_alert)) {
@@ -352,9 +284,7 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
   };
 
   const confirmSave = (values) => {
-    let removedNoticeEvents = notice.notice_events.filter(
-      filterOnlyInArrayByID(values.notice_events)
-    );
+    let removedNoticeEvents = notice.notice_events.filter(filterOnlyInArrayByID(values.notice_events));
     if (removedNoticeEvents.length === 0) {
       return true;
     }
@@ -365,10 +295,7 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
       confirm_alert += "Nº: " + removedNoticeEvents[index].identification;
       confirm_alert +=
         " (" +
-        notice_event_types.find(
-          (element) =>
-            element.id === removedNoticeEvents[index].notice_event_type
-        ).name +
+        notice_event_types.find((element) => element.id === removedNoticeEvents[index].notice_event_type).name +
         ")";
     }
     confirm_alert += newLine;
@@ -415,16 +342,23 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
         form,
       }) => (
         <form onSubmit={handleSubmit} className="needs-validation" noValidate>
+          <OnChange name="imovel">
+            {(value, previous) => {
+              if (value?.id !== previous?.id) {
+                if (value?.cnpj_cpf) {
+                  const document = form.getFieldState("document");
+                  if (!document?.value) {
+                    form.mutators.setValue("document", formatCNPJCPF(value?.cnpj_cpf));
+                  }
+                }
+              }
+            }}
+          </OnChange>
           <div className="modal-body container">
             <div className="container">
               <div className="row no-gutters form-inline">
                 <ToogleFieldSet isDisabled={true}>
-                  <SelectFormGroup
-                    name="owner"
-                    label="AFM:"
-                    validate={required}
-                    className="mx-1"
-                  >
+                  <SelectFormGroup name="owner" label="AFM:" validate={required} className="mx-1">
                     <option value="">---------</option>
                     {users
                       .filter((user) => {
@@ -457,9 +391,7 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
                     type="button"
                     className="btn btn-sm btn-outline-primary"
                     onClick={() => {
-                      dispatch(
-                        getLatest(form.getFieldState("imovel").value.id)
-                      );
+                      dispatch(getLatest(form.getFieldState("imovel").value.id));
                     }}
                   >
                     Carregar Autos passados deste Imóvel
@@ -473,25 +405,14 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
                   parse={(value) => {
                     if (!value) return value;
                     const onlyNumbers = value.replace(/[^\d]/g, "");
-                    if (value.length > 14) {
+                    if (onlyNumbers.length > 11) {
                       return formatString("99.999.999/9999-99", onlyNumbers);
                     } else {
                       return formatString("999.999.999-99", onlyNumbers);
                     }
                   }}
                 />
-                {/* <InputFormGroup
-                  name="address"
-                  label="Endereço:"
-                  maxLength="255"
-                /> */}
-                <InputFormGroup
-                  name="description"
-                  label="Descrição:"
-                  component="textarea"
-                  cols="40"
-                  rows="3"
-                />
+                <InputFormGroup name="description" label="Descrição:" component="textarea" cols="40" rows="3" />
                 <div className="row">
                   <div className="col-auto">Adicionar:</div>
                   <div className="col text-left">
@@ -504,8 +425,7 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
                           push("notice_events", {
                             date: day.format("YYYY-MM-DD"),
                             deadline: notice_event_type.default_deadline,
-                            deadline_working_days:
-                              notice_event_type.default_deadline_working_days,
+                            deadline_working_days: notice_event_type.default_deadline_working_days,
                             concluded: notice_event_type.default_concluded,
                             notice_event_type: notice_event_type.id,
                           })
@@ -535,13 +455,7 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
                     onClick={() => {
                       dispatch(getVArequestdocx(getFirstVA(notice)));
                     }}
-                    disabled={
-                      notice && notice.imovel
-                        ? getFirstVA(notice)
-                          ? false
-                          : true
-                        : true
-                    }
+                    disabled={notice && notice.imovel ? (getFirstVA(notice) ? false : true) : true}
                   >
                     Gerar Pedido de VA
                   </button>
@@ -564,9 +478,7 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
                           />
                         ))}
                         {fields.length === 0 && touched ? (
-                          <div className="invalid-feedback d-block">
-                            É necessario adicionar ao menos um Auto ou VA
-                          </div>
+                          <div className="invalid-feedback d-block">É necessario adicionar ao menos um Auto ou VA</div>
                         ) : null}
                       </div>
                     )}
@@ -577,12 +489,8 @@ const FormNotice = ({ notice, day, isModalOpen }) => {
           </div>
           <CommonModalFooter
             isDisabled={!hasOwnerPermission}
-            canDelete={
-              notice !== undefined ? (notice.id !== 0 ? true : false) : false
-            }
-            canCopy={
-              notice !== undefined ? (notice.id !== 0 ? true : false) : false
-            }
+            canDelete={notice !== undefined ? (notice.id !== 0 ? true : false) : false}
+            canCopy={notice !== undefined ? (notice.id !== 0 ? true : false) : false}
             onDelete={onDelete}
             form={form}
           />

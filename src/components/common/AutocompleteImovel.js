@@ -6,16 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import formatString from "format-string-by-pattern";
 import { actionCRUDImovel } from "../../actions/imovel/actionImovel";
 import { OnFocus, OnBlur, OnChange } from "react-final-form-listeners";
-import {
-  GeoItajaiButton,
-  GeoItajaiAlvaraButton,
-  IconButton,
-  MapButton,
-} from "../calendario/common";
+import { GeoItajaiButton, GeoItajaiAlvaraButton, IconButton, MapButton } from "../calendario/common";
 import debounce from "lodash.debounce";
 import axios from "axios";
 import { createMessage } from "../../actions/actionMessages";
 import { useCallback } from "react";
+import { formatCNPJCPF } from "../calendario/utils";
 
 export const SearchFromString = (value, imovel_id = null) => {
   let all = /^[\d.]+-(.+)$/g;
@@ -82,15 +78,7 @@ export const SearchFromString = (value, imovel_id = null) => {
   };
 };
 
-const AutocompleteImovel = ({
-  name,
-  name_string,
-  label,
-  form,
-  className,
-  showResult = true,
-  ...props
-}) => {
+const AutocompleteImovel = ({ name, name_string, label, form, className, showResult = true, ...props }) => {
   const dispatch = useDispatch();
   const imoveis = useSelector((state) => state.imovel.imoveis.imoveis);
   const [currentImovel, setCurrentImovel] = useState();
@@ -149,9 +137,7 @@ const AutocompleteImovel = ({
     if (imoveis) {
       form.mutators.setValue(
         name,
-        imoveis.find(
-          (imovel) => imovel.id.toString() === event.target.dataset.imovel_id
-        )
+        imoveis.find((imovel) => imovel.id.toString() === event.target.dataset.imovel_id)
       );
       form.mutators.setValue(name + "_id", event.target.dataset.imovel_id);
     }
@@ -181,10 +167,7 @@ const AutocompleteImovel = ({
 
   const handleSaveCEP = () => {
     if (form.getFieldState("newCEP")) {
-      form.mutators.setValue(
-        name + ".cep",
-        formatString("99.999-999", form.getFieldState("newCEP").value)
-      );
+      form.mutators.setValue(name + ".cep", formatString("99.999-999", form.getFieldState("newCEP").value));
       dispatch(actionCRUDImovel.update(form.getFieldState(name).value));
     }
     setShowNewCEP(false);
@@ -246,11 +229,7 @@ const AutocompleteImovel = ({
                 onMouseDown={handleImovelChoose}
                 //onClick={handleImovelChoose}
                 className={
-                  currentImovel
-                    ? imovel.name_string === currentImovel.name_string
-                      ? "autocomplete-active"
-                      : ""
-                    : ""
+                  currentImovel ? (imovel.name_string === currentImovel.name_string ? "autocomplete-active" : "") : ""
                 }
               >
                 {imovel.name_string}
@@ -262,24 +241,18 @@ const AutocompleteImovel = ({
       {showResult && currentImovel && (
         <ul className="list-group p-1 m-2 autocomplete-resultlist border">
           <li className="list-group-item p-0 border-0">
-            razao_social: {currentImovel.razao_social}
+            {`razao_social: ${currentImovel.razao_social}`}{" "}
+            {currentImovel.cnpj_cpf && `| CPF: ${formatCNPJCPF(currentImovel.cnpj_cpf)}`}
           </li>
-          <li className="list-group-item p-0 border-0">
-            Código do imóvel: {currentImovel.codigo}
-          </li>
-          <li className="list-group-item p-0 border-0">
-            Insc. Imobiliária: {currentImovel.inscricao_imobiliaria}
-          </li>
-          <li className="list-group-item p-0 border-0">
-            Contribuinte: {currentImovel.numero_contribuinte}
-          </li>
+          <li className="list-group-item p-0 border-0">Código do imóvel: {currentImovel.codigo}</li>
+          <li className="list-group-item p-0 border-0">Insc. Imobiliária: {currentImovel.inscricao_imobiliaria}</li>
+          <li className="list-group-item p-0 border-0">Contribuinte: {currentImovel.numero_contribuinte}</li>
           <li className="list-group-item p-0 border-0">
             Endereço: {currentImovel.logradouro + ", " + currentImovel.numero}
             {currentImovel.complemento ? ", " + currentImovel.complemento : ""}
             {" - "}
             Bairro: {currentImovel.bairro}
-            {" - "}CEP:{" "}
-            {currentImovel.cep && formatString("99.999-999", currentImovel.cep)}
+            {" - "}CEP: {currentImovel.cep && formatString("99.999-999", currentImovel.cep)}
             <div className="row no-gutters d-inline-flex float-right">
               <IconButton
                 icon={showNewCEP ? "fa-envelope-open-o" : "fa-envelope-o"}
@@ -287,24 +260,14 @@ const AutocompleteImovel = ({
                   setLogradouroBusca(currentImovel.logradouro);
                   setCEPResults();
                   setShowNewCEP(!showNewCEP);
-                  form.mutators.setValue(
-                    "newCEP",
-                    formatString("99.999-999", currentImovel.cep)
-                  );
+                  form.mutators.setValue("newCEP", formatString("99.999-999", currentImovel.cep));
                 }}
                 title="Autalizar CEP"
               />
               <GeoItajaiButton codigo_lote={currentImovel.codigo_lote} />
               <GeoItajaiAlvaraButton codigo_lote={currentImovel.codigo_lote} />
               <MapButton
-                address={
-                  currentImovel.logradouro +
-                  "," +
-                  currentImovel.numero +
-                  "-" +
-                  currentImovel.bairro +
-                  "-itajaí"
-                }
+                address={currentImovel.logradouro + "," + currentImovel.numero + "-" + currentImovel.bairro + "-itajaí"}
               />
             </div>
           </li>
@@ -338,10 +301,7 @@ const AutocompleteImovel = ({
                         className="list-group-item list-group-item-action p-1 "
                         key={index}
                         onClick={() => {
-                          form.mutators.setValue(
-                            "newCEP",
-                            formatString("99.999-999", result.cep)
-                          );
+                          form.mutators.setValue("newCEP", formatString("99.999-999", result.cep));
                         }}
                       >
                         <span>

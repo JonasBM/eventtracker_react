@@ -1,5 +1,6 @@
 import bootstrap from "bootstrap/dist/js/bootstrap.bundle";
 import store from "../../store";
+import formatString from "format-string-by-pattern";
 
 export default function buildCalendar(date) {
   const calendar = [];
@@ -64,10 +65,7 @@ export const filterSurveybyConcluded = () => {
 export const filterNoticebyDate = (stringDate) => {
   return function (notice) {
     for (let index = 0; index < notice.notice_events.length; index++) {
-      if (
-        notice.notice_events[index].date === stringDate ||
-        notice.notice_events[index].deadline_date === stringDate
-      ) {
+      if (notice.notice_events[index].date === stringDate || notice.notice_events[index].deadline_date === stringDate) {
         return true;
       }
     }
@@ -136,12 +134,8 @@ export const filterNoticeEventByDate = (stringDate) => {
 };
 
 export const getDateFromString = (stringDate) => {
-  const thedayString = stringDate
-    .toString()
-    .match(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/g);
-  const themonthString = stringDate
-    .toString()
-    .match(/^\d{4}-(0[1-9]|1[012])$/g);
+  const thedayString = stringDate.toString().match(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/g);
+  const themonthString = stringDate.toString().match(/^\d{4}-(0[1-9]|1[012])$/g);
   if (thedayString !== null) {
     let splitString = thedayString[0].split("-");
     return new Date(splitString[0], splitString[1] - 1, splitString[2]);
@@ -187,8 +181,7 @@ export const getNoticeEvent = (notice_event_id) => {
       let notice_event;
       if (notices[index].notice_events) {
         notice_event = notices[index].notice_events.find(
-          (notice_event) =>
-            notice_event.id.toString() === notice_event_id.toString()
+          (notice_event) => notice_event.id.toString() === notice_event_id.toString()
         );
       }
       if (notice_event) {
@@ -202,21 +195,17 @@ export const getNoticeEvent = (notice_event_id) => {
 export const getNoticeColor = (notice) => {
   if (notice) {
     const notice_colors = store.getState().notice.notice_colors.notice_colors;
-    let notice_color = notice_colors.find(
-      (notice_color) => notice_color.css_name === notice.css_name
-    );
+    let notice_color = notice_colors.find((notice_color) => notice_color.css_name === notice.css_name);
     return notice_color;
   }
 };
 
 export const getNoticeEventType = (notice_event) => {
   if (notice_event) {
-    const notice_event_types =
-      store.getState().notice.notice_event_types.notice_event_types;
+    const notice_event_types = store.getState().notice.notice_event_types.notice_event_types;
 
     let notice_event_type = notice_event_types.find(
-      (notice_event_type) =>
-        notice_event_type.id === notice_event.notice_event_type
+      (notice_event_type) => notice_event_type.id === notice_event.notice_event_type
     );
     return notice_event_type;
   }
@@ -233,8 +222,7 @@ export const getAllNoticeConcluded = (notice) => {
 
 export const getSurveyEventType = (survey) => {
   if (survey) {
-    const survey_event_types =
-      store.getState().survey.survey_event_types.survey_event_types;
+    const survey_event_types = store.getState().survey.survey_event_types.survey_event_types;
     let survey_event_type = survey_event_types.find(
       (survey_event_type) => survey_event_type.id === survey.survey_event_type
     );
@@ -244,8 +232,7 @@ export const getSurveyEventType = (survey) => {
 
 export const getReportEventType = (report) => {
   if (report) {
-    const report_event_types =
-      store.getState().report.report_event_types.report_event_types;
+    const report_event_types = store.getState().report.report_event_types.report_event_types;
     let report_event_type = report_event_types.find(
       (report_event_type) => report_event_type.id === report.report_event_type
     );
@@ -267,14 +254,10 @@ export const getFirstVA = (notice) => {
 
 export const hasNotification = (notice_event_type) => {
   if (notice_event_type) {
-    const notice_event_type_files =
-      store.getState().notice.notice_event_type_files.notice_event_type_files;
+    const notice_event_type_files = store.getState().notice.notice_event_type_files.notice_event_type_files;
 
     for (let index = 0; index < notice_event_type_files.length; index++) {
-      if (
-        notice_event_type.id ===
-        notice_event_type_files[index].notice_event_type
-      ) {
+      if (notice_event_type.id === notice_event_type_files[index].notice_event_type) {
         return true;
       }
     }
@@ -290,4 +273,14 @@ export const hasPermission = (authuser, ownerID) => {
     return true;
   }
   return false;
+};
+
+export const formatCNPJCPF = (cnpj_cpf) => {
+  if (!cnpj_cpf) return cnpj_cpf;
+  const onlyNumbers = cnpj_cpf.replace(/[^\d]/g, "");
+  if (cnpj_cpf.length > 11) {
+    return formatString("99.999.999/9999-99", onlyNumbers);
+  } else {
+    return formatString("999.999.999-99", onlyNumbers);
+  }
 };

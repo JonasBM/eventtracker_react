@@ -1,9 +1,4 @@
-import {
-  CheckboxFormGroup,
-  InputFormGroup,
-  SelectFormGroup,
-  required,
-} from "../common/Forms";
+import { CheckboxFormGroup, InputFormGroup, SelectFormGroup, required } from "../common/Forms";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Form } from "react-final-form";
@@ -16,7 +11,6 @@ const FormUserData = ({ authUser }) => {
   const users = useSelector((state) => state.user.users.users);
 
   const onSubmit = (values) => {
-    console.log(values);
     dispatch(actionCRUDUserProfile.update(values));
   };
 
@@ -37,11 +31,7 @@ const FormUserData = ({ authUser }) => {
         form,
       }) => (
         <form onSubmit={handleSubmit} className="needs-validation" noValidate>
-          <InputFormGroup
-            name="username"
-            label="Username:"
-            validate={required}
-          />
+          <InputFormGroup name="username" label="Username:" validate={required} />
           <InputFormGroup name="first_name" label="Nome:" validate={required} />
           <InputFormGroup name="last_name" label="Sobrenome:" />
           <InputFormGroup name="email" label="email:" />
@@ -62,23 +52,17 @@ const FormUserData = ({ authUser }) => {
                     className="m-1"
                     onClick={(e) => {
                       if (e.target.checked) {
-                        form
-                          .getFieldState("profile.assistentes")
-                          .value.push(user.id);
+                        form.getFieldState("profile.assistentes").value.push(user.id);
                       } else {
                         form.mutators.setValue(
                           "profile.assistentes",
-                          form
-                            .getFieldState("profile.assistentes")
-                            .value.filter((assistenteID) => {
-                              return assistenteID !== user.id;
-                            })
+                          form.getFieldState("profile.assistentes").value.filter((assistenteID) => {
+                            return assistenteID !== user.id;
+                          })
                         );
                       }
                     }}
-                    checked={form
-                      .getFieldState("profile.assistentes")
-                      ?.value.includes(user.id)}
+                    checked={form.getFieldState("profile.assistentes")?.value.includes(user.id)}
                   />
                 ))}
               <SelectFormGroup
@@ -101,10 +85,7 @@ const FormUserData = ({ authUser }) => {
 
           <div className="row">
             <div className="col text-left">
-              <button
-                type="submit"
-                className="btn btn-primary font-weight-bold mt-2 px-5"
-              >
+              <button type="submit" className="btn btn-primary font-weight-bold mt-2 px-5">
                 Salvar
               </button>
             </div>

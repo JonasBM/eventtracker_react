@@ -6,9 +6,7 @@ export const required = (value) => (value ? undefined : "Campo obrigatório");
 export const Error = ({ name }) => (
   <Field name={name} subscription={{ error: true, touched: true }}>
     {({ meta: { error, touched } }) =>
-      error && touched ? (
-        <div className="invalid-feedback d-block">{error.toString()}</div>
-      ) : null
+      error && touched ? <div className="invalid-feedback d-block">{error.toString()}</div> : null
     }
   </Field>
 );
@@ -38,14 +36,7 @@ export const InputFormGroup = ({ isHidden = false, ...props }) => {
           {props.label}
         </label>
       )}
-      <Field
-        component="input"
-        type="text"
-        {...props}
-        className={className}
-        id={id}
-        name={props.name}
-      />
+      <Field component="input" type="text" {...props} className={className} id={id} name={props.name} />
       <Error name={props.name} />
     </div>
   );
@@ -71,14 +62,7 @@ export const CheckboxFormGroup = ({ isHidden = false, ...props }) => {
 
   return (
     <div className={isHidden ? "d-none" : classNameDiv} title={props.tooltip}>
-      <Field
-        component="input"
-        type="checkbox"
-        {...props}
-        id={id}
-        name={props.name}
-        className={className}
-      />
+      <Field component="input" type="checkbox" {...props} id={id} name={props.name} className={className} />
       {props.label && (
         <label className="custom-control-label" htmlFor={id}>
           {props.label}
@@ -111,13 +95,7 @@ export const SelectFormGroup = ({ isHidden = false, ...props }) => {
           {props.label}
         </label>
       )}
-      <Field
-        component="select"
-        {...props}
-        className={className}
-        id={id}
-        name={props.name}
-      />
+      <Field component="select" {...props} className={className} id={id} name={props.name} />
       <Error name={props.name} />
     </div>
   );
@@ -164,11 +142,11 @@ export const ToogleFieldSet = ({ isDisabled = false, ...props }) => {
   }
 };
 
-export const FileField = ({ name, ...props }) => {
+export const FileField = ({ name, validate, ...props }) => {
   const [label, setLabel] = useState(props.label);
   return (
     <div className="custom-file">
-      <Field name={name}>
+      <Field name={name} validate={validate}>
         {({ input: { value, onChange, ...input } }) => (
           <input
             {...input}
@@ -189,7 +167,7 @@ export const FileField = ({ name, ...props }) => {
       <label className="custom-file-label col-form-label-sm" htmlFor={props.id}>
         {label}
       </label>
-      <Error name={props.name} />
+      <Error name={name} />
     </div>
   );
 };
