@@ -53,7 +53,6 @@ export default function ModalNoticeNotification() {
   }, []);
 
   const download = () => {
-    console.log(noticeEventWithDate);
     dispatch(downloadNotification(noticeEventTypeFile, noticeEvent, noticeEventReference, noticeEventWithDate));
   };
 

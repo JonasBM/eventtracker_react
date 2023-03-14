@@ -242,7 +242,7 @@ const AutocompleteImovel = ({ name, name_string, label, form, className, showRes
         <ul className="list-group p-1 m-2 autocomplete-resultlist border">
           <li className="list-group-item p-0 border-0">
             {`razao_social: ${currentImovel.razao_social}`}{" "}
-            {currentImovel.cnpj_cpf && `| CPF: ${formatCNPJCPF(currentImovel.cnpj_cpf)}`}
+            {currentImovel.cnpj_cpf && `| CNPJ/CPF: ${formatCNPJCPF(currentImovel.cnpj_cpf)}`}
           </li>
           <li className="list-group-item p-0 border-0">Código do imóvel: {currentImovel.codigo}</li>
           <li className="list-group-item p-0 border-0">Insc. Imobiliária: {currentImovel.inscricao_imobiliaria}</li>
