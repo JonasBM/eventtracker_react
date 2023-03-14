@@ -264,13 +264,16 @@ export const uploadFileRFRequestDocx = (values) => (dispatch, getState) => {
 };
 
 export const downloadNotification =
-  (notice_event_type_file, notice_event, notice_event_reference) => (dispatch, getState) => {
+  (notice_event_type_file, notice_event, notice_event_reference = null, notice_event_with_date = false) =>
+  (dispatch, getState) => {
+    console.log(notice_event_with_date);
     if (!notice_event || !notice_event_type_file) {
       return false;
     }
     let params = {
       notice_event_id: notice_event.id,
       notice_event_type_file_id: notice_event_type_file.id,
+      notice_event_with_date: notice_event_with_date,
     };
 
     if (notice_event_reference) {
@@ -278,6 +281,7 @@ export const downloadNotification =
         notice_event_id: notice_event.id,
         notice_event_type_file_id: notice_event_type_file.id,
         notice_event_reference: notice_event_reference,
+        notice_event_with_date: notice_event_with_date,
       };
     }
 

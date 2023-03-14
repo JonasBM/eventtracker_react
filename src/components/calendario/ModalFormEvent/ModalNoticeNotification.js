@@ -9,6 +9,7 @@ export default function ModalNoticeNotification() {
 
   const [noticeEventReference, setNoticeEventReference] = useState("");
   const [noticeEventTypeFile, setNoticeEventTypeFile] = useState();
+  const [noticeEventWithDate, setNoticeEventWithDate] = useState(false);
 
   const [noticeEventType, setNoticeEventType] = useState();
   const [noticeEvent, setNoticeEvent] = useState();
@@ -52,11 +53,19 @@ export default function ModalNoticeNotification() {
   }, []);
 
   const download = () => {
-    dispatch(downloadNotification(noticeEventTypeFile, noticeEvent, noticeEventReference));
+    console.log(noticeEventWithDate);
+    dispatch(downloadNotification(noticeEventTypeFile, noticeEvent, noticeEventReference, noticeEventWithDate));
   };
 
   return (
-    <div id="ModalNoticeNotification" className="modal fade" tabIndex="-1" role="dialog" aria-hidden="true">
+    <div
+      id="ModalNoticeNotification"
+      className="modal fade"
+      tabIndex="-1"
+      role="dialog"
+      aria-hidden="true"
+      data-bs-backdrop="static"
+    >
       <div className="modal-dialog modal-dialog-centered" role="document">
         <div className="modal-content">
           <div className="modal-header p-2">
@@ -91,7 +100,7 @@ export default function ModalNoticeNotification() {
 
               {noticeEventType && notice_event_type_files.length > 0 ? (
                 <select
-                  className="form-control form-control-sm m-1"
+                  className="form-control m-1"
                   value={noticeEventTypeFile?.id || ""}
                   onChange={(event) => {
                     const notice_event_type_file = notice_event_type_files.find(
@@ -114,6 +123,18 @@ export default function ModalNoticeNotification() {
               ) : (
                 <p>Não há notificações para este tipo de Auto, por favor solicite a um administrador o cadastro.</p>
               )}
+
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  value={noticeEventWithDate}
+                  onChange={(e) => {
+                    setNoticeEventWithDate(e.target.checked || false);
+                  }}
+                />
+                <label className="form-check-label">Gerar notificação com data e hora</label>
+              </div>
 
               <button
                 className="btn btn-secondary btn-sm m-1"

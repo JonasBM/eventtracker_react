@@ -10,7 +10,7 @@
     "@types/jest": "^26.0.24",
     "@types/react-router-dom": "^5.1.8",
     "axios": "^0.21.1",
-    "bootstrap": "^5.0.0-beta3",
+    "bootstrap": "5.0",
     "final-form": "^4.20.2",
     "final-form-arrays": "^3.0.2",
     "format-string-by-pattern": "^1.2.2",

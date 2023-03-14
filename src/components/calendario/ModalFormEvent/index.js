@@ -11,10 +11,7 @@ import { useSelector } from "react-redux";
 const ModalEventTab = ({ active, name }) => {
   return (
     <a
-      className={
-        "nav-item nav-link font-weight-bold text-capitalize" +
-        (!active ? " disabled" : "")
-      }
+      className={"nav-item nav-link font-weight-bold text-capitalize" + (!active ? " disabled" : "")}
       id={"nav-" + name + "-tab"}
       data-bs-toggle="tab"
       href={"#nav-" + name}
@@ -28,12 +25,7 @@ const ModalEventTab = ({ active, name }) => {
 
 const ModalEventPanel = ({ name, children }) => {
   return (
-    <div
-      className="tab-pane fade"
-      id={"nav-" + name}
-      role="tabpanel"
-      aria-labelledby={"nav-" + name + "-tab"}
-    >
+    <div className="tab-pane fade" id={"nav-" + name} role="tabpanel" aria-labelledby={"nav-" + name + "-tab"}>
       {children}
     </div>
   );
@@ -87,9 +79,7 @@ export default function ModelFormEvent() {
 
     let notice;
     if (e.relatedTarget.dataset.notice_id !== "0") {
-      notice = notices.find(
-        (notice) => notice.id.toString() === e.relatedTarget.dataset.notice_id
-      );
+      notice = notices.find((notice) => notice.id.toString() === e.relatedTarget.dataset.notice_id);
     }
     if (notice !== undefined) {
       setNotice(notice);
@@ -110,9 +100,7 @@ export default function ModelFormEvent() {
     }
     let survey;
     if (e.relatedTarget.dataset.survey_id !== "0") {
-      survey = surveys.find(
-        (survey) => survey.id.toString() === e.relatedTarget.dataset.survey_id
-      );
+      survey = surveys.find((survey) => survey.id.toString() === e.relatedTarget.dataset.survey_id);
     }
     if (survey !== undefined) {
       setSurvey(survey);
@@ -134,9 +122,7 @@ export default function ModelFormEvent() {
     }
     let report;
     if (e.relatedTarget.dataset.report_id !== "0") {
-      report = reports.find(
-        (report) => report.id.toString() === e.relatedTarget.dataset.report_id
-      );
+      report = reports.find((report) => report.id.toString() === e.relatedTarget.dataset.report_id);
     }
     if (report !== undefined) {
       setReport(report);
@@ -158,10 +144,7 @@ export default function ModelFormEvent() {
     }
     let activity;
     if (e.relatedTarget.dataset.activity_id !== "0") {
-      activity = activitys.find(
-        (activity) =>
-          activity.id.toString() === e.relatedTarget.dataset.activity_id
-      );
+      activity = activitys.find((activity) => activity.id.toString() === e.relatedTarget.dataset.activity_id);
     }
     if (activity !== undefined) {
       setActivity(activity);
@@ -242,33 +225,13 @@ export default function ModelFormEvent() {
   };
 
   useEffect(() => {
-    if (
-      tabstate.noticetab &&
-      !tabstate.surveytab &&
-      !tabstate.reporttab &&
-      !tabstate.activitytab
-    ) {
+    if (tabstate.noticetab && !tabstate.surveytab && !tabstate.reporttab && !tabstate.activitytab) {
       document.getElementById("nav-auto-tab").click();
-    } else if (
-      !tabstate.noticetab &&
-      tabstate.surveytab &&
-      !tabstate.reporttab &&
-      !tabstate.activitytab
-    ) {
+    } else if (!tabstate.noticetab && tabstate.surveytab && !tabstate.reporttab && !tabstate.activitytab) {
       document.getElementById("nav-vistoria-tab").click();
-    } else if (
-      !tabstate.noticetab &&
-      !tabstate.surveytab &&
-      tabstate.reporttab &&
-      !tabstate.activitytab
-    ) {
+    } else if (!tabstate.noticetab && !tabstate.surveytab && tabstate.reporttab && !tabstate.activitytab) {
       document.getElementById("nav-relatório-tab").click();
-    } else if (
-      !tabstate.noticetab &&
-      !tabstate.surveytab &&
-      !tabstate.reporttab &&
-      tabstate.activitytab
-    ) {
+    } else if (!tabstate.noticetab && !tabstate.surveytab && !tabstate.reporttab && tabstate.activitytab) {
       document.getElementById("nav-atividade-tab").click();
     } else {
       if (currentUser?.profile?.is_assistente) {
@@ -300,73 +263,36 @@ export default function ModelFormEvent() {
             <h5 className="modal-title font-weight-bold" id="id_modal-header">
               {tabstate.title}
             </h5>
-            <button
-              type="button"
-              className="close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            >
+            <button type="button" className="close" data-bs-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <nav>
-            <div
-              className="nav nav-tabs justify-content-center"
-              id="nav-tab"
-              role="tablist"
-            >
+            <div className="nav nav-tabs justify-content-center" id="nav-tab" role="tablist">
               <ModalEventTab
-                active={
-                  (tabstate.noticetab || tabstate.alltabs) &&
-                  !currentUser?.profile?.is_assistente
-                }
+                active={(tabstate.noticetab || tabstate.alltabs) && !currentUser?.profile?.is_assistente}
                 name="auto"
               />
               <ModalEventTab
-                active={
-                  (tabstate.surveytab || tabstate.alltabs) &&
-                  !currentUser?.profile?.is_assistente
-                }
+                active={(tabstate.surveytab || tabstate.alltabs) && !currentUser?.profile?.is_assistente}
                 name="vistoria"
               />
-              <ModalEventTab
-                active={tabstate.reporttab || tabstate.alltabs}
-                name="relatório"
-              />
-              <ModalEventTab
-                active={tabstate.activitytab || tabstate.alltabs}
-                name="atividade"
-              />
+              <ModalEventTab active={tabstate.reporttab || tabstate.alltabs} name="relatório" />
+              <ModalEventTab active={tabstate.activitytab || tabstate.alltabs} name="atividade" />
             </div>
           </nav>
           <div className="tab-content" id="nav-tabContent">
             <ModalEventPanel name="auto">
-              <FormNotice
-                notice={notice}
-                day={date}
-                isModalOpen={isModalOpen}
-              />
+              <FormNotice notice={notice} day={date} isModalOpen={isModalOpen} />
             </ModalEventPanel>
             <ModalEventPanel name="vistoria">
-              <FormSurvey
-                survey={survey}
-                day={date}
-                isModalOpen={isModalOpen}
-              />
+              <FormSurvey survey={survey} day={date} isModalOpen={isModalOpen} />
             </ModalEventPanel>
             <ModalEventPanel name="relatório">
-              <FormReport
-                report={report}
-                day={date}
-                isModalOpen={isModalOpen}
-              />
+              <FormReport report={report} day={date} isModalOpen={isModalOpen} />
             </ModalEventPanel>
             <ModalEventPanel name="atividade">
-              <FormActivity
-                activity={activity}
-                day={date}
-                isModalOpen={isModalOpen}
-              />
+              <FormActivity activity={activity} day={date} isModalOpen={isModalOpen} />
             </ModalEventPanel>
           </div>
         </div>
